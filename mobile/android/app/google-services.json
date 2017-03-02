@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "896727015937",
+    "project_id": "easymoney-148315"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:896727015937:android:1fb0623114da33be",
+        "android_client_info": {
+          "package_name": "com.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "896727015937-qdkak1d57nog571qqq30f3rg3r7jciad.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobile",
+            "certificate_hash": "ACE14D3F4DBB98BCAD196C23AF6CBA308DA297FB"
+          }
+        },
+        {
+          "client_id": "896727015937-03jkctj1nc3tcac0s8435198tnls0bjp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHF6I3thc8N3bC8-8McRtLGFZ12-xb3ZE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

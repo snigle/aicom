@@ -1,0 +1,5 @@
+export const SET_LOGIN = 'LOGIN.SET_LOGIN'
+export const TEST_ACTION_TYPE_ONE = 'one'
+export const TEST_ACTION_TYPE_TWO = 'two'
+export const TEST_ACTION_TYPE_THREE = 'three'
+export const TEST_ACTION_TYPE_FOUR = 'four'
