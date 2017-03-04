@@ -1,6 +1,6 @@
-import { ActionConst } from 'react-native-router-flux'
+import { ActionConst } from "react-native-router-flux";
 
-const DEFAULT_STATE = {scene: {}}
+const DEFAULT_STATE = { scene : {} };
 
 export default function reducer(state = DEFAULT_STATE, action = {}) {
   switch(action.type) {
@@ -8,15 +8,10 @@ export default function reducer(state = DEFAULT_STATE, action = {}) {
     case ActionConst.FOCUS:
       return {
         ...state,
-        scene: action.scene,
-      }
+        scene : action.scene,
+      };
 
     default:
-      return state
+      return state;
   }
 }
-
-// Selectors (mapStateToProps)
-export const getNav = ({scene}) => ({
-  scene
-})

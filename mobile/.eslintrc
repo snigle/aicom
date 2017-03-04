@@ -175,7 +175,8 @@
     "globals": {
     "document": true,
     "require": true,
-    "window": true
+    "window": true,
+    "module" : true
   },
     "extends": "eslint:recommended",
     "ecmaFeatures": {

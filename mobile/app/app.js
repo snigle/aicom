@@ -7,16 +7,15 @@ import thunk from "redux-thunk";
 import promise from "redux-promise";
 import createLogger from "redux-logger";
 
-import rootReducer from "./reducers/rootReducer";
-
-// import Routes from './app.routes.js';
+import reducer from "./reducers";
 
 const RouterWithRedux = connect()(Router);
 const logger = createLogger();
 const enhancer = compose(
   applyMiddleware(thunk, promise, logger)
 );
-const store = createStore(rootReducer, undefined, enhancer);
+
+const store = createStore(reducer, {}, enhancer);
 
 export default class App extends Component {
   render() {
