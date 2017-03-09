@@ -8,9 +8,9 @@ import (
 	"gopkg.in/mgo.v2/bson"
 
 	"github.com/gin-gonic/gin"
-	"github.com/snigle/server/models"
-	"github.com/snigle/server/utils/google"
-	"github.com/snigle/server/utils/mongo"
+	"github.com/snigle/aicom/server/models"
+	"github.com/snigle/aicom/server/utils/google"
+	"github.com/snigle/aicom/server/utils/mongo"
 	oauth2_api "google.golang.org/api/oauth2/v2"
 )
 

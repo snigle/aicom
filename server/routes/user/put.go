@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/snigle/server/models"
-	"github.com/snigle/server/utils/mongo"
+	"github.com/snigle/aicom/server/models"
+	"github.com/snigle/aicom/server/utils/mongo"
 )
 
 // How to get code : https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http%3A%2F%2Flocalhost:8080&prompt=consent&response_type=code&client_id=896727015937-03jkctj1nc3tcac0s8435198tnls0bjp.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&access_type=offline

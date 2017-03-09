@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/loopfz/gadgeto/tonic"
-	"github.com/snigle/server/routes"
+	"github.com/snigle/aicom/server/routes"
 )
 
 func init() {

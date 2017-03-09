@@ -1,20 +1,29 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
 	"gopkg.in/mgo.v2/bson"
 
 	"github.com/gin-gonic/gin"
-	"github.com/snigle/server/models"
-	"github.com/snigle/server/routes"
-	_ "github.com/snigle/server/routes/login"
-	_ "github.com/snigle/server/routes/user"
-	"github.com/snigle/server/utils/mongo"
+	"github.com/namsral/flag"
+	"github.com/snigle/aicom/server/models"
+	"github.com/snigle/aicom/server/routes"
+	_ "github.com/snigle/aicom/server/routes/login"
+	_ "github.com/snigle/aicom/server/routes/user"
+	"github.com/snigle/aicom/server/utils/mongo"
 )
 
+var port int
+
+func init() {
+	flag.IntVar(&port, "port", 8080, "api port")
+}
+
 func main() {
+	flag.Parse()
 	if mongo.DB == nil {
 		return
 	}
@@ -42,7 +51,7 @@ func main() {
 			}
 		}
 	}
-	r.Run(":8080")
+	r.Run(fmt.Sprintf(":%d", port))
 }
 
 func AuthRequired() gin.HandlerFunc {
