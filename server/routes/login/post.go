@@ -48,6 +48,7 @@ func Login(c *gin.Context, in *LoginInput) (*models.Token, error) {
 	u.Email = info.Email
 	u.Name = info.Name
 	u.Picture = info.Picture
+	u.GoogleID = info.Id
 	if err == mgo.ErrNotFound {
 		u.ID = bson.NewObjectId()
 	}
