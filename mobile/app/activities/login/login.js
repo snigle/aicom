@@ -63,7 +63,7 @@ class Login extends Component {
       AsyncStorage.setItem("login", JSON.stringify(user));
       this.props.setLogin(user);
       ToastAndroid.show("Login successful", ToastAndroid.SHORT);
-      Actions.Settings({ type : "replace" });
+      Actions.settings({ type : "replace" });
     });
   }
 

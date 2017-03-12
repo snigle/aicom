@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Text, View, AsyncStorage } from "react-native";
 import { connect } from "react-redux";
 import { CheckBox } from "react-native-elements";
-import styles from "./Settings.style";
+import styles from "./settings.style";
 import { Tabs, Tab, Icon, Button } from "react-native-elements";
 import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 import Api from "../../components/api/login/login";
@@ -24,7 +24,7 @@ class Settings extends Component {
   render () {
     return (
       <View  style= {styles.container}>
-<Text > {"Tu veux faire quoi aujourd hui ?"}</Text>
+<Text style={{ marginBottom : 22,fontSize : 14, fontFamily : "Roboto" ,color : "#6d84b4" }}> {"Tu veux faire quoi aujourd hui ?"}</Text>
 <CheckBox
 center
   title="Allez prendre un verre"
@@ -34,7 +34,6 @@ center
   uncheckedIcon="add"
   checkedColor="red"
 />
-
 <CheckBox
   center
   title="Allez prendre un café"
@@ -46,15 +45,17 @@ center
 />
 
 <Button
-  title="BUTTON" onPress={() => this._logout()}/>
-
-
+  title="Déconnexion" onPress={() => this._logout()}/>
+<Button
+onPress={Actions.events}
+backgroundColor="#6d84b4"
+fontFamily="Roboto"
+buttonStyle={{ borderRadius : 0, marginLeft : 0, marginRight : 0, marginBottom : 0 }}
+title="Active tes événements" />
 
   <Icon containerStyle={{ justifyContent : "center", alignItems : "center", marginTop : 12 }} color={"#5e6977"} name="whatshot" size={33} />
   <Icon color={"#6296f9"} name="whatshot" size={30} />
-
-
-      </View>
+  </View>
 
     );
   }

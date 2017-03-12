@@ -1,8 +1,8 @@
 import React from "react";
 
 import { Scene } from "react-native-router-flux";
-import Account from "./account";
+import account from "./account";
 
 module.exports = (
-    <Scene key="account" component={Account} title="Home" hideNavBar={true}/>
+    <Scene key="account" component={account} title="Home" hideNavBar={true}/>
 );

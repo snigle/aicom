@@ -10,19 +10,19 @@ import {
   Button,
 } from "react-native-elements";
 
-class Account extends Component {
+class account extends Component {
   render () {
     return (
-      <View style={styles.container}  backgroundColor="#E45711">
+      <View style={styles.container}  backgroundColor="#3b5998">
       <Card
       title=" "
-      image={ { uri : "https://colorlib.com/wp/wp-content/uploads/sites/2/2013/10/lionking-logo.png" }}>
-        <Text style={{ marginBottom : 22,fontSize : 22, fontFamily : "Roboto" ,color : "orange" }}>
+      image={ { uri : "logo-aicom.pdf" }}>
+        <Text style={{ marginBottom : 22,fontSize : 22, fontFamily : "Roboto" ,color : "#6d84b4" }}>
         {"Sortir n'a jamais été aussi simple"}.
         </Text>
         <Button
-        onPress={Actions.Settings}
-        backgroundColor="#E45711"
+        onPress={Actions.settings}
+        backgroundColor="#3b5998"
         fontFamily="Roboto"
         buttonStyle={{ borderRadius : 0, marginLeft : 0, marginRight : 0, marginBottom : 0 }}
         title="Connecte toi avec ton compte google" />
@@ -34,4 +34,4 @@ class Account extends Component {
 
 export default connect((state) => ({
   login : state.login,
-}), {})(Account);
+}), {})(account);
