@@ -6,5 +6,6 @@ module.exports = (
   <Scene key="app">
     {require("./activities/account/account.route")}
     {require("./activities/login/login.route")}
+    {require("./activities/Settings/Settings.route")}
   </Scene>
 );
