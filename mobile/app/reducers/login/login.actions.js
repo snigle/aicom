@@ -6,3 +6,7 @@ export const setLogin = (user) => ({
   type : SET_LOGIN,
   user : user,
 });
+
+export const logout = () => ({
+  type : LOG_OUT,
+});

@@ -1,13 +1,26 @@
 import React, { Component } from "react";
-import { Text, View } from "react-native";
+import { Text, View, AsyncStorage } from "react-native";
 import { connect } from "react-redux";
 import { CheckBox } from "react-native-elements";
 import styles from "./Settings.style";
-import { Tabs, Tab, Icon } from "react-native-elements";
+import { Tabs, Tab, Icon, Button } from "react-native-elements";
+import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
+import Api from "../../components/api/login/login";
+import { Actions } from "react-native-router-flux";
+import { logout } from "../../reducers/login/login.actions";
 
 
 
 class Settings extends Component {
+  _logout() {
+    this.props.logout();
+    Promise.all([
+      AsyncStorage.removeItem("login").then(() => console.log("removed item")),
+      GoogleSignin.revokeAccess().then(() => GoogleSignin.signOut()).then(() => console.log("google disconnected")),
+      Api.logout().then(() => console.log("backend disconnected")),
+    ]).then(() => Actions.login(), () => Actions.login());
+  }
+
   render () {
     return (
       <View  style= {styles.container}>
@@ -32,6 +45,8 @@ center
   checkedColor="red"
 />
 
+<Button
+  title="BUTTON" onPress={() => this._logout()}/>
 
 
 
@@ -47,4 +62,4 @@ center
 
 export default connect((state) => ({
   login : state.login,
-}), {})(Settings);
+}), { logout : logout })(Settings);

@@ -79,7 +79,7 @@ func AuthRequired() gin.HandlerFunc {
 		c.Set(models.ColUser, user)
 		c.Next()
 
-		if oldToken != *token {
+		if oldToken.AccessToken != token.AccessToken {
 			log.Print("token updated")
 			token.AccessToken = models.HashToken(token.AccessToken)
 			err = mongo.Aicom.C(models.ColToken).Update(bson.M{"_id": token.ID}, token)
