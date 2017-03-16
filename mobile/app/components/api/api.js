@@ -32,8 +32,13 @@ export default (() => {
     return fetch(path, opts).then((response) => {
       console.log("response", response);
       // response.text().then((res) => console.log("response", res));
-      return response.json();
-    }).then((json) => json);
+      return response.text();
+    }).then((result) => {
+      if (result) {
+        return JSON.parse(result);
+      }
+      return result;
+    });
   };
   return this;
 })();

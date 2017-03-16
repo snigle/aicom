@@ -100,6 +100,7 @@ class Settings extends Component {
   onValueChange(value,i){
     var self = this;
     // Do call api
+    console.log("change setting",value,i);
     if (value) {
       this.props.addActivity(this.state.activities[i].name);
       UserApi.addActivity(this.state.activities[i].name).catch(() => {
