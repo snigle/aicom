@@ -10,6 +10,18 @@ import (
 func init() {
 	routes.AddRoute(
 		&routes.Route{
+			Function:     tonic.Handler(GetMe, 200),
+			Method:       http.MethodGet,
+			Path:         "/user/me",
+			AuthRequired: true,
+		},
+		&routes.Route{
+			Function:     tonic.Handler(GetUsers, 200),
+			Method:       http.MethodGet,
+			Path:         "/user",
+			AuthRequired: true,
+		},
+		&routes.Route{
 			Function:     tonic.Handler(SetActivity, 200),
 			Method:       http.MethodPut,
 			Path:         "/user/activity",

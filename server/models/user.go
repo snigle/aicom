@@ -1,6 +1,10 @@
 package models
 
-import "gopkg.in/mgo.v2/bson"
+import (
+	"encoding/json"
+
+	"gopkg.in/mgo.v2/bson"
+)
 
 const ColUser = "users"
 
@@ -10,6 +14,7 @@ type User struct {
 	Email      string          `json:"email" bson:"email"`
 	Name       string          `json:"name" bson:"name"`
 	Picture    string          `json:"picture" bson:"picture"`
+	Location   [2]float64      `json:"location" bson:"location"`
 	Activities map[string]bool `json:"activities" bson:"activities"`
 }
 
@@ -25,4 +30,8 @@ func (user *User) DeleteActivity(name string) {
 		user.Activities = make(map[string]bool)
 	}
 	user.Activities[name] = false
+}
+
+func (user *User) SetLocationFromHeader(locationString string) error {
+	return json.Unmarshal([]byte(locationString), &user.Location)
 }

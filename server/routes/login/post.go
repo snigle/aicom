@@ -52,6 +52,7 @@ func Login(c *gin.Context, in *LoginInput) (*models.Token, error) {
 	if err == mgo.ErrNotFound {
 		u.ID = bson.NewObjectId()
 	}
+	u.SetLocationFromHeader(c.Request.Header.Get("X-Location"))
 	// Insert or update user
 	_, err = mongo.Aicom.C(models.ColUser).UpsertId(u.ID, u)
 	if err != nil {

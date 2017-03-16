@@ -29,7 +29,6 @@ func main() {
 	}
 
 	r := gin.Default()
-
 	for _, route := range routes.GetRoutes() {
 		if !route.AuthRequired {
 			if route.Method == "POST" {
@@ -45,6 +44,8 @@ func main() {
 				switch route.Method {
 				case http.MethodPut:
 					authorized.PUT(route.Path, route.Function)
+				case http.MethodGet:
+					authorized.GET(route.Path, route.Function)
 				case http.MethodDelete:
 					authorized.DELETE(route.Path, route.Function)
 				}
@@ -85,7 +86,21 @@ func AuthRequired() gin.HandlerFunc {
 			err = mongo.Aicom.C(models.ColToken).Update(bson.M{"_id": token.ID}, token)
 			if err != nil {
 				log.Print("fail to save updated token")
+				return
 			}
+		}
+
+		err = user.SetLocationFromHeader(c.Request.Header.Get("X-Location"))
+		if err != nil {
+			log.Printf("fail to set location for %s : %s", c.Request.Header.Get("X-Location"), err)
+			return
+		}
+
+		log.Print("update location")
+		err = mongo.Aicom.C(models.ColUser).Update(bson.M{"_id": user.ID}, user)
+		if err != nil {
+			log.Print("fail to save updated location")
+			return
 		}
 	}
 }

@@ -5,13 +5,17 @@ const apiRouteBase = "https://aicom.herokuapp.com";
 
 export default (() => {
   this.token = null;
+  this.locationHeader = "";
   this.headers = () => {
     let headers = new Headers();
     headers.append("X-Token", this.token);
+    headers.append("X-Location", this.locationHeader);
+    console.log("set location", this.locationHeader);
     headers.append("Content-Type", "application/json");
     return headers;
   };
   this.setToken = (token) => (this.token = token);
+  this.setLocation = (locationHeader) => (this.locationHeader = `[${locationHeader.coords.latitude}, ${locationHeader.coords.longitude}]`);
   this.auth = (url, body, opts = {}) => {
     if (!this.token) {
       return new Promise((resolve,reject) => reject("not authentified"));
@@ -20,7 +24,9 @@ export default (() => {
   };
   this.request = (url, opts = {}, body) => {
     opts.headers = this.headers();
-    opts.body = JSON.stringify(body);
+    if (opts.method && opts.method !== "GET") {
+      opts.body = JSON.stringify(body);
+    }
     let path = `${apiRouteBase}${url}`;
     console.log("auth request",path,opts);
     return fetch(path, opts).then((response) => {

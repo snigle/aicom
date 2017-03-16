@@ -14,12 +14,21 @@ import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 import { setLogin } from "../../reducers/login/login.actions";
 import Api from "../../components/api/login/login";
 import ApiAuth from "../../components/api/api";
+import UserApi from "../../components/api/users/users";
 import styles from "./login.style";
 
 class Login extends Component {
 
   componentDidMount() {
     this._setupGoogleSignin();
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        console.log("find location", position);
+        ApiAuth.setLocation(position);
+      },
+      (error) => alert("Please activate GPS to use the application"),
+      { timeout : 20000, maximumAge : 100000 }
+    );
   }
 
   _setupGoogleSignin() {
@@ -60,6 +69,7 @@ class Login extends Component {
     // return Api.login(user.serverAuthCode)
     .then((user) => {
       ApiAuth.setToken(user.access_token);
+      UserApi.me().then((response) => console.log("/me", response));
       AsyncStorage.setItem("login", JSON.stringify(user));
       this.props.setLogin(user);
       ToastAndroid.show("Login successful", ToastAndroid.SHORT);
