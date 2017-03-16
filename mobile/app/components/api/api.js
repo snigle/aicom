@@ -15,7 +15,7 @@ export default (() => {
     return headers;
   };
   this.setToken = (token) => (this.token = token);
-  this.setLocation = (locationHeader) => (this.locationHeader = `[${locationHeader.coords.latitude}, ${locationHeader.coords.longitude}]`);
+  this.setLocation = (locationHeader) => (this.locationHeader = `[${locationHeader.coords.longitude}, ${locationHeader.coords.latitude}]`);
   this.auth = (url, body, opts = {}) => {
     if (!this.token) {
       return new Promise((resolve,reject) => reject("not authentified"));
