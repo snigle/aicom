@@ -2,17 +2,14 @@ import React, { Component } from "react";
 import { Text, View, AsyncStorage } from "react-native";
 import { connect } from "react-redux";
 import { CheckBox } from "react-native-elements";
-<<<<<<< HEAD
-import styles from "./Settings.style";
-import { Tabs, Tab, Icon, Button, List, ListItem } from "react-native-elements";
-=======
 import styles from "./settings.style";
-import { Tabs, Tab, Icon, Button } from "react-native-elements";
->>>>>>> origin/patou
+import { Tabs, Tab, Icon, Button, List, ListItem } from "react-native-elements";
 import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 import Api from "../../components/api/login/login";
+import UserApi from "../../components/api/users/users";
 import { Actions } from "react-native-router-flux";
 import { logout } from "../../reducers/login/login.actions";
+import { addActivity, removeActivity } from "../../reducers/me/me.actions";
 
 import SettingsList from "react-native-settings-list";
 
@@ -22,6 +19,7 @@ class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    console.log("dans settings me :", this.props.me);
     this.state.activities = [
       {
         name : "café",
@@ -48,6 +46,11 @@ class Settings extends Component {
         icon : "local-cafe",
         value : false,
       },
+      {
+        name : "bowling",
+        icon : "local-cafe",
+        value : false,
+      },
     ];
   }
 
@@ -62,6 +65,10 @@ class Settings extends Component {
 
   render () {
     var self = this;
+    console.log("dans settings me :", this.props.me);
+    if (!this.props.me) {
+      return null;
+    }
     return (
       <View style={{ backgroundColor : "#EFEFF4",flex : 1 }}>
       <View style={{ borderBottomWidth : 1, backgroundColor : "#f7f7f8",borderColor : "#c8c7cc" }}>
@@ -80,7 +87,7 @@ class Settings extends Component {
             title={activity.name}
             key={i}
             hasSwitch={true}
-            switchState={self.state.activities[i].value}
+            switchState={this.props.me.activities[activity.name]}
             switchOnValueChange={(v) => self.onValueChange(v, i)}
           />
         ))
@@ -91,14 +98,22 @@ class Settings extends Component {
   }
 
   onValueChange(value,i){
-    let state = { ...this.state };
-    console.log("value",value, i, "state", this.state);
+    var self = this;
     // Do call api
-    state.activities[i].value = !state.activities[i].value;
-    this.setState(state);
+    if (value) {
+      this.props.addActivity(this.state.activities[i].name);
+      UserApi.addActivity(this.state.activities[i].name).catch(() => {
+        self.props.removeActivity(self.state.activities[i].name);
+      });
+    } else {
+      this.props.removeActivity(this.state.activities[i].name);
+      UserApi.removeActivity(this.state.activities[i].name).catch(() => {
+        this.props.addActivity(this.state.activities[i].name);
+      });
+    }
 }
 }
 
 export default connect((state) => ({
-  login : state.login,
-}), { logout : logout })(Settings);
+  me : state.me,
+}), { addActivity : addActivity, removeActivity : removeActivity })(Settings);

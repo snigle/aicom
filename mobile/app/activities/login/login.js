@@ -12,6 +12,7 @@ import { Actions } from "react-native-router-flux";
 import { connect } from "react-redux";
 import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 import { setLogin } from "../../reducers/login/login.actions";
+import { setMe } from "../../reducers/me/me.actions";
 import Api from "../../components/api/login/login";
 import ApiAuth from "../../components/api/api";
 import UserApi from "../../components/api/users/users";
@@ -68,8 +69,12 @@ class Login extends Component {
     )
     // return Api.login(user.serverAuthCode)
     .then((user) => {
+      console.log("set token", user);
       ApiAuth.setToken(user.access_token);
-      UserApi.me().then((response) => console.log("/me", response));
+      UserApi.me().then((response) => {
+        console.log("set me", response);
+        this.props.setMe(response);
+      }).catch((e) => console.log("error me", e));
       AsyncStorage.setItem("login", JSON.stringify(user));
       this.props.setLogin(user);
       ToastAndroid.show("Login successful", ToastAndroid.SHORT);
@@ -105,4 +110,4 @@ class Login extends Component {
 
 export default connect((state) => ({
   login : state.login,
-}), { setLogin : setLogin })(Login);
+}), { setLogin : setLogin, setMe : setMe })(Login);

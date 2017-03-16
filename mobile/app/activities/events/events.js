@@ -9,17 +9,77 @@ import {
   Button,PricingCard,
 } from "react-native-elements";
 
+class Events extends Component {
 
+  constructor (props) {
+      super(props);
+      var self = this;
+      this.state = {};
+      this.state.me = {
+        likes : { "horror" : true, "sf" : false },
+        name : "patou",
+        activities : { "cinéma" : true, "café" : true },
+      };
+      // this.state.activities = {
+      //   likes : { "horror" : true, "sf" : false },
+      //   name : "patou",
+      //   activities : { "cinéma" : true, "café" : true },
+      // };
+      this.state.users = [
+        {
+          name : "jacky",
+          likes : { "horror" : true, "sf" : true },
+          activities : { "cinéma" : true, "café" : false },
+        },
+        {
+          name : "ginette",
+          likes : { "horror" : false, "sf" : true },
+          activities : { "cinéma" : false, "café" : true },
+        },
+      ];
+      this.state.cards = [];
+      _.forEach(this.state.users, (user) => {
+        var score = 0;
+        _.forEach(user.likes, (value, like) => {
+          if (self.state.me.likes[like] === value) {
+            score++;
+          }
+        });
+        _.forEach(user.activities, (value, activity) => {
+          if (self.state.me.activities[activity] === value) {
+            this.state.cards.push({ user : user.name, activity : activity, score : score });
+          }
+        });
+      });
 
-class events extends Component {
+      this.state.cards = _.sortBy(this.state.cards, ["+score"]);
+      // ce que je veux trouver
+      var toto = [
+        {
+          user : "jacky",
+          activity : "cinéma",
+          score : 1,
+        },
+        {
+          user : "ginette",
+          activity : "café",
+          score : 0,
+        },
+      ];
+
+      this.state.cardIndex = 0;
+
+    }
+
   render () {
+    var card = this.state.cards[this.state.cardIndex];
     return (
       <View style={styles.container}  backgroundColor="#3b5998">
          <PricingCard
      color="#4f9deb"
-     title="PRENDRE UN CAFE"
+     title={card.activity}
      price="2 euros"
-     info={["AU GALWAY", "RENDEZ VOUS A 19 HEURES", "AVEC WOZ"]}
+     info={["AU GALWAY", "RENDEZ VOUS A 19 HEURES", "AVEC " + card.user]}
      button={{ title : "C'est PARTI !", icon : "flight-takeoff" }}
     />
 
@@ -27,10 +87,19 @@ class events extends Component {
     backgroundColor="#6d84b4"
     fontFamily="Roboto"
     buttonStyle={{ borderRadius : 0, marginLeft : 0, marginRight : 0, marginBottom : 0 }}
-    title="Je suis une poule mouillé" />
+    title="Je suis une poule mouillé"
+    onPress={() => this.next()}/>
 
       </View>
     );
+  }
+
+  next() {
+    var index = this.state.cardIndex + 1;
+    if (index >= this.state.cards.length) {
+      index = 0;
+    }
+    this.setState({ ...this.state, cardIndex : index });
   }
 }
 
@@ -86,4 +155,4 @@ class events extends Component {
 
 export default connect((state) => ({
   login : state.login,
-}), {})(events);
+}), {})(Events);

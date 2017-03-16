@@ -20,7 +20,7 @@ export default (() => {
     if (!this.token) {
       return new Promise((resolve,reject) => reject("not authentified"));
     }
-    return this.request(url,body,opts);
+    return this.request(url,opts,body);
   };
   this.request = (url, opts = {}, body) => {
     opts.headers = this.headers();
@@ -33,7 +33,7 @@ export default (() => {
       console.log("response", response);
       // response.text().then((res) => console.log("response", res));
       return response.json();
-    }).then((json) => json, (err) => err);
+    }).then((json) => json);
   };
   return this;
 })();
