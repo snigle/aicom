@@ -2,8 +2,13 @@ import React, { Component } from "react";
 import { Text, View, AsyncStorage } from "react-native";
 import { connect } from "react-redux";
 import { CheckBox } from "react-native-elements";
+<<<<<<< HEAD
 import styles from "./Settings.style";
 import { Tabs, Tab, Icon, Button, List, ListItem } from "react-native-elements";
+=======
+import styles from "./settings.style";
+import { Tabs, Tab, Icon, Button } from "react-native-elements";
+>>>>>>> origin/patou
 import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 import Api from "../../components/api/login/login";
 import { Actions } from "react-native-router-flux";
