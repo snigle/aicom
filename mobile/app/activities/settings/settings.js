@@ -10,6 +10,7 @@ import UserApi from "../../components/api/users/users";
 import { Actions } from "react-native-router-flux";
 import { logout } from "../../reducers/login/login.actions";
 import { addActivity, removeActivity } from "../../reducers/me/me.actions";
+import TabBar from "../../components/tabbar/TabBar";
 
 import SettingsList from "react-native-settings-list";
 
@@ -67,33 +68,35 @@ class Settings extends Component {
     var self = this;
     console.log("dans settings me :", this.props.me);
     if (!this.props.me) {
-      return null;
+      return <TabBar />;
     }
     return (
-      <View style={{ backgroundColor : "#EFEFF4",flex : 1 }}>
-      <View style={{ borderBottomWidth : 1, backgroundColor : "#f7f7f8",borderColor : "#c8c7cc" }}>
-        <Text style={{ alignSelf : "center",marginTop : 30,marginBottom : 10,fontWeight : "bold",fontSize : 16 }}>Settings</Text>
-      </View>
-      <View style={{ backgroundColor : "#EFEFF4",flex : 1 }}>
-      <SettingsList borderColor="#c8c7cc" defaultItemSize={50}>
-          <SettingsList.Header headerStyle={{ marginTop : 15 }}/>
-      {
-        this.state.activities.map((activity, i) => (
-          <SettingsList.Item
-            icon={
-                <Icon name={activity.icon} />
-            }
-            hasNavArrow={false}
-            title={activity.name}
-            key={i}
-            hasSwitch={true}
-            switchState={this.props.me.activities[activity.name]}
-            switchOnValueChange={(v) => self.onValueChange(v, i)}
-          />
-        ))
-      }
-      </SettingsList>
-      </View></View>
+      <TabBar>
+        <View style={{ backgroundColor : "#EFEFF4",flex : 1 }}>
+        <View style={{ borderBottomWidth : 1, backgroundColor : "#f7f7f8",borderColor : "#c8c7cc" }}>
+          <Text style={{ alignSelf : "center",marginTop : 10,marginBottom : 10,fontWeight : "bold",fontSize : 16 }}>Settings</Text>
+        </View>
+        <View style={{ backgroundColor : "#EFEFF4",flex : 1 }}>
+        <SettingsList borderColor="#c8c7cc" defaultItemSize={50}>
+            <SettingsList.Header headerStyle={{ marginTop : 15 }}/>
+        {
+          this.state.activities.map((activity, i) => (
+            <SettingsList.Item
+              icon={
+                  <Icon name={activity.icon} />
+              }
+              hasNavArrow={false}
+              title={activity.name}
+              key={i}
+              hasSwitch={true}
+              switchState={this.props.me.activities[activity.name]}
+              switchOnValueChange={(v) => self.onValueChange(v, i)}
+            />
+          ))
+        }
+        </SettingsList>
+        </View></View>
+      </TabBar>
     );
   }
 

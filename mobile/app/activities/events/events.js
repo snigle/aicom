@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Actions } from "react-native-router-flux";
 import _ from "lodash";
 import styles from "./events.style";
-
+import TabBar from "../../components/tabbar/TabBar";
 import {
   Button,PricingCard,
 } from "react-native-elements";
@@ -74,7 +74,8 @@ class Events extends Component {
   render () {
     var card = this.state.cards[this.state.cardIndex];
     return (
-      <View style={styles.container}  backgroundColor="#3b5998">
+      <TabBar>
+      <View>
          <PricingCard
      color="#4f9deb"
      title={card.activity}
@@ -91,6 +92,7 @@ class Events extends Component {
     onPress={() => this.next()}/>
 
       </View>
+      </TabBar>
     );
   }
 

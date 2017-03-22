@@ -20,6 +20,13 @@ import styles from "./login.style";
 
 class Login extends Component {
 
+  constructor() {
+    super();
+    this.state = {
+      loading : true,
+    };
+  }
+
   componentDidMount() {
     this._setupGoogleSignin();
     navigator.geolocation.getCurrentPosition(
@@ -27,8 +34,8 @@ class Login extends Component {
         console.log("find location", position);
         ApiAuth.setLocation(position);
       },
-      (error) => alert("Please activate GPS to use the application"),
-      { timeout : 20000, maximumAge : 100000 }
+      (error) => navigator.geolocation.watchPosition((position) => ApiAuth.setLocation(position), () => alert("Please activate GPS to use the application")),
+      { timeout : 1000, maximumAge : 100000 }
     );
   }
 
@@ -43,7 +50,7 @@ class Login extends Component {
       })
     )
     .then(() => GoogleSignin.currentUserAsync())
-    .then((user) => user && self._login(user), () => null)
+    .then((user) => user && self._login(user), () => this.setState({ loading : false }))
     .catch((err) => {
       console.log("error",err);
       ToastAndroid.show("Fail to login, please contact administrator.", ToastAndroid.SHORT);
@@ -62,6 +69,7 @@ class Login extends Component {
   }
 
   _login(user) {
+    this.setState({ loading : true });
     console.log("try login",user,user.serverAuthCode);
     return AsyncStorage.getItem("login").then(
       (u) => u && JSON.parse(u) || Api.login(user.serverAuthCode),
@@ -92,7 +100,9 @@ class Login extends Component {
           <Text style={{ marginBottom : 22,fontSize : 22, fontFamily : "Roboto" ,color : "orange" }}>
           {"Sortir n'a jamais été aussi simple"}.
           </Text>
+          { this.state.loading && (<Text>Loading</Text>) ||
           <GoogleSigninButton style={{ width : 312, height : 48 }} color={GoogleSigninButton.Color.Dark} size={GoogleSigninButton.Size.Wide} onPress={() => this._googleSignIn()}/>
+          }
           {/*{Button
           onPress={() => this._googleSignIn()}
           backgroundColor="#E45711"

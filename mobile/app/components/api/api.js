@@ -5,11 +5,13 @@ const apiRouteBase = "https://aicom.herokuapp.com";
 
 export default (() => {
   this.token = null;
-  this.locationHeader = "";
+  this.locationHeader = null;
   this.headers = () => {
     let headers = new Headers();
     headers.append("X-Token", this.token);
-    headers.append("X-Location", this.locationHeader);
+    if (this.locationHeader) {
+      headers.append("X-Location", this.locationHeader);
+    }
     console.log("set location", this.locationHeader);
     headers.append("Content-Type", "application/json");
     return headers;

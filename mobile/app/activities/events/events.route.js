@@ -1,8 +1,8 @@
 import React from "react";
 
 import { Scene } from "react-native-router-flux";
-import events from "./events";
+import Events from "./events";
 
 module.exports = (
-    <Scene key="events" component={events} title="Home" hideNavBar={true}/>
+    <Scene key="events" component={Events} hideNavBar={true}  />
 );
