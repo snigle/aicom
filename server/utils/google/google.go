@@ -9,6 +9,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	calendar "google.golang.org/api/calendar/v3"
+	"googlemaps.github.io/maps"
 )
 
 var ctx context.Context
@@ -37,4 +38,8 @@ func GetClientFromServerToken(serverToken string) (*http.Client, *oauth2.Token, 
 
 func GetClientFromToken(token *oauth2.Token) *http.Client {
 	return config.Client(ctx, token)
+}
+
+func GetClient() (*maps.Client, error) {
+	return maps.NewClient(maps.WithAPIKey("AIzaSyBzw0TKHErNipMhGauIwMsem4CSGEMx-WI"))
 }
