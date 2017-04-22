@@ -77,18 +77,25 @@ class Events extends Component {
       <TabBar>
       <View>
          <PricingCard
-     color="#4f9deb"
+     color="#3b5998"
      title={card.activity}
      price="2 euros"
      info={["AU GALWAY", "RENDEZ VOUS A 19 HEURES", "AVEC " + card.user]}
-     button={{ title : "C'est PARTI !", icon : "flight-takeoff" }}
+     button={{ title : "More informations", icon : "flight-takeoff" }}
     />
 
     <Button
-    backgroundColor="#6d84b4"
+    backgroundColor="#3b5998"
     fontFamily="Roboto"
     buttonStyle={{ borderRadius : 0, marginLeft : 0, marginRight : 0, marginBottom : 0 }}
-    title="Je suis une poule mouillé"
+    title=" Lets Go !"
+    onPress={() => this.next()}/>
+
+    <Button
+    backgroundColor="#3b5998"
+    fontFamily="Roboto"
+    buttonStyle={{ borderRadius : 0, marginLeft : 0, marginRight : 0, marginBottom : 0 }}
+    title=" Not now"
     onPress={() => this.next()}/>
 
       </View>

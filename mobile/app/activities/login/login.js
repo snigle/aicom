@@ -96,9 +96,9 @@ class Login extends Component {
         <View style={styles.container}>
         <Card
         title=" "
-        image={ { uri : "https://colorlib.com/wp/wp-content/uploads/sites/2/2013/10/lionking-logo.png" }}>
-          <Text style={{ marginBottom : 22,fontSize : 22, fontFamily : "Roboto" ,color : "orange" }}>
-          {"Sortir n'a jamais été aussi simple"}.
+        image={ { uri : "modelelogo1.gif " }}>
+          <Text style={{ marginLeft : 50, fontSize : 60, fontFamily : "Roboto" ,color : "#3b5998" }}>
+          {"Heyhi          "}
           </Text>
           { this.state.loading && (<Text>Loading</Text>) ||
           <GoogleSigninButton style={{ width : 312, height : 48 }} color={GoogleSigninButton.Color.Dark} size={GoogleSigninButton.Size.Wide} onPress={() => this._googleSignIn()}/>

@@ -13,15 +13,23 @@ class Icon2 extends Component {
 
 const AnimatedIcon = Animated.createAnimatedComponent(Icon2);
 const tabs = [
-  {
-    action : "settings",
-    title : "Réglages",
-    icon : "settings",
-  },
+  ,
   {
     action : "events",
-    title : "Évènements",
+    title : "Events",
     icon : "whatshot",
+  },
+
+  {
+    action : "settings",
+    title : "Settings",
+    icon : "settings",
+  },
+
+  {
+    action : "profile",
+    title : "Profile",
+    icon : "account-box",
   },
 ];
 class TabBar extends Component {
