@@ -96,7 +96,7 @@ class Login extends Component {
         <View style={styles.container}>
         <Card
         title=" "
-        image={ { uri : "modelelogo1.gif " }}>
+        image={require("../../../images/modelelogo1.gif")}>
           <Text style={{ marginLeft : 50, fontSize : 60, fontFamily : "Roboto" ,color : "#3b5998" }}>
           {"Heyhi          "}
           </Text>
