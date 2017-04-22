@@ -5,7 +5,7 @@ export default StyleSheet.create({
     flex : 1,
     justifyContent : "center",
     alignItems : "center",
-    padding : 30,
-    backgroundColor : "#E45711",
+    padding : 15,
+    backgroundColor : "#3b5998",
   },
 });

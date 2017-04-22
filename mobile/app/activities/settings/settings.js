@@ -23,35 +23,21 @@ class Settings extends Component {
     console.log("dans settings me :", this.props.me);
     this.state.activities = [
       {
-        name : "café",
+        name : "Coffee",
         icon : "local-cafe",
         value : false,
       },
       {
-        name : "cinéma",
+        name : "Cinema",
         icon : "local-cafe",
         value : false,
       },
       {
-        name : "bar",
+        name : "Bar",
         icon : "local-cafe",
         value : false,
       },
-      {
-        name : "escalade",
-        icon : "local-cafe",
-        value : false,
-      },
-      {
-        name : "zoo",
-        icon : "local-cafe",
-        value : false,
-      },
-      {
-        name : "bowling",
-        icon : "local-cafe",
-        value : false,
-      },
+
     ];
   }
 
@@ -72,12 +58,12 @@ class Settings extends Component {
     }
     return (
       <TabBar>
-        <View style={{ backgroundColor : "#EFEFF4",flex : 1 }}>
-        <View style={{ borderBottomWidth : 1, backgroundColor : "#f7f7f8",borderColor : "#c8c7cc" }}>
+        <View style={{ backgroundColor : "#3b5998",flex : 1 }}>
+        <View style={{ borderBottomWidth : 1, backgroundColor : "#3b5998",borderColor : "#3b5998" }}>
           <Text style={{ alignSelf : "center",marginTop : 10,marginBottom : 10,fontWeight : "bold",fontSize : 16 }}>Settings</Text>
         </View>
-        <View style={{ backgroundColor : "#EFEFF4",flex : 1 }}>
-        <SettingsList borderColor="#c8c7cc" defaultItemSize={50}>
+        <View style={{ backgroundColor : "#3b5998",flex : 1 }}>
+        <SettingsList borderColor="#3b5998" defaultItemSize={50}>
             <SettingsList.Header headerStyle={{ marginTop : 15 }}/>
         {
           this.state.activities.map((activity, i) => (
