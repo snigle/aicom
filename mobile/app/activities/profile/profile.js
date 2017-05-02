@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, AsyncStorage } from "react-native";
+import { Text, View, AsyncStorage,Image } from "react-native";
 import { connect } from "react-redux";
 import styles from "./profile.style";
 import { Tabs, Tab, Icon, Button, List, ListItem } from "react-native-elements";
@@ -16,13 +16,15 @@ render() {
  return (
    <TabBar>
    <View>
-   <Text>My profile name :
-   // photo ici + les stats de l'utilisateur      >>> couleur rouge : #cb2027 pour les boutons d'action ( Particuper à l'événement)
-   my "name"et "first name"
-   number events done : "number"
-   number person met : "number"
-   Interest : " keywords"
+   <Image source={{ uri : this.props.me.picture }} style={{ width : 300, height : 300 }} />
+   <Text style={{ alignSelf : "center",backgroundColor : "#3b5998",fontWeight : "bold",fontSize : 16 }}>
+
+    description : "nom" "prénom"{"\n"}
+    nombre de sortie effectué : "nombre"{"\n"}
+    nombre de personnes rencontrés: "nombre"
+
     </Text>
+
     </View>
     </TabBar>
 
