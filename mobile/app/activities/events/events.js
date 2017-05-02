@@ -75,7 +75,12 @@ class Events extends Component {
     var card = this.state.cards[this.state.cardIndex];
     return (
       <TabBar>
-      <View>
+      <View  style={{
+        flex : 3,
+        flexDirection : "column",
+        justifyContent : "space-between" ,
+        alignItems : "center" }}>
+
          <PricingCard
      color="#3b5998"
      title={card.activity}
@@ -84,19 +89,22 @@ class Events extends Component {
      button={{ title : "More informations", icon : "flight-takeoff" }}
     />
 
+<View style={{ width : 50, height : 50, backgroundColor : "red" }} />
+
     <Button
-    backgroundColor="#3b5998"
+    backgroundColor="#bb0000"
     fontFamily="Roboto"
     buttonStyle={{ borderRadius : 0, marginLeft : 0, marginRight : 0, marginBottom : 0 }}
     title=" Lets Go !"
     onPress={() => this.next()}/>
 
     <Button
-    backgroundColor="#3b5998"
+    backgroundColor="#55acee"
     fontFamily="Roboto"
     buttonStyle={{ borderRadius : 0, marginLeft : 0, marginRight : 0, marginBottom : 0 }}
     title=" Not now"
     onPress={() => this.next()}/>
+
 
       </View>
       </TabBar>
