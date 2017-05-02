@@ -9,70 +9,57 @@ import {
   Button,PricingCard,
 } from "react-native-elements";
 
+import UserApi from "../../components/api/users/users";
+import PlaceApi from "../../components/api/places/places";
+
 class Events extends Component {
 
   constructor (props) {
       super(props);
       var self = this;
+      Promise.all([UserApi.list(), Promise.resolve(props.me), PlaceApi.list()]).then(([users, me, places]) => {
+        var state = self.state;
+        state.cards = [];
+        _.forEach(users, (user) => {
+          var score = 0;
+          // To add after when likes are here
+          // _.forEach(user.likes, (value, like) => {
+          //   if (self.state.me.likes[like] === value) {
+          //     score++;
+          //   }
+          // });
+          _.forEach(user.activities, (value, activity) => {
+            if (me.activities[activity] === value) {
+              state.cards.push({ user : user.name, activity : activity, score : score, place : places[activity][0] });
+            }
+          });
+        });
+
+        state.cards = _.sortBy(state.cards, ["+score"]);
+        self.setState(state);
+      })
+
+      // initialization
       this.state = {};
-      this.state.me = {
-        likes : { "horror" : true, "sf" : false },
-        name : "patou",
-        activities : { "cinéma" : true, "café" : true },
-      };
-      // this.state.activities = {
-      //   likes : { "horror" : true, "sf" : false },
-      //   name : "patou",
-      //   activities : { "cinéma" : true, "café" : true },
-      // };
-      this.state.users = [
-        {
-          name : "jacky",
-          likes : { "horror" : true, "sf" : true },
-          activities : { "cinéma" : true, "café" : false },
-        },
-        {
-          name : "ginette",
-          likes : { "horror" : false, "sf" : true },
-          activities : { "cinéma" : false, "café" : true },
-        },
-      ];
+      this.state.users = [];
       this.state.cards = [];
-      _.forEach(this.state.users, (user) => {
-        var score = 0;
-        _.forEach(user.likes, (value, like) => {
-          if (self.state.me.likes[like] === value) {
-            score++;
-          }
-        });
-        _.forEach(user.activities, (value, activity) => {
-          if (self.state.me.activities[activity] === value) {
-            this.state.cards.push({ user : user.name, activity : activity, score : score });
-          }
-        });
-      });
-
-      this.state.cards = _.sortBy(this.state.cards, ["+score"]);
-      // ce que je veux trouver
-      var toto = [
-        {
-          user : "jacky",
-          activity : "cinéma",
-          score : 1,
-        },
-        {
-          user : "ginette",
-          activity : "café",
-          score : 0,
-        },
-      ];
-
       this.state.cardIndex = 0;
-
     }
 
+
+  getUsers () {
+    UserApi.list();
+  }
+
+  componentDidMount () {
+    this.getUsers();
+  }
   render () {
     var card = this.state.cards[this.state.cardIndex];
+    if (!card) {
+      return <Text>Loading</Text>
+    }
+    // var card = { activity : "toto", user : "toto" };
     return (
       <TabBar>
       <View  style={{
@@ -85,7 +72,7 @@ class Events extends Component {
      color="#3b5998"
      title={card.activity}
      price="2 euros"
-     info={["AU GALWAY", "RENDEZ VOUS A 19 HEURES", "AVEC " + card.user]}
+     info={[card.place.name, card.place.description, "AVEC " + card.user]}
      button={{ title : "More informations", icon : "flight-takeoff" }}
     />
 
@@ -172,4 +159,5 @@ class Events extends Component {
 
 export default connect((state) => ({
   login : state.login,
+  me : state.me,
 }), {})(Events);

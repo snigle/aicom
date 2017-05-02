@@ -41,6 +41,7 @@ class Login extends Component {
 
   _setupGoogleSignin() {
     var self = this;
+    console.log("setup signin")
     GoogleSignin.hasPlayServices({ autoResolve : true })
     .then(() => GoogleSignin.configure(
       {
@@ -54,11 +55,12 @@ class Login extends Component {
     .catch((err) => {
       console.log("error",err);
       ToastAndroid.show("Fail to login, please contact administrator.", ToastAndroid.SHORT);
-    });
+    }).finally(() => self.setState({loading : false}));
   }
 
   _googleSignIn() {
     var self = this;
+    console.log("start signin")
     GoogleSignin.signIn()
     .then((user) => self._login(user))
     .catch((err) => {
