@@ -11,7 +11,9 @@ import (
 	"github.com/namsral/flag"
 	"github.com/snigle/aicom/server/models"
 	"github.com/snigle/aicom/server/routes"
+	_ "github.com/snigle/aicom/server/routes/event"
 	_ "github.com/snigle/aicom/server/routes/login"
+	_ "github.com/snigle/aicom/server/routes/place"
 	_ "github.com/snigle/aicom/server/routes/user"
 	"github.com/snigle/aicom/server/utils/mongo"
 )
@@ -44,6 +46,8 @@ func main() {
 				switch route.Method {
 				case http.MethodPut:
 					authorized.PUT(route.Path, route.Function)
+				case http.MethodPost:
+					authorized.POST(route.Path, route.Function)
 				case http.MethodGet:
 					authorized.GET(route.Path, route.Function)
 				case http.MethodDelete:
@@ -58,10 +62,10 @@ func main() {
 func AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		log.Print("get token")
-		accessToken := c.Request.Header.Get("X-Token")
+		refreshtoken := c.Request.Header.Get("X-Token")
 		token := &models.Token{}
-		log.Print("hash", accessToken, models.HashToken(accessToken))
-		err := mongo.Aicom.C(models.ColToken).Find(bson.M{"token.accesstoken": models.HashToken(accessToken)}).One(&token)
+		log.Print("hash", refreshtoken, models.HashToken(refreshtoken))
+		err := mongo.Aicom.C(models.ColToken).Find(bson.M{"token.refreshtoken": models.HashToken(refreshtoken)}).One(&token)
 		if err != nil {
 			log.Printf("Fail to get token %v", err)
 			c.AbortWithError(401, err)
@@ -75,14 +79,13 @@ func AuthRequired() gin.HandlerFunc {
 			c.AbortWithError(401, err)
 			return
 		}
-		token.AccessToken = accessToken
+		token.RefreshToken = refreshtoken
 		c.Set(models.ColToken, token)
 		c.Set(models.ColUser, user)
 		c.Next()
 
 		if oldToken.AccessToken != token.AccessToken {
 			log.Print("token updated")
-			token.AccessToken = models.HashToken(token.AccessToken)
 			err = mongo.Aicom.C(models.ColToken).Update(bson.M{"_id": token.ID}, token)
 			if err != nil {
 				log.Print("fail to save updated token")

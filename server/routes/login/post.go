@@ -41,15 +41,21 @@ func Login(c *gin.Context, in *LoginInput) (*models.Token, error) {
 		return nil, errors.New("you must have verified email")
 	}
 
+	log.Print("create/get user")
 	// Get user in database
 	u := &models.User{}
-	err = mongo.Aicom.C(models.ColUser).Find(bson.M{"google_id": info.Id}).One(&u)
+	err = mongo.Aicom.C(models.ColUser).Find(bson.M{"google_id": info.Id}).One(u)
+	if err != nil && err != mgo.ErrNotFound {
+		log.Print("fail to get user")
+		return nil, err
+	}
 	// Update data from google
 	u.Email = info.Email
 	u.Name = info.Name
 	u.Picture = info.Picture
 	u.GoogleID = info.Id
 	if err == mgo.ErrNotFound {
+		log.Print("create new user")
 		u.ID = bson.NewObjectId()
 	}
 	u.SetLocationFromHeader(c.Request.Header.Get("X-Location"))
@@ -61,14 +67,14 @@ func Login(c *gin.Context, in *LoginInput) (*models.Token, error) {
 	}
 	// Generate token
 	t := &models.Token{Token: *token, GoogleID: info.Id, ID: bson.NewObjectId(), UserID: u.ID}
-	accessToken := t.AccessToken
-	t.AccessToken = models.HashToken(t.AccessToken)
+	refreshToken := t.RefreshToken
+	t.RefreshToken = models.HashToken(t.RefreshToken)
 	// Save in mongo
 	err = mongo.Aicom.C("tokens").Insert(t)
 	if err != nil {
 		log.Printf("Unable to insert token in db %v", err)
 		return nil, err
 	}
-	t.AccessToken = accessToken
+	t.RefreshToken = refreshToken
 	return t, nil
 }

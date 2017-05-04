@@ -209,6 +209,18 @@
 			"revisionTime": "2017-03-07T00:54:00Z"
 		},
 		{
+			"checksumSHA1": "PDh47U74SGfzIGupMWFKnuKhly8=",
+			"path": "googlemaps.github.io/maps",
+			"revision": "7e6d3a39d247a1352390266b3493fa29db12fd15",
+			"revisionTime": "2017-03-23T21:31:36Z"
+		},
+		{
+			"checksumSHA1": "T47E4DD/+UCGq0rAc70yGCEWJ0w=",
+			"path": "googlemaps.github.io/maps/internal",
+			"revision": "7e6d3a39d247a1352390266b3493fa29db12fd15",
+			"revisionTime": "2017-03-23T21:31:36Z"
+		},
+		{
 			"checksumSHA1": "39V1idWER42Lmcmg2Uy40wMzOlo=",
 			"path": "gopkg.in/go-playground/validator.v8",
 			"revision": "5f57d2222ad794d0dffb07e664ea05e2ee07d60c",
