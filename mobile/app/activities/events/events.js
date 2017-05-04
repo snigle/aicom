@@ -16,29 +16,6 @@ class Events extends Component {
 
   constructor (props) {
       super(props);
-      var self = this;
-      Promise.all([UserApi.list(), Promise.resolve(props.me), PlaceApi.list()]).then(([users, me, places]) => {
-        var state = self.state;
-        state.cards = [];
-        _.forEach(users, (user) => {
-          var score = 0;
-          // To add after when likes are here
-          // _.forEach(user.likes, (value, like) => {
-          //   if (self.state.me.likes[like] === value) {
-          //     score++;
-          //   }
-          // });
-          _.forEach(user.activities, (value, activity) => {
-            if (me.activities[activity] === value) {
-              state.cards.push({ user : user.name, activity : activity, score : score, place : places[activity][0] });
-            }
-          });
-        });
-
-        state.cards = _.sortBy(state.cards, ["+score"]);
-        self.setState(state);
-      })
-
       // initialization
       this.state = {};
       this.state.users = [];
@@ -52,10 +29,32 @@ class Events extends Component {
   }
 
   componentDidMount () {
-    this.getUsers();
+    var self = this;
+    Promise.all([UserApi.list(), Promise.resolve(self.props.me), PlaceApi.list()]).then(([users, me, places]) => {
+      var state = self.state;
+      state.cards = [];
+      _.forEach(users, (user) => {
+        var score = 0;
+        // To add after when likes are here
+        // _.forEach(user.likes, (value, like) => {
+        //   if (self.state.me.likes[like] === value) {
+        //     score++;
+        //   }
+        // });
+        _.forEach(user.activities, (value, activity) => {
+          if (me.activities[activity] === value && places[activity] && places[activity].length) {
+            state.cards.push({ user : user.name, activity : activity, score : score, place : places[activity][0] });
+          }
+        });
+      });
+
+      state.cards = _.sortBy(state.cards, ["+score"]);
+      self.setState(state);
+    });
   }
   render () {
     var card = this.state.cards[this.state.cardIndex];
+    console.log("card",card,this.state.cards);
     if (!card) {
       return <Text>Loading</Text>
     }

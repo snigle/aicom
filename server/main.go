@@ -71,6 +71,7 @@ func AuthRequired() gin.HandlerFunc {
 			c.AbortWithError(401, err)
 			return
 		}
+		token.AccessToken = accessToken
 		oldToken := *token
 		user := &models.User{}
 		err = mongo.Aicom.C(models.ColUser).Find(bson.M{"_id": token.UserID}).One(&user)
@@ -79,11 +80,11 @@ func AuthRequired() gin.HandlerFunc {
 			c.AbortWithError(401, err)
 			return
 		}
-		token.AccessToken = accessToken
 		c.Set(models.ColToken, token)
 		c.Set(models.ColUser, user)
 		c.Next()
 
+		log.Printf("access_token : %s\n copy : %s\n", oldToken.AccessToken, token.AccessToken)
 		if oldToken.AccessToken != token.AccessToken {
 			log.Print("token updated")
 			err = mongo.Aicom.C(models.ColToken).Update(bson.M{"_id": token.ID}, token)
