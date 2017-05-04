@@ -21,16 +21,16 @@ const tabs = [
   },
 
   {
+    action : "profile",
+    title : "Profile",
+    icon : "account-box",
+  },
+  {
     action : "settings",
     title : "Settings",
     icon : "settings",
   },
 
-  {
-    action : "profile",
-    title : "Profile",
-    icon : "account-box",
-  },
 ];
 class TabBar extends Component {
   constructor() {

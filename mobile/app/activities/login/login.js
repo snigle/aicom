@@ -41,7 +41,7 @@ class Login extends Component {
 
   _setupGoogleSignin() {
     var self = this;
-    console.log("setup signin")
+    console.log("setup signin");
     GoogleSignin.hasPlayServices({ autoResolve : true })
     .then(() => GoogleSignin.configure(
       {
@@ -55,12 +55,12 @@ class Login extends Component {
     .catch((err) => {
       console.log("error",err);
       ToastAndroid.show("Fail to login, please contact administrator.", ToastAndroid.SHORT);
-    }).finally(() => self.setState({loading : false}));
+    }).finally(() => self.setState({ loading : false }));
   }
 
   _googleSignIn() {
     var self = this;
-    console.log("start signin")
+    console.log("start signin");
     GoogleSignin.signIn()
     .then((user) => self._login(user))
     .catch((err) => {
@@ -77,7 +77,7 @@ class Login extends Component {
       (u) => u && JSON.parse(u) || Api.login(user.serverAuthCode),
       () => Api.login(user.serverAuthCode)
     )
-    // return Api.login(user.serverAuthCode)
+    //return Api.login(user.serverAuthCode)
     .then((user) => {
       console.log("set token", user);
       ApiAuth.setToken(user.access_token);

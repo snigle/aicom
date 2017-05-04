@@ -16,6 +16,7 @@ class Events extends Component {
 
   constructor (props) {
       super(props);
+
       // initialization
       this.state = {};
       this.state.users = [];
@@ -56,7 +57,7 @@ class Events extends Component {
     var card = this.state.cards[this.state.cardIndex];
     console.log("card",card,this.state.cards);
     if (!card) {
-      return <Text>Loading</Text>
+      return <Text>Loading</Text>;
     }
     // var card = { activity : "toto", user : "toto" };
     return (
@@ -75,10 +76,10 @@ class Events extends Component {
      button={{ title : "More informations", icon : "flight-takeoff" }}
     />
 
-<View style={{ width : 50, height : 50, backgroundColor : "red" }} />
+<View style={{ width : 50, height : 50, backgroundColor : "red"  , alignItems : "center" }}/>
 
     <Button
-    backgroundColor="#bb0000"
+    backgroundColor="#e52d27"
     fontFamily="Roboto"
     buttonStyle={{ borderRadius : 0, marginLeft : 0, marginRight : 0, marginBottom : 0 }}
     title=" Lets Go !"
@@ -91,8 +92,7 @@ class Events extends Component {
     title=" Not now"
     onPress={() => this.next()}/>
 
-
-      </View>
+</View>
       </TabBar>
     );
   }
