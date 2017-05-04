@@ -62,10 +62,10 @@ func main() {
 func AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		log.Print("get token")
-		refreshtoken := c.Request.Header.Get("X-Token")
+		accessToken := c.Request.Header.Get("X-Token")
 		token := &models.Token{}
-		log.Print("hash", refreshtoken, models.HashToken(refreshtoken))
-		err := mongo.Aicom.C(models.ColToken).Find(bson.M{"token.refreshtoken": models.HashToken(refreshtoken)}).One(&token)
+		log.Print("hash", accessToken, models.HashToken(accessToken))
+		err := mongo.Aicom.C(models.ColToken).Find(bson.M{"token.accesstoken": models.HashToken(accessToken)}).One(&token)
 		if err != nil {
 			log.Printf("Fail to get token %v", err)
 			c.AbortWithError(401, err)
@@ -79,7 +79,7 @@ func AuthRequired() gin.HandlerFunc {
 			c.AbortWithError(401, err)
 			return
 		}
-		token.RefreshToken = refreshtoken
+		token.AccessToken = accessToken
 		c.Set(models.ColToken, token)
 		c.Set(models.ColUser, user)
 		c.Next()

@@ -67,14 +67,14 @@ func Login(c *gin.Context, in *LoginInput) (*models.Token, error) {
 	}
 	// Generate token
 	t := &models.Token{Token: *token, GoogleID: info.Id, ID: bson.NewObjectId(), UserID: u.ID}
-	refreshToken := t.RefreshToken
-	t.RefreshToken = models.HashToken(t.RefreshToken)
+	accessToken := t.AccessToken
+	t.AccessToken = models.HashToken(t.AccessToken)
 	// Save in mongo
 	err = mongo.Aicom.C("tokens").Insert(t)
 	if err != nil {
 		log.Printf("Unable to insert token in db %v", err)
 		return nil, err
 	}
-	t.RefreshToken = refreshToken
+	t.AccessToken = accessToken
 	return t, nil
 }
