@@ -1,7 +1,7 @@
 /*eslint no-console: ["error", { allow: ["log"] }] */
 // For android emulator, replace by your IP if running on device.
-const apiRouteBase = "https://aicom.herokuapp.com";
-// const apiRouteBase = "http://10.42.0.1:8080";
+// const apiRouteBase = "https://aicom.herokuapp.com";
+const apiRouteBase = "http://10.42.0.1:8080";
 
 export default (() => {
   this.token = null;
@@ -17,7 +17,7 @@ export default (() => {
     return headers;
   };
   this.setToken = (token) => (this.token = token);
-  this.setLocation = (locationHeader) => (this.locationHeader = `[${locationHeader.coords.longitude}, ${locationHeader.coords.latitude}]`);
+  this.setLocation = (locationHeader) => (this.locationHeader = `[${locationHeader.coords.latitude}, ${locationHeader.coords.longitude}]`);
   this.auth = (url, body, opts = {}) => {
     if (!this.token) {
       return new Promise((resolve,reject) => reject("not authentified"));
