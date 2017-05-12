@@ -23,9 +23,11 @@ type EventInput struct {
 
 func NewEvent(c *gin.Context, in *EventInput) (*models.Event, error) {
 	user := c.MustGet(models.ColUser).(*models.User)
-
+	log.Println("creating event")
 	if in.Time.Before(time.Now()) || in.Time.After(time.Now().Add(24*time.Hour)) {
-		return nil, errors.New("can't create event in the past or in more than one day in the future")
+		err := errors.New("can't create event in the past or in more than one day in the future")
+		log.Println(err)
+		return nil, err
 	}
 
 	// Creation de l'event si il n'existe pas un dans le créneau time +2h avec même user et même activity

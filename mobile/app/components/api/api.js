@@ -1,7 +1,7 @@
 /*eslint no-console: ["error", { allow: ["log"] }] */
 // For android emulator, replace by your IP if running on device.
-// const apiRouteBase = "https://aicom.herokuapp.com";
-const apiRouteBase = "http://10.42.0.1:8080";
+const apiRouteBase = "https://aicom.herokuapp.com";
+// const apiRouteBase = "http://10.42.0.1:8080";
 
 export default (() => {
   this.token = null;
@@ -11,13 +11,14 @@ export default (() => {
     headers.append("X-Token", this.token);
     if (this.locationHeader) {
       headers.append("X-Location", this.locationHeader);
+      console.log("location header", this.locationHeader);
     }
     console.log("set location", this.locationHeader);
     headers.append("Content-Type", "application/json");
     return headers;
   };
   this.setToken = (token) => (this.token = token);
-  this.setLocation = (locationHeader) => (this.locationHeader = `[${locationHeader.coords.latitude}, ${locationHeader.coords.longitude}]`);
+  this.setLocation = (locationHeader) => (this.locationHeader = `[${locationHeader.coords.longitude}, ${locationHeader.coords.latitude}]`);
   this.auth = (url, body, opts = {}) => {
     if (!this.token) {
       return new Promise((resolve,reject) => reject("not authentified"));
@@ -33,6 +34,9 @@ export default (() => {
     console.log("auth request",path,opts);
     return fetch(path, opts).then((response) => {
       console.log("response", response);
+      if (response.status < 200 || response.status > 299) {
+        throw response.text();
+      }
       // response.text().then((res) => console.log("response", res));
       return response.text();
     }).then((result) => {

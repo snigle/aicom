@@ -1,6 +1,7 @@
 import api from "../api";
 
 export default {
-  list : () => (api.auth("/events")),
-  create : () => (api.auth("/events", { method : "POST" })),
+  list : () => api.auth("/event"),
+  create : (event) => api.auth("/event", event, { method : "POST" }),
+  getPending : () => api.auth("/event/pending"),
 };

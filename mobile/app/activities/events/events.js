@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View } from "react-native";
+import { Text, View, ToastAndroid } from "react-native";
 import { connect } from "react-redux";
 import { Actions } from "react-native-router-flux";
 import _ from "lodash";
@@ -11,6 +11,9 @@ import {
 
 import UserApi from "../../components/api/users/users";
 import PlaceApi from "../../components/api/places/places";
+import EventApi from "../../components/api/events/events";
+
+import moment from "moment";
 
 class Events extends Component {
 
@@ -30,10 +33,16 @@ class Events extends Component {
 
   componentDidMount () {
     var self = this;
-    Promise.all([UserApi.list(), Promise.resolve(self.props.me), PlaceApi.list()]).then(([users, me, places]) => {
+    EventApi.list().then((response) => response.length > 0 ? Actions.event({ event : response }) : null);
+    Promise.all([
+      UserApi.list(),
+      Promise.resolve(self.props.me),
+      PlaceApi.list(),
+      EventApi.getPending(),
+    ]).then(([users, me, places, pending]) => {
       var state = self.state;
       state.cards = [];
-      _.forEach(users, (user) => {
+      _.forEach(_.filter(users, (user) => user.id !== me.id), (user) => {
         var score = 0;
         // To add after when likes are here
         // _.forEach(user.likes, (value, like) => {
@@ -41,9 +50,18 @@ class Events extends Component {
         //     score++;
         //   }
         // });
+        _.forEach(_.filter(pending, (p) => _.find(_.keys(pending.users), (u) => u !== me.id)), (e) => {
+          state.cards.push({
+            user : user,
+            activity : pending.activity,
+            score : score + 10,
+            place : event.place,
+            time : moment().add(3,"h").format("YYYY-MM-DD\\THH:MM:ssZ"),
+          });
+        });
         _.forEach(user.activities, (value, activity) => {
           if (me.activities[activity] === value && places[activity] && places[activity].length) {
-            state.cards.push({ user : user.name, activity : activity, score : score, place : places[activity][0] });
+            state.cards.push({ user : user, activity : activity, score : score, place : places[activity][0], time : moment().add(3,"h").format("YYYY-MM-DD\\THH:MM:ssZ") });
           }
         });
       });
@@ -53,6 +71,7 @@ class Events extends Component {
     });
   }
   render () {
+    var self = this;
     var card = this.state.cards[this.state.cardIndex];
     console.log("card",card,this.state.cards);
     if (!card) {
@@ -71,7 +90,7 @@ class Events extends Component {
      color="#3b5998"
      title={card.activity}
      price="2 euros"
-     info={[card.place.name, card.place.description, "AVEC " + card.user]}
+     info={[card.place.name, card.place.description, "AVEC " + card.user.name]}
      button={{ title : "More informations", icon : "flight-takeoff" }}
     />
 
@@ -82,14 +101,14 @@ class Events extends Component {
     fontFamily="Roboto"
     buttonStyle={{ borderRadius : 0, marginLeft : 0, marginRight : 0, marginBottom : 0 }}
     title=" Lets Go !"
-    onPress={() => this.next()}/>
+    onPress={() => self.accept(card)}/>
 
     <Button
     backgroundColor="#55acee"
     fontFamily="Roboto"
     buttonStyle={{ borderRadius : 0, marginLeft : 0, marginRight : 0, marginBottom : 0 }}
     title=" Not now"
-    onPress={() => this.next()}/>
+    onPress={() => self.next()}/>
 
 
       </View>
@@ -103,6 +122,32 @@ class Events extends Component {
       index = 0;
     }
     this.setState({ ...this.state, cardIndex : index });
+  }
+
+  /*type EventInput struct {
+  	Activity string        `json:"activity" binding:"required"`
+  	Place    *models.Place `json:"place" binding:"required"`
+  	Time     time.Time     `json:"time" binding:"required"`
+  	UserID   bson.ObjectId `json:"userId" binding:"required"`
+  }*/
+  accept(event) {
+    var self = this;
+    console.log("create event",event);
+    EventApi.create({
+      activity : event.activity,
+      userId : event.user.id,
+      time : event.time,
+      place : event.place,
+    }).then((response) => {
+      console.log("event created", response);
+      if (_.reduce(response.users, (res, value) => res && value, true)) {
+        console.log("find event");
+        Actions.event(response);
+      } else {
+        // TODO Add in already accepted list
+        self.next();
+      }
+    }).catch(err => (console.log(err), ToastAndroid.show("fail to create event", ToastAndroid.SHORT)));
   }
 }
 
