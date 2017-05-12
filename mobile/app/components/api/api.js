@@ -4,8 +4,11 @@ const apiRouteBase = "https://aicom.herokuapp.com";
 // const apiRouteBase = "http://10.42.0.1:8080";
 
 export default (() => {
+  // Vars
   this.token = null;
   this.locationHeader = null;
+
+  // Functions
   this.headers = () => {
     let headers = new Headers();
     headers.append("X-Token", this.token);
@@ -17,14 +20,18 @@ export default (() => {
     headers.append("Content-Type", "application/json");
     return headers;
   };
+
   this.setToken = (token) => (this.token = token);
+
   this.setLocation = (locationHeader) => (this.locationHeader = `[${locationHeader.coords.longitude}, ${locationHeader.coords.latitude}]`);
+
   this.auth = (url, body, opts = {}) => {
     if (!this.token) {
       return new Promise((resolve,reject) => reject("not authentified"));
     }
     return this.request(url,opts,body);
   };
+
   this.request = (url, opts = {}, body) => {
     opts.headers = this.headers();
     if (opts.method && opts.method !== "GET") {
@@ -46,5 +53,6 @@ export default (() => {
       return result;
     });
   };
+
   return this;
 })();
