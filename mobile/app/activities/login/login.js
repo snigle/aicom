@@ -90,7 +90,7 @@ class Login extends Component {
       ApiAuth.setToken(user.access_token);
       UserApi.me().then((response) => {
         console.log(self);
-        if (self.state.location && self.distance(response.location[1], response.location[0], self.state.location.latitude, self.state.location.longitude) > 10) {
+        if (self.state.location && self.getDistanceFromLatLonInKm(response.location[1], response.location[0], self.state.location.latitude, self.state.location.longitude) > 10) {
           AsyncStorage.removeItem("/place");
         }
         console.log("set me", response);
