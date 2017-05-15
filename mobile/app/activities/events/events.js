@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import { Text, View } from "react-native";
+import { Text, View,Image } from "react-native";
 import { connect } from "react-redux";
 import { Actions } from "react-native-router-flux";
 import _ from "lodash";
 import styles from "./events.style";
 import TabBar from "../../components/tabbar/TabBar";
 import {
-  Button,PricingCard,
+  Button,
 } from "react-native-elements";
 
 import UserApi from "../../components/api/users/users";
@@ -57,7 +57,7 @@ class Events extends Component {
     var card = this.state.cards[this.state.cardIndex];
     console.log("card",card,this.state.cards);
     if (!card) {
-      return <Text>Loading</Text>;
+      return  <TabBar />;
     }
     // var card = { activity : "toto", user : "toto" };
     return (
@@ -66,31 +66,42 @@ class Events extends Component {
         flex : 3,
         flexDirection : "column",
         justifyContent : "space-between" ,
-        alignItems : "center" }}>
+        alignItems : "center" ,
+        backgroundColor : "#ffffff",
+      }}>
 
-         <PricingCard
-     color="#3b5998"
-     title={card.activity}
-     price="2 euros"
-     info={[card.place.name, card.place.description, "AVEC " + card.user]}
-     button={{ title : "More informations", icon : "flight-takeoff" }}
-    />
+        <View style={{ backgroundColor : "#ffffff", alignItems : "center", justifyContent : "center", marginTop : 15 }}  >
 
-<View style={{ width : 50, height : 50, backgroundColor : "red"  , alignItems : "center" }}/>
+         <Text>Activité: {card.activity}</Text>
 
-    <Button
-    backgroundColor="#e52d27"
-    fontFamily="Roboto"
-    buttonStyle={{ borderRadius : 0, marginLeft : 0, marginRight : 0, marginBottom : 0 }}
-    title=" Lets Go !"
-    onPress={() => this.next()}/>
+         <Image source={require("../../../images/bar.jpg")} style={{ width : 170, height : 155 }}/>
+
+         <Text>lieu : {card.place.name}, {card.place.description }</Text>
+
+          <Image source={require("../../../images/pers.jpg")} style={{ width : 170, height : 155 }}/>
+
+         <Text>Avec {card.user} </Text>
+
+      </View>
+
+
+<View style= {{ flexDirection : "row", marginBottom : 200 }} >
 
     <Button
     backgroundColor="#55acee"
     fontFamily="Roboto"
-    buttonStyle={{ borderRadius : 0, marginLeft : 0, marginRight : 0, marginBottom : 0 }}
+    buttonStyle={{ width : 50, height : 50, borderRadius : 50 , marginLeft : 15, marginRight : 50, marginBottom : 5 , marginTop : 20, justifyContent : "space-between", flex : 1 }}
     title=" Not now"
     onPress={() => this.next()}/>
+
+    <Button
+    backgroundColor="#e52d27"
+    fontFamily="Roboto"
+    buttonStyle={{ width : 50, height : 50, borderRadius : 20 , marginLeft : 50, marginRight : 15, marginBottom : 5 ,marginTop : 20, justifyContent : "space-between", flex : 1 }}
+    title=" Lets Go !"
+    onPress={() => this.next()}/>
+
+    </View>
 
 </View>
       </TabBar>

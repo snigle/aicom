@@ -20,9 +20,13 @@ render() {
    <Text style={{ alignSelf : "center",backgroundColor : "#3b5998",fontWeight : "bold",fontSize : 16 ,marginTop : 35 }}>
 
     description :  me.name "me.nom" me.firtname"prénom"{"\n"}
-    nombre de sortie effectué : "23"{"\n"} // nombre de sortie faite compter par nombre de validation et de localisation à l'endroit du rendezvous
-    nombre de personnes rencontrés: "64"// nombre de personnes rencontrés après validation de l'évenement et de localisation sur l'évenement selon le nombre de personnes présente.
+    nombre de sortie effectué : "23"{"\n"}
+    {// nombre de sortie faite compter par nombre de validation et de localisation à l'endroit du rendezvous
+  }
+    nombre de personnes rencontrés: "64"
 
+    {// nombre de personnes rencontrés après validation de l'évenement et de localisation sur l'évenement selon le nombre de personnes présente.
+  }
     </Text>
 
     </View>

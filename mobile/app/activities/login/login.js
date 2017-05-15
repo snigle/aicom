@@ -84,7 +84,7 @@ class Login extends Component {
       UserApi.me().then((response) => {
         console.log("set me", response);
         this.props.setMe(response);
-      }).catch((e) => {console.log("error me", e); return AsyncStorage.removeItem("login")});
+      }).catch((e) => {console.log("error me", e); return AsyncStorage.removeItem("login");});
       AsyncStorage.setItem("login", JSON.stringify(user));
       this.props.setLogin(user);
       ToastAndroid.show("Login successful", ToastAndroid.SHORT);
