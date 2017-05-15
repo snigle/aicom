@@ -60,7 +60,7 @@ class Settings extends Component {
       <TabBar>
         <View style={{ backgroundColor : "#3b5998",flex : 1 }}>
         <View style={{ borderBottomWidth : 1, backgroundColor : "#3b5998",borderColor : "#3b5998" }}>
-          <Text style={{ alignSelf : "center",marginTop : 10,marginBottom : 10,fontWeight : "bold",fontSize : 16 }}>Settings</Text>
+          <Text style={{ alignSelf : "center",marginTop : 10,marginBottom : 10,fontWeight : "bold",fontSize : 16 }} />
         </View>
         <View style={{ backgroundColor : "#3b5998",flex : 1 }}>
         <SettingsList borderColor="#3b5998" defaultItemSize={50}>
@@ -81,6 +81,15 @@ class Settings extends Component {
           ))
         }
         </SettingsList>
+        <View>
+        <Button
+        backgroundColor="grey"
+        fontFamily="Roboto"
+        buttonStyle={{ width : 200 , height : 70, borderRadius : 50, marginBottom : 60, marginTop : 5, alignSelf : "center" }}
+        title="log out"
+        />
+
+        </View>
         </View></View>
       </TabBar>
     );
@@ -103,6 +112,8 @@ class Settings extends Component {
     }
 }
 }
+
+
 
 export default connect((state) => ({
   me : state.me,
