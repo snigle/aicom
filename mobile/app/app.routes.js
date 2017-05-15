@@ -7,6 +7,7 @@ module.exports = (
 
     {require("./activities/login/login.route")}
     {require("./activities/events/events.route")}
+    {require("./activities/event/event.route")}
     {require("./activities/settings/settings.route")}
     {require("./activities/profile/profile.route")}
 </Scene>

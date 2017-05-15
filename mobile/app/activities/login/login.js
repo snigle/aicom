@@ -24,14 +24,18 @@ class Login extends Component {
     super();
     this.state = {
       loading : true,
+      location : null,
     };
   }
 
   componentDidMount() {
+    var self = this;
     this._setupGoogleSignin();
+    console.log("loading location");
     navigator.geolocation.getCurrentPosition(
       (position) => {
         console.log("find location", position);
+        self.setState({ ...self.props.state, location : position });
         ApiAuth.setLocation(position);
       },
       (error) => navigator.geolocation.watchPosition((position) => ApiAuth.setLocation(position), () => alert("Please activate GPS to use the application")),
@@ -54,8 +58,10 @@ class Login extends Component {
     .then((user) => user && self._login(user), () => this.setState({ loading : false }))
     .catch((err) => {
       console.log("error",err);
+      // Can't use finally because action already pending and state doesn't exist
+      self.setState({ loading : false });
       ToastAndroid.show("Fail to login, please contact administrator.", ToastAndroid.SHORT);
-    }).finally(() => self.setState({ loading : false }));
+    });
   }
 
   _googleSignIn() {
@@ -71,6 +77,7 @@ class Login extends Component {
   }
 
   _login(user) {
+    var self = this;
     this.setState({ loading : true });
     console.log("try login",user,user.serverAuthCode);
     return AsyncStorage.getItem("login").then(
@@ -82,6 +89,10 @@ class Login extends Component {
       console.log("set token", user);
       ApiAuth.setToken(user.access_token);
       UserApi.me().then((response) => {
+        console.log(self);
+        if (self.state.location && self.distance(response.location[1], response.location[0], self.state.location.latitude, self.state.location.longitude) > 10) {
+          AsyncStorage.removeItem("/place");
+        }
         console.log("set me", response);
         this.props.setMe(response);
       }).catch((e) => {console.log("error me", e); return AsyncStorage.removeItem("login");});
@@ -117,6 +128,24 @@ class Login extends Component {
       );
     }
     return null;
+  }
+
+    getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+      var R = 6371; // Radius of the earth in km
+      var dLat = this.deg2rad(lat2 - lat1);  // deg2rad below
+      var dLon = this.deg2rad(lon2 - lon1);
+      var a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        ;
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      var d = R * c; // Distance in km
+      return d;
+    }
+
+  deg2rad(deg) {
+    return deg * (Math.PI / 180);
   }
 }
 
