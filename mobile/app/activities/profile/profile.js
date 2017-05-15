@@ -16,13 +16,17 @@ render() {
  return (
    <TabBar>
    <View>
-   <Image source={{ uri : this.props.me.picture }} style={{ width : 300, height : 300 }} />
-   <Text style={{ alignSelf : "center",backgroundColor : "#3b5998",fontWeight : "bold",fontSize : 16 }}>
+   <Image source={{ uri : this.props.me.picture }} style={{ width : 150, height : 150, marginLeft : 50, marginRight : 50 ,marginTop : 35 }}/>
+   <Text style={{ alignSelf : "center",backgroundColor : "#3b5998",fontWeight : "bold",fontSize : 16 ,marginTop : 35 }}>
 
-    description : "nom" "prénom"{"\n"}
-    nombre de sortie effectué : "nombre"{"\n"}
-    nombre de personnes rencontrés: "nombre"
+    description :  me.name "me.nom" me.firtname"prénom"{"\n"}
+    nombre de sortie effectué : "23"{"\n"}
+    {// nombre de sortie faite compter par nombre de validation et de localisation à l'endroit du rendezvous
+  }
+    nombre de personnes rencontrés: "64"
 
+    {// nombre de personnes rencontrés après validation de l'évenement et de localisation sur l'évenement selon le nombre de personnes présente.
+  }
     </Text>
 
     </View>

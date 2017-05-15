@@ -84,7 +84,7 @@ class Login extends Component {
       (u) => u && JSON.parse(u) || Api.login(user.serverAuthCode),
       () => Api.login(user.serverAuthCode)
     )
-    // return Api.login(user.serverAuthCode)
+    //return Api.login(user.serverAuthCode)
     .then((user) => {
       console.log("set token", user);
       ApiAuth.setToken(user.access_token);
