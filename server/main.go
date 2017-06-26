@@ -94,17 +94,17 @@ func AuthRequired() gin.HandlerFunc {
 			}
 		}
 
-		err = user.SetLocationFromHeader(c.Request.Header.Get("X-Location"))
-		if err != nil {
-			log.Printf("fail to set location for %s : %s", c.Request.Header.Get("X-Location"), err)
-			return
-		}
-
-		log.Print("update location")
-		err = mongo.Aicom.C(models.ColUser).Update(bson.M{"_id": user.ID}, user)
-		if err != nil {
-			log.Print("fail to save updated location")
-			return
-		}
+		// err = user.SetLocationFromHeader(c.Request.Header.Get("X-Location"))
+		// if err != nil {
+		// 	log.Printf("fail to set location for %s : %s", c.Request.Header.Get("X-Location"), err)
+		// 	return
+		// }
+		//
+		// log.Print("update location")
+		// err = mongo.Aicom.C(models.ColUser).Update(bson.M{"_id": user.ID}, user)
+		// if err != nil {
+		// 	log.Print("fail to save updated location")
+		// 	return
+		// }
 	}
 }

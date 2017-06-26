@@ -51,7 +51,7 @@ func GetPendingEvent(c *gin.Context) ([]*models.Event, error) {
 	user := c.MustGet(models.ColUser).(*models.User)
 
 	b := true
-	return filterEvents(user, &b, nil)
+	return filterEvents(user, nil, &b)
 
 }
 

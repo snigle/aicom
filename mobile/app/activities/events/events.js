@@ -41,6 +41,7 @@ class Events extends Component {
       PlaceApi.list(),
       EventApi.getPending(),
     ]).then(([users, me, places, pending]) => {
+      console.log("pending",pending);
       var state = self.state;
       state.cards = [];
       _.forEach(_.filter(users, (user) => user.id !== me.id), (user) => {
@@ -51,13 +52,14 @@ class Events extends Component {
         //     score++;
         //   }
         // });
-        _.forEach(_.filter(pending, (p) => _.find(_.keys(pending.users), (u) => u !== me.id)), (e) => {
+        _.forEach(pending, (e) => {
           state.cards.push({
             user : user,
-            activity : pending.activity,
+            activity : e.activity,
             score : score + 10,
-            place : event.place,
-            time : moment().add(3,"h").format("YYYY-MM-DD\\THH:MM:ssZ"),
+            place : e.place,
+            time : e.time,
+            id : e.id,
           });
         });
         _.forEach(user.activities, (value, activity) => {
@@ -144,21 +146,28 @@ class Events extends Component {
   accept(event) {
     var self = this;
     console.log("create event",event);
-    EventApi.create({
-      activity : event.activity,
-      userId : event.user.id,
-      time : event.time,
-      place : event.place,
-    }).then((response) => {
-      console.log("event created", response);
-      if (_.reduce(response.users, (res, value) => res && value, true)) {
-        console.log("find event");
-        Actions.event(response);
-      } else {
-        // TODO Add in already accepted list
-        self.next();
-      }
-    }).catch(err => (console.log(err), ToastAndroid.show("fail to create event", ToastAndroid.SHORT)));
+    if (event.id) {
+      EventApi.accept(event.id).then((response) => {
+        console.log("event accepted", response);
+          Actions.event(response);
+      }).catch(err => (console.log(err), ToastAndroid.show("fail to accept event", ToastAndroid.SHORT)));
+    }else {
+      EventApi.create({
+        activity : event.activity,
+        userId : event.user.id,
+        time : event.time,
+        place : event.place,
+      }).then((response) => {
+        console.log("event created", response);
+        if (_.reduce(response.users, (res, value) => res && value, true)) {
+          console.log("find event");
+          Actions.event(response);
+        } else {
+          // TODO Add in already accepted list
+          self.next();
+        }
+      }).catch(err => (console.log(err), ToastAndroid.show("fail to create event", ToastAndroid.SHORT)));
+    }
   }
 }
 

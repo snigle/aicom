@@ -2,12 +2,15 @@ package place
 
 import (
 	"context"
+	"errors"
+	"io/ioutil"
 	"log"
 	"sync"
 
 	"googlemaps.github.io/maps"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"github.com/snigle/aicom/server/models"
 	"github.com/snigle/aicom/server/utils/google"
 )
@@ -48,11 +51,12 @@ func GetPlaces(c *gin.Context) (map[string][]*models.Place, error) {
 				list := make([]*models.Place, 0, len(resp.Results))
 				for _, p := range resp.Results {
 					pictures := make([]string, 0, len(p.Photos))
+					// logrus.Info("pictures : %v", p.Photos)
 					for _, p := range p.Photos {
 						// If no copyright
-						if len(p.HTMLAttributions) == 0 {
-							pictures = append(pictures, p.PhotoReference)
-						}
+						// if len(p.HTMLAttributions) == 0 {
+						pictures = append(pictures, p.PhotoReference)
+						// }
 					}
 					list = append(list, &models.Place{ID: p.PlaceID, Icon: p.Icon, Name: p.Name, Description: p.Vicinity, Location: &models.Location{
 						Latitude: p.Geometry.Location.Lat, Longitude: p.Geometry.Location.Lng,
@@ -81,33 +85,35 @@ type PictureParams struct {
 }
 
 // TODO use http://www.sanarias.com/blog/1214PlayingwithimagesinHTTPresponseingolang
-// func GetPicture(c *gin.Context, in *PictureParams) (string, error) {
-// 	client, err := google.GetClient()
-// 	if err != nil {
-// 		log.Printf("fatal error: %s", err)
-// 		return nil, err
-// 	}
-// 	resp, err := client.PlacePhoto(context.Background(), &maps.PlacePhotoRequest{PhotoReference: in.Reference, MaxHeight: 400, MaxWidth: 400})
-// 	if err != nil {
-// 		log.Printf("fatal error: %s", err)
-// 		return nil, err
-// 	}
-// 	defer resp.Data.Close()
-// 	bytes, err := ioutil.ReadAll(resp.Data)
-//
-// 	str := base64.StdEncoding.EncodeToString(bytes)
-// 	if tmpl, err := template.New("image").Parse(ImageTemplate); err != nil {
-// 		log.Println("unable to parse image template.")
-// 		return "", err
-// 	} else {
-// 		data := map[string]interface{}{"Image": str}
-// 		if err = tmpl.Execute(w, data); err != nil {
-// 			log.Println("unable to execute template.")
-// 			return "", err
-// 		}
-// 	}
-// }
-//
-// var ImageTemplate string = `<!DOCTYPE html>
-// <html lang="en"><head></head>
-// <body><img src="data:image/jpg;base64,{{.Image}}"></body></html>`
+func GetPicture(c *gin.Context) {
+	reference, ok := c.Params.Get("reference")
+	if !ok {
+		err := errors.New("missing reference parameter")
+		c.AbortWithError(400, err)
+		// return err
+	}
+
+	client, err := google.GetClient()
+	if err != nil {
+		log.Printf("fatal error: %s", err)
+		c.AbortWithError(500, err)
+		return
+		// return err
+	}
+	resp, err := client.PlacePhoto(context.Background(), &maps.PlacePhotoRequest{PhotoReference: reference, MaxHeight: 400, MaxWidth: 400})
+	if err != nil {
+		log.Printf("fatal error: %s", err)
+		c.AbortWithError(500, err)
+		return
+		// return err
+	}
+	defer resp.Data.Close()
+	bytes, err := ioutil.ReadAll(resp.Data)
+	if err != nil {
+		logrus.WithError(err).Error("fail to read response")
+		c.AbortWithError(500, err)
+		return
+	}
+	c.Writer.Write(bytes)
+	// return nil
+}

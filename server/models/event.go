@@ -9,7 +9,7 @@ import (
 const ColEvent = "events"
 
 type Event struct {
-	ID       bson.ObjectId    `json:"id" bson:"id"`
+	ID       bson.ObjectId    `json:"id" bson:"_id"`
 	Activity string           `json:"activity" bson:"activity"`
 	Place    *Place           `json:"place" bson:"place"`
 	Time     time.Time        `json:"time" bson:"time"`
