@@ -15,9 +15,9 @@ class Profile extends Component {
 render() {
  return (
    <TabBar>
-   <View>
+   <View style={{ backgroundColor : "#ffffff" }}>
    <Image source={{ uri : this.props.me.picture }} style={{ width : 150, height : 150, marginLeft : 50, marginRight : 50 ,marginTop : 35 }}/>
-   <Text style={{ alignSelf : "center",backgroundColor : "#3b5998",fontWeight : "bold",fontSize : 16 ,marginTop : 35 }}>
+   <Text style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 ,marginTop : 35 }}>
 
     description :  me.name "me.nom" me.firtname"prénom"{"\n"}
     nombre de sortie effectué : "23"{"\n"}

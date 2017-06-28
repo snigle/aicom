@@ -93,17 +93,24 @@ class Events extends Component {
         backgroundColor : "#ffffff",
       }}>
 
-        <View style={{ backgroundColor : "#ffffff", alignItems : "center", justifyContent : "center", marginTop : 15 }}  >
+       <View style={{ backgroundColor : "#ffffff", alignItems : "center", justifyContent : "center", marginTop : 15 , marginTop : 15 }}  >
 
-         <Text>Activité: {card.activity}</Text>
+          <Text> Activité : {card.activity}</Text>
 
-         <Image source={{ uri : `${apiRouteBase}/place/picture/${card.place.picture[0]}?token=${Api.token}` }} style={{ width : 170, height : 155 }}/>
 
-         <Text>lieu : {card.place.name}, {card.place.description }</Text>
+          <View style={{ marginTop : 13, marginBottom : 13 }}>
+          <Image source={{ uri : `${apiRouteBase}/place/picture/${card.place.picture[0]}?token=${Api.token}` }} style={{ width : 170, height : 155 }}/>
+          </View>
 
+
+         <Text> lieu : {card.place.name}, {card.place.description }</Text>
+
+
+          <View style={{ marginTop : 13, marginBottom : 13 }}>
           <Image source={{ uri : card.user.picture }} style={{ width : 170, height : 155 }}/>
+          </View>
 
-         <Text>Avec {card.user.name} </Text>
+         <Text> Avec : {card.user.name} </Text>
 
       </View>
 
