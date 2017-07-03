@@ -16,7 +16,6 @@ func init() {
 			Path:         "/place",
 			AuthRequired: true,
 		},
-
 		&routes.Route{
 			Function:     gin.HandlerFunc(GetPicture),
 			Method:       http.MethodGet,

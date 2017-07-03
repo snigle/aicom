@@ -33,8 +33,15 @@ func main() {
 	r := gin.Default()
 	for _, route := range routes.GetRoutes() {
 		if !route.AuthRequired {
-			if route.Method == "POST" {
+			switch route.Method {
+			case http.MethodPut:
+				r.PUT(route.Path, route.Function)
+			case http.MethodPost:
 				r.POST(route.Path, route.Function)
+			case http.MethodGet:
+				r.GET(route.Path, route.Function)
+			case http.MethodDelete:
+				r.DELETE(route.Path, route.Function)
 			}
 		}
 	}
@@ -63,6 +70,9 @@ func AuthRequired() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		log.Print("get token")
 		accessToken := c.Request.Header.Get("X-Token")
+		if accessToken == "" {
+			accessToken = c.Query("token")
+		}
 		token := &models.Token{}
 		log.Print("hash", accessToken, models.HashToken(accessToken))
 		err := mongo.Aicom.C(models.ColToken).Find(bson.M{"token.accesstoken": models.HashToken(accessToken)}).One(&token)

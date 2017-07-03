@@ -12,6 +12,8 @@ import {
 import UserApi from "../../components/api/users/users";
 import PlaceApi from "../../components/api/places/places";
 import EventApi from "../../components/api/events/events";
+import { apiRouteBase } from "../../components/api/api";
+import Api from "../../components/api/api";
 
 import moment from "moment";
 
@@ -76,10 +78,10 @@ class Events extends Component {
   render () {
     var self = this;
     var card = this.state.cards[this.state.cardIndex];
-    console.log("card",card,this.state.cards);
     if (!card) {
       return  <TabBar />;
     }
+    console.log("card",card,this.state.cards, `${apiRouteBase}/place/picture/${card.place.picture[0]}?token=${Api.token}`);
     // var card = { activity : "toto", user : "toto" };
     return (
       <TabBar>
@@ -95,7 +97,7 @@ class Events extends Component {
 
          <Text>Activité: {card.activity}</Text>
 
-         <Image source={require("../../../images/bar.jpg")} style={{ width : 170, height : 155 }}/>
+         <Image source={{ uri : `${apiRouteBase}/place/picture/${card.place.picture[0]}?token=${Api.token}` }} style={{ width : 170, height : 155 }}/>
 
          <Text>lieu : {card.place.name}, {card.place.description }</Text>
 
