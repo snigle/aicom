@@ -1,8 +1,8 @@
 /*eslint no-console: ["error", { allow: ["log"] }] */
 // For android emulator, replace by your IP if running on device.
-// const apiRouteBase = "https://aicom.herokuapp.com";
+const apiRouteBase = "https://aicom.herokuapp.com";
 // const apiRouteBase = "http://10.42.0.1:8080";
-export const apiRouteBase = "http://10.0.2.2:8080";
+// export const apiRouteBase = "http://10.0.2.2:8080";
 
 export default (() => {
   // Vars
