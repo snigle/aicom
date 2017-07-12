@@ -16,6 +16,12 @@ func init() {
 			AuthRequired: true,
 		},
 		&routes.Route{
+			Function:     tonic.Handler(SetNotificationToken, 200),
+			Method:       http.MethodPut,
+			Path:         "/user/notification",
+			AuthRequired: true,
+		},
+		&routes.Route{
 			Function:     tonic.Handler(GetUsers, 200),
 			Method:       http.MethodGet,
 			Path:         "/user",

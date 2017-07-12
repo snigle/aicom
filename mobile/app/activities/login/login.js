@@ -30,6 +30,7 @@ class Login extends Component {
 
   componentDidMount() {
     var self = this;
+
     this._setupGoogleSignin();
     console.log("loading location");
     navigator.geolocation.getCurrentPosition(

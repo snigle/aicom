@@ -34,3 +34,18 @@ func DeleteActivity(c *gin.Context, in *ActivityInputs) error {
 	}
 	return nil
 }
+
+type NotificationInputs struct {
+	Token string `json:"token" binding="required"`
+}
+
+func SetNotificationToken(c *gin.Context, in *NotificationInputs) error {
+	user := c.MustGet(models.ColUser).(*models.User)
+	user.FCMToken = in.Token
+	err := mongo.Aicom.C(models.ColUser).UpdateId(user.ID, user)
+	if err != nil {
+		log.Printf("Unable to update in db %v", err)
+		return err
+	}
+	return nil
+}

@@ -11,6 +11,7 @@ const ColUser = "users"
 type User struct {
 	ID         bson.ObjectId   `json:"id" bson:"_id"`
 	GoogleID   string          `json:"google_id" bson:"google_id"`
+	FCMToken   string          `json:"fcm_token" bson:"fcm_token"`
 	Email      string          `json:"email" bson:"email"`
 	Name       string          `json:"name" bson:"name"`
 	Picture    string          `json:"picture" bson:"picture"`
