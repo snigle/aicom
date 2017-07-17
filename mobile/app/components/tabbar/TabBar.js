@@ -111,7 +111,8 @@ class TabBar extends Component {
     }).start();
   }
 
-  _sendNotification({ title, body }) {
+
+_sendNotification({ title, body }) {
     console.log("Notification _sendNotification");
     FCM.presentLocalNotification({
       // id: "UNIQ_ID_STRING",                               // (optional for instant notification)
@@ -136,13 +137,14 @@ class TabBar extends Component {
       my_custom_data : "my_custom_field_value",             // extra data you want to throw
       lights : true,                                       // Android only, LED blinking (default false)
       show_in_foreground : true,                                  // notification when app is in foreground (local & remote)
+
     });
   }
   _getColor(tab) {
     if (this.props.navigation.scene.name === tab.action) {
       return this.state.animatedValue.interpolate({
         inputRange : [0, 100],
-        outputRange : ["rgba(100,100,100, 1.0)", "rgba(51,156,177, 1.0)"],
+        outputRange : ["#3b5998","#3b5998"],
       });
     }
     return "#777";
@@ -161,21 +163,24 @@ class TabBar extends Component {
     return   <View style={{ flexDirection : "column", flex : 1 }}>
     <View style={{ borderBottomWidth : 1, borderBottomColor : "#777", flex : 1, backgroundColor : "#eee", flexDirection : "row", justifyContent : "center", alignItems : "center" }}>
     { tabs.map((t,i) => {
-      let selectedColor = this._getColor(t);
-      return (
-        <TouchableWithoutFeedback key={i} onPress={() => {console.log("press view"); Actions[t.action]({ type : "replace" });}}>
-        <View style={{ flex : 1, flexDirection : "column", justifyContent : "center", alignItems : "center" }}
-        >
-        <AnimatedIcon containerStyle={{ flex : 2 }} size={30} color={selectedColor} name={t.icon} />
-        <Animated.Text style={{ flex : 1, textAlign : "center", fontSize : 11, color : selectedColor }}>{t.title}</Animated.Text>
-        </View>
-        </TouchableWithoutFeedback>
-      );
-    }
-  )}
-  </View>
-  <View style={{ flex : 9 }}  backgroundColor="#3b5998">{this.props.children || <Spinner visible={true} textContent={"Loading..."} textStyle={{ color : "#FFF" }}  />}</View>
-  </View>;
+
+
+        let selectedColor = this._getColor(t);
+        return (
+          <TouchableWithoutFeedback key={i} onPress={() => {console.log("press view"); Actions[t.action]({ type : "replace" });}}>
+          <View style={{ flex : 1, flexDirection : "column", justifyContent : "center", alignItems : "center" }}
+          >
+            <AnimatedIcon containerStyle={{ flex : 2 }} size={30} color={selectedColor} name={t.icon} />
+            <Animated.Text style={{ flex : 1, textAlign : "center", fontSize : 11, color : selectedColor }}>{t.title}</Animated.Text>
+            </View>
+          </TouchableWithoutFeedback>
+        );
+      }
+    )}
+</View>
+<View style={{ flex : 9 }}  backgroundColor="white">{this.props.children || <Spinner visible={true} textContent={"Loading..."} textStyle={{ color : "#FFF" }}  />}</View>
+</View>;
+
 }
 }
 

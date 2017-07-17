@@ -1,13 +1,6 @@
 import React, { Component } from "react";
-import {
-  Text,
-  View,
-  ToastAndroid,
-  AsyncStorage,
-} from "react-native";
-import {
-  Card,
-} from "react-native-elements";
+import {  Text,View,ToastAndroid,AsyncStorage,Image } from "react-native";
+import { Card } from "react-native-elements";
 import { Actions } from "react-native-router-flux";
 import { connect } from "react-redux";
 import _ from "lodash";
@@ -29,6 +22,7 @@ class Login extends Component {
     };
   }
 
+
   componentDidMount() {
     var self = this;
 
@@ -44,6 +38,7 @@ class Login extends Component {
       { timeout : 1000, maximumAge : 100000 }
     );
   }
+
 
   _setupGoogleSignin() {
     var self = this;
@@ -113,23 +108,16 @@ class Login extends Component {
     if (!this.props.login) {
       return (
         <View style={styles.container}>
-        <Card
-        title=" "
-        image={require("../../../images/modelelogo1.gif")}>
-          <Text style={{ marginLeft : 50, fontSize : 60, fontFamily : "Roboto" ,color : "#3b5998" }}>
-          {"Heyhi          "}
-          </Text>
-          { this.state.loading && (<Text>Loading</Text>) ||
+
+          <Image source={require("../../../images/logo.png")} style={{ width : 300, height : 300 , marginLeft : 20  , marginBottom : 65 }}/>
+
+
+
+          { this.state.loading ||
           <GoogleSigninButton style={{ width : 312, height : 48 }} color={GoogleSigninButton.Color.Dark} size={GoogleSigninButton.Size.Wide} onPress={() => this._googleSignIn()}/>
           }
-          {/*{Button
-          onPress={() => this._googleSignIn()}
-          backgroundColor="#E45711"
-          fontFamily="Roboto"
-          buttonStyle={{ borderRadius : 0, marginLeft : 0, marginRight : 0, marginBottom : 0 }}
-          title="Connecte toi avec ton compte google" />
-          */}
-        </Card>
+
+
         </View>
       );
     }
