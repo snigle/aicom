@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/snigle/aicom/server/models"
+	"github.com/snigle/aicom/server/utils/google"
 	"github.com/snigle/aicom/server/utils/mongo"
 )
 
@@ -49,6 +50,21 @@ func NewEvent(c *gin.Context, in *EventInput) (*models.Event, error) {
 	}
 	logrus.Info("test")
 	// TODO If all are OK, send notification ?
+	go func() {
+		// get user
+		invitedUser := &models.User{}
+		err = mongo.Aicom.C(models.ColUser).Find(bson.M{"_id": in.UserID}).One(&invitedUser)
+		if err != nil {
+			logrus.WithError(err).Error("fail to get user")
+			return
+		}
+		err = google.SendRequest(invitedUser.FCMToken, e)
+		if err != nil {
+			logrus.WithError(err).Error("fail to send notification")
+			return
+		}
+		logrus.Info("notification sent")
+	}()
 
 	// Generate token
 	return e, nil
@@ -77,6 +93,27 @@ func AcceptEvent(c *gin.Context, in *AcceptEventInput) (*models.Event, error) {
 	if err != nil {
 		log.Printf("Unable to get user in db %v", err)
 		return nil, err
+	}
+
+	for uuid, value := range e.Users {
+		if value == nil || !*value || uuid == user.ID.Hex() {
+			continue
+		}
+		go func(uuid string) {
+			// get user
+			invitedUser := &models.User{}
+			err := mongo.Aicom.C(models.ColUser).Find(bson.M{"_id": uuid}).One(&invitedUser)
+			if err != nil {
+				logrus.WithError(err).Error("fail to get user")
+				return
+			}
+			err = google.SendAcceptedEvent(invitedUser.FCMToken, e)
+			if err != nil {
+				logrus.WithError(err).Error("fail to send notification")
+				return
+			}
+			logrus.Info("notification sent")
+		}(uuid)
 	}
 
 	return e, nil

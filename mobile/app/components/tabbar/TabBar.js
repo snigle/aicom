@@ -70,9 +70,13 @@ class TabBar extends Component {
 
       let event = JSON.parse(notif.event);
       console.log("Notification event", event);
+      if (!event.action) {
+        console.log("bad event received");
+        return;
+      }
       if (event.action === "PENDING_EVENT") {
         console.log("Notification send pending event");
-        self._sendNotification({ title : "Event requested", body : `You have ${event.number} requests for event at ${event.time}` });
+        self._sendNotification({ title : "Event requested", body : `You have 1 requests for event at ${event.time}` });
       }
       if (event.action === "ACCEPTED_EVENT") {
         self._sendNotification({ title : "Event Accepted", body : `We found an event ! Let's go to ${event.place.name}` });
@@ -144,6 +148,13 @@ class TabBar extends Component {
     return "#777";
 
   }
+
+  componentWillUnmount() {
+    // stop listening for events
+    this.notificationListener.remove();
+    this.refreshTokenListener.remove();
+  }
+
   render(props) {
     let selectedTab = this.props.selectedTab;
     //  Animated.timing(this.state.x, {}).start();

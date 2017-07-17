@@ -101,7 +101,7 @@ class Events extends Component {
 
          <Text>lieu : {card.place.name}, {card.place.description }</Text>
 
-          <Image source={require("../../../images/pers.jpg")} style={{ width : 170, height : 155 }}/>
+          <Image source={{ uri : card.user.picture }} style={{ width : 170, height : 155 }}/>
 
          <Text>Avec {card.user.name} </Text>
 

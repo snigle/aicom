@@ -10,6 +10,7 @@ import {
 } from "react-native-elements";
 import { Actions } from "react-native-router-flux";
 import { connect } from "react-redux";
+import _ from "lodash";
 import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 import { setLogin } from "../../reducers/login/login.actions";
 import { setMe } from "../../reducers/me/me.actions";
@@ -89,18 +90,22 @@ class Login extends Component {
     .then((user) => {
       console.log("set token", user);
       ApiAuth.setToken(user.access_token);
-      UserApi.me().then((response) => {
-        console.log(self);
-        if (self.state.location && self.getDistanceFromLatLonInKm(response.location[1], response.location[0], self.state.location.latitude, self.state.location.longitude) > 10) {
-          AsyncStorage.removeItem("/place");
-        }
-        console.log("set me", response);
-        this.props.setMe(response);
-      }).catch((e) => {console.log("error me", e); return AsyncStorage.removeItem("login");});
-      AsyncStorage.setItem("login", JSON.stringify(user));
       this.props.setLogin(user);
+      AsyncStorage.setItem("login", JSON.stringify(user));
+      return UserApi.me().catch((e) => {console.log("error me", e); return AsyncStorage.removeItem("login");});
+    })
+    .then((me) => {
+      if (self.state.location && self.getDistanceFromLatLonInKm(me.location[1], me.location[0], self.state.location.latitude, self.state.location.longitude) > 10) {
+        AsyncStorage.removeItem("/place");
+      }
+      console.log("set me", me);
+      this.props.setMe(me);
       ToastAndroid.show("Login successful", ToastAndroid.SHORT);
-      Actions.settings({ type : "replace" });
+      if (_.reduce(me.activities, (res, key, value) => res || value, false)) {
+        Actions.events({ type : "replace" });
+      } else {
+        Actions.settings({ type : "replace" });
+      }
     });
   }
 
