@@ -85,20 +85,21 @@ class TabBar extends Component {
       let description = `You have ${event.number} requests for event at ${event.time}`;
 
 
-      this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, token => {
-        UserApi.setNotificationToken(token).then(() => console.log("token sent")).catch((err) => console.log("fail to send token"));
-      });
-
-      // direct channel related methods are ios only
-      // directly channel is truned off in iOS by default, this method enables it
-      FCM.enableDirectChannel();
-      this.channelConnectionListener = FCM.on(FCMEvent.DirectChannelConnectionChanged, (data) => {
-        console.log("direct channel connected" + data);
-      });
-      setTimeout(function() {
-        FCM.isDirectChannelEstablished().then(d => console.log(d));
-      }, 1000);
     });
+
+    this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, token => {
+      UserApi.setNotificationToken(token).then(() => console.log("token sent")).catch((err) => console.log("fail to send token"));
+    });
+
+    // direct channel related methods are ios only
+    // directly channel is truned off in iOS by default, this method enables it
+    FCM.enableDirectChannel();
+    this.channelConnectionListener = FCM.on(FCMEvent.DirectChannelConnectionChanged, (data) => {
+      console.log("direct channel connected" + data);
+    });
+    setTimeout(function() {
+      FCM.isDirectChannelEstablished().then(d => console.log(d));
+    }, 1000);
 
     FCM.getFCMToken().then(token => {
       console.log("TOKEN (getFCMToken)", token);
