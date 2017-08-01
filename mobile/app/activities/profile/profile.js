@@ -12,23 +12,29 @@ import { addActivity, removeActivity } from "../../reducers/me/me.actions";
 import TabBar from "../../components/tabbar/TabBar";
 
 class Profile extends Component {
+
+
 render() {
  return (
+
    <TabBar>
-   <View>
-   <Image source={{ uri : this.props.me.picture }} style={{ width : 150, height : 150, marginLeft : 50, marginRight : 50 ,marginTop : 35 }}/>
-   <Text style={{ alignSelf : "center",backgroundColor : "#3b5998",fontWeight : "bold",fontSize : 16 ,marginTop : 35 }}>
+   <View style={{ backgroundColor : "#3b5998",flex : 1 }}>
+   <View style={{ borderBottomWidth : 1, backgroundColor : "#3b5998",borderColor : "#3b5998" }}>
+   <Image source={{ uri : this.props.me.picture }} style={{  borderRadius : 25 , width : 150, height : 150, marginLeft : 100, marginRight : 50 ,marginTop : 35 }}/>
+ <View>
+   <Text style={{ width : 200, height : 200,borderRadius : 25, alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 ,marginTop : 70 }}>
 
-    description :  me.name "me.nom" me.firtname"prénom"{"\n"}
-    nombre de sortie effectué : "23"{"\n"}
-    {// nombre de sortie faite compter par nombre de validation et de localisation à l'endroit du rendezvous
-  }
-    nombre de personnes rencontrés: "64"
+    Events : {"\n"}
+    People:{"\n"}
+    Place: {"\n"}
 
-    {// nombre de personnes rencontrés après validation de l'évenement et de localisation sur l'évenement selon le nombre de personnes présente.
-  }
     </Text>
+</View>
 
+
+
+
+    </View>
     </View>
     </TabBar>
 

@@ -1,13 +1,6 @@
 import React, { Component } from "react";
-import {
-  Text,
-  View,
-  ToastAndroid,
-  AsyncStorage,
-} from "react-native";
-import {
-  Card,
-} from "react-native-elements";
+import {  Text,View,ToastAndroid,AsyncStorage,Image } from "react-native";
+import { Card } from "react-native-elements";
 import { Actions } from "react-native-router-flux";
 import { connect } from "react-redux";
 import _ from "lodash";
@@ -29,9 +22,10 @@ class Login extends Component {
     };
   }
 
+
   componentDidMount() {
     var self = this;
-
+    console.log("did mount");
     this._setupGoogleSignin();
     console.log("loading location");
     navigator.geolocation.getCurrentPosition(
@@ -45,6 +39,7 @@ class Login extends Component {
     );
   }
 
+
   _setupGoogleSignin() {
     var self = this;
     console.log("setup signin");
@@ -57,13 +52,12 @@ class Login extends Component {
       })
     )
     .then(() => GoogleSignin.currentUserAsync())
-    .then((user) => user && self._login(user), () => this.setState({ loading : false }))
+    .then((user) => {console.log("user found ?",user); return user && self._login(user);})
     .catch((err) => {
       console.log("error",err);
       // Can't use finally because action already pending and state doesn't exist
-      self.setState({ loading : false });
       ToastAndroid.show("Fail to login, please contact administrator.", ToastAndroid.SHORT);
-    });
+    }).finally(() => self.setState({ loading : false }));
   }
 
   _googleSignIn() {
@@ -113,23 +107,16 @@ class Login extends Component {
     if (!this.props.login) {
       return (
         <View style={styles.container}>
-        <Card
-        title=" "
-        image={require("../../../images/modelelogo1.gif")}>
-          <Text style={{ marginLeft : 50, fontSize : 60, fontFamily : "Roboto" ,color : "#3b5998" }}>
-          {"Heyhi          "}
-          </Text>
-          { this.state.loading && (<Text>Loading</Text>) ||
+
+          <Image source={require("../../../images/logo.png")} style={{ width : 300, height : 300 , marginLeft : 20  , marginBottom : 65 }}/>
+
+
+
+          { this.state.loading ||
           <GoogleSigninButton style={{ width : 312, height : 48 }} color={GoogleSigninButton.Color.Dark} size={GoogleSigninButton.Size.Wide} onPress={() => this._googleSignIn()}/>
           }
-          {/*{Button
-          onPress={() => this._googleSignIn()}
-          backgroundColor="#E45711"
-          fontFamily="Roboto"
-          buttonStyle={{ borderRadius : 0, marginLeft : 0, marginRight : 0, marginBottom : 0 }}
-          title="Connecte toi avec ton compte google" />
-          */}
-        </Card>
+
+
         </View>
       );
     }

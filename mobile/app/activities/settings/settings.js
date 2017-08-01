@@ -22,21 +22,6 @@ class Settings extends Component {
     this.state = {};
     console.log("dans settings me :", this.props.me);
     this.state.activities = [
-      {
-        name : "Coffee",
-        icon : "local-cafe",
-        value : false,
-      },
-      {
-        name : "Cinema",
-        icon : "local-cafe",
-        value : false,
-      },
-      {
-        name : "Bar",
-        icon : "local-cafe",
-        value : false,
-      },
 
     ];
   }
@@ -50,6 +35,7 @@ class Settings extends Component {
     ]).then(() => Actions.login(), () => Actions.login());
   }
 
+
   render () {
     var self = this;
     console.log("dans settings me :", this.props.me);
@@ -60,30 +46,17 @@ class Settings extends Component {
       <TabBar>
         <View style={{ backgroundColor : "#3b5998",flex : 1 }}>
         <View style={{ borderBottomWidth : 1, backgroundColor : "#3b5998",borderColor : "#3b5998" }}>
-          <Text style={{ alignSelf : "center",marginTop : 10,marginBottom : 10,fontWeight : "bold",fontSize : 16 }} />
-        </View>
-        <View style={{ backgroundColor : "#3b5998",flex : 1 }}>
-        <SettingsList borderColor="#3b5998" defaultItemSize={50}>
-            <SettingsList.Header headerStyle={{ marginTop : 15 }}/>
-        {
-          this.state.activities.map((activity, i) => (
-            <SettingsList.Item
-              icon={
-                  <Icon name={activity.icon} />
-              }
-              hasNavArrow={false}
-              title={activity.name}
-              key={i}
-              hasSwitch={true}
-              switchState={this.props.me.activities[activity.name]}
-              switchOnValueChange={(v) => self.onValueChange(v, i)}
-            />
-          ))
-        }
-        </SettingsList>
+
+
         <View>
         <Button
-        backgroundColor="grey"
+        backgroundColor="#e52d27"
+        fontFamily="Roboto"
+        buttonStyle={{ width : 200 , height : 70, borderRadius : 50, marginBottom : 60, marginTop : 150, alignSelf : "center" }}
+        title="Invite one close friend"
+        />
+        <Button
+        backgroundColor="#55acee"
         fontFamily="Roboto"
         buttonStyle={{ width : 200 , height : 70, borderRadius : 50, marginBottom : 60, marginTop : 5, alignSelf : "center" }}
         title="log out"

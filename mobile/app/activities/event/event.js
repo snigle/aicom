@@ -6,7 +6,7 @@ import _ from "lodash";
 import styles from "./event.style";
 import TabBar from "../../components/tabbar/TabBar";
 import {
-  Button,PricingCard,
+  Button,
 } from "react-native-elements";
 
 import UserApi from "../../components/api/users/users";
