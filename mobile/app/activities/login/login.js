@@ -25,7 +25,7 @@ class Login extends Component {
 
   componentDidMount() {
     var self = this;
-
+    console.log("did mount");
     this._setupGoogleSignin();
     console.log("loading location");
     navigator.geolocation.getCurrentPosition(
@@ -52,13 +52,12 @@ class Login extends Component {
       })
     )
     .then(() => GoogleSignin.currentUserAsync())
-    .then((user) => user && self._login(user), () => this.setState({ loading : false }))
+    .then((user) => {console.log("user found ?",user); return user && self._login(user);})
     .catch((err) => {
       console.log("error",err);
       // Can't use finally because action already pending and state doesn't exist
-      self.setState({ loading : false });
       ToastAndroid.show("Fail to login, please contact administrator.", ToastAndroid.SHORT);
-    });
+    }).finally(() => self.setState({ loading : false }));
   }
 
   _googleSignIn() {
