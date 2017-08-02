@@ -4,7 +4,7 @@ import { Tabs, Tab, Icon } from "react-native-elements";
 import { Actions } from "react-native-router-flux";
 import { connect } from "react-redux";
 import Spinner from "react-native-loading-spinner-overlay";
-import FCM, { FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType } from "react-native-fcm";
+import FCM, { FCMEvent } from "react-native-fcm";
 import UserApi from "../api/users/users";
 import { Platform } from "react-native";
 
