@@ -48,6 +48,7 @@ func NewEvent(c *gin.Context, in *EventInput) (*models.Event, error) {
 		log.Printf("Unable to get user in db %v", err)
 		return nil, err
 	}
+	user.Stats.EventRequested++
 	logrus.Info("test")
 	// TODO If all are OK, send notification ?
 	go func() {
@@ -107,14 +108,22 @@ func AcceptEvent(c *gin.Context, in *AcceptEventInput) (*models.Event, error) {
 				logrus.WithError(err).Error("fail to get user")
 				return
 			}
+			invitedUser.Stats.EventAccepted++
 			err = google.SendAcceptedEvent(invitedUser.FCMToken, e)
 			if err != nil {
 				logrus.WithError(err).Error("fail to send notification")
 				return
 			}
 			logrus.Info("notification sent")
+			err = mongo.Aicom.C(models.ColUser).Update(bson.M{"_id": uuid}, invitedUser)
+			if err != nil {
+				logrus.WithError(err).Error("fail to update user stats")
+				return
+			}
 		}(uuid)
 	}
+
+	user.Stats.EventAccepted++
 
 	return e, nil
 }

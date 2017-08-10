@@ -17,6 +17,10 @@ type User struct {
 	Picture    string          `json:"picture" bson:"picture"`
 	Location   [2]float64      `json:"location" bson:"location"`
 	Activities map[string]bool `json:"activities" bson:"activities"`
+	Stats      struct {
+		EventRequested int `json:"event_requested" bson:"event_requested"`
+		EventAccepted  int `json:"event_accepted" bson:"event_accepted"`
+	}
 }
 
 func (user *User) AddActivity(name string) {
@@ -34,5 +38,8 @@ func (user *User) DeleteActivity(name string) {
 }
 
 func (user *User) SetLocationFromHeader(locationString string) error {
-	return json.Unmarshal([]byte(locationString), &user.Location)
+	if locationString != "" {
+		return json.Unmarshal([]byte(locationString), &user.Location)
+	}
+	return nil
 }

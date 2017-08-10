@@ -94,27 +94,29 @@ func AuthRequired() gin.HandlerFunc {
 		c.Set(models.ColUser, user)
 		c.Next()
 
-		log.Printf("access_token : %s\n copy : %s\n", oldToken.AccessToken, token.AccessToken)
-		if oldToken.AccessToken != token.AccessToken {
-			log.Print("token updated")
-			err = mongo.Aicom.C(models.ColToken).Update(bson.M{"_id": token.ID}, token)
+		go func() {
+			log.Printf("access_token : %s\n copy : %s\n", oldToken.AccessToken, token.AccessToken)
+			if oldToken.AccessToken != token.AccessToken {
+				log.Print("token updated")
+				err = mongo.Aicom.C(models.ColToken).Update(bson.M{"_id": token.ID}, token)
+				if err != nil {
+					log.Print("fail to save updated token")
+					return
+				}
+			}
+
+			err = user.SetLocationFromHeader(c.Request.Header.Get("X-Location"))
 			if err != nil {
-				log.Print("fail to save updated token")
+				log.Printf("fail to set location for %s : %s", c.Request.Header.Get("X-Location"), err)
 				return
 			}
-		}
 
-		// err = user.SetLocationFromHeader(c.Request.Header.Get("X-Location"))
-		// if err != nil {
-		// 	log.Printf("fail to set location for %s : %s", c.Request.Header.Get("X-Location"), err)
-		// 	return
-		// }
-		//
-		// log.Print("update location")
-		// err = mongo.Aicom.C(models.ColUser).Update(bson.M{"_id": user.ID}, user)
-		// if err != nil {
-		// 	log.Print("fail to save updated location")
-		// 	return
-		// }
+			log.Printf("update user, receive location : %s", c.Request.Header.Get("X-Location"))
+			err = mongo.Aicom.C(models.ColUser).Update(bson.M{"_id": user.ID}, user)
+			if err != nil {
+				log.Print("fail to save updated location")
+				return
+			}
+		}()
 	}
 }

@@ -1,14 +1,8 @@
 import api from "../api";
-import { AsyncStorage } from "react-native";
+import ApiCache from "../../apiCache/apiCache";
+
+export let cache = new ApiCache("place", 60 * 60 * 24 * 30);
 
 export default {
-  list :
-    () => AsyncStorage.getItem("/place.v2").then(
-      (u) => u && JSON.parse(u) || api.auth("/place"),
-      () => api.auth("/place")
-    ).then(response => {
-      console.log("save /place");
-      AsyncStorage.setItem("/place.v2", JSON.stringify(response));
-      return response;
-    }),
+  list : (params) =>  api.auth({ ...params, url : "/place", cache : cache }),
 };

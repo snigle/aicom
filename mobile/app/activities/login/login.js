@@ -69,7 +69,7 @@ class Login extends Component {
       console.log("error",err);
       ToastAndroid.show("Fail to login, please contact administrator.", ToastAndroid.SHORT);
       // self._signOut();
-    });
+    }).finally(() => self.setState({ loading : false }));
   }
 
   _login(user) {

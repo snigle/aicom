@@ -16,7 +16,7 @@ class Event extends Component {
 
   render () {
     var event = this.props.event;
-    console.log("event", event);
+    console.log("event accepted", event);
     return (<TabBar>
         <Text>{"Page de l'event"}</Text>
     </TabBar>)

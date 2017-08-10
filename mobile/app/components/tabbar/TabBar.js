@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, Animated, TouchableWithoutFeedback } from "react-native";
+import { Text, View, Animated, TouchableWithoutFeedback, AsyncStorage } from "react-native";
 import { Tabs, Tab, Icon } from "react-native-elements";
 import { Actions } from "react-native-router-flux";
 import { connect } from "react-redux";
@@ -88,7 +88,7 @@ class TabBar extends Component {
     });
 
     this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, token => {
-      UserApi.setNotificationToken(token).then(() => console.log("token sent")).catch((err) => console.log("fail to send token"));
+      self._sendToken(token);
     });
 
     // direct channel related methods are ios only
@@ -103,7 +103,7 @@ class TabBar extends Component {
 
     FCM.getFCMToken().then(token => {
       console.log("TOKEN (getFCMToken)", token);
-      UserApi.setNotificationToken(token).then(() => console.log("token sent")).catch((err) => console.log("fail to send token", err));
+      self._sendToken(token);
     });
 
     Animated.timing(this.state.animatedValue, {
@@ -112,6 +112,26 @@ class TabBar extends Component {
     }).start();
   }
 
+_sendToken(token) {
+  AsyncStorage.getItem("fcm_token").then((cacheToken) => {
+    console.log("NOTIFICATION get cache", cacheToken);
+    if (cacheToken !== token) {
+      return null;
+    }
+    return cacheToken;
+  }, () => {
+    return null;
+  }).then((cacheToken) => {
+    console.log("NOTIFICATION call api ?", cacheToken);
+    if (!cacheToken) {
+      return UserApi.setNotificationToken(token).then(() => token);
+    }
+    return cacheToken;
+  }).then((token) => {
+    console.log("NOTIFICATION set cache", token);
+    AsyncStorage.setItem("fcm_token", token);
+  }).catch((err) => console.log("fail to send token"));
+}
 
 _sendNotification({ title, body }) {
     console.log("Notification _sendNotification");

@@ -1,9 +1,11 @@
+import { Actions } from "react-native-router-flux";
+
 /*eslint no-console: ["error", { allow: ["log"] }] */
 // For android emulator, replace by your IP if running on device.
-export const apiRouteBase = "https://aicom.herokuapp.com";
+// export const apiRouteBase = "https://aicom.herokuapp.com";
 // export const apiRouteBase = "http://10.42.0.1:8080";
 // export const apiRouteBase = "http://10.0.2.2:8080";
-
+export const apiRouteBase = "http://192.168.0.13:8080";
 export default (() => {
   // Vars
   this.token = null;
@@ -26,29 +28,52 @@ export default (() => {
 
   this.setLocation = (locationHeader) => (this.locationHeader = `[${locationHeader.coords.longitude}, ${locationHeader.coords.latitude}]`);
 
-  this.auth = (url, body, opts = {}) => {
+  this.auth = (params) => {
     if (!this.token) {
+      Actions.login();
       return new Promise((resolve,reject) => reject("not authentified"));
     }
-    return this.request(url,opts,body);
+    return this.request(params);
   };
 
-  this.request = (url, opts = {}, body) => {
+  this.request = ({ url, opts , method = "GET", data, cache }) => {
+    var promise = Promise.resolve(null);
+    opts = opts || {};
     opts.headers = this.headers();
-    if (opts.method && opts.method !== "GET") {
-      opts.body = JSON.stringify(body);
+    opts.method = method || "GET";
+    if (method && method !== "GET" && data) {
+      opts.body = JSON.stringify(data);
+    }
+    if (cache) {
+      if (method === "GET") {
+        console.log("API get cache ?", url);
+        promise = cache.get(url).then((e) => e, () => null);
+      } else {
+        console.log("API reset cache ?", url);
+        promise = cache.reset();
+      }
     }
     let path = `${apiRouteBase}${url}`;
-    console.log("auth request",path,opts);
-    return fetch(path, opts).then((response) => {
-      console.log("response", response);
+    console.log("API auth request",url, method, path, opts, cache);
+
+    return promise.then(resp => {
+      console.log("API cache response ?", resp, url);
+      return resp ||
+      fetch(path, opts).then((response) => {
+      console.log("API fetch response", response, url);
+      if (response.status === 401) {
+        Actions.login();
+        throw "Authentication required";
+      }
       if (response.status < 200 || response.status > 299) {
         throw response.text();
       }
-      // response.text().then((res) => console.log("response", res));
       return response.text();
-    }).then((result) => {
+    });}).then((result) => {
       if (result) {
+        if (cache) {
+          cache.set(url, result);
+        }
         return JSON.parse(result);
       }
       return result;
