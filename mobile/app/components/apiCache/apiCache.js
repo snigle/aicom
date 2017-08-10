@@ -26,7 +26,7 @@ export default class ApiCache {
   set(key, data) {
     let self = this;
     return this._getKeys().then((keys) => {
-      console.log("set cache", key, keys[key]);
+      console.log("set cache", key, keys, keys[key]);
       keys[key] = moment();
       self._saveKeys(keys);
       return AsyncStorage.setItem(this._addPrefix(key), data);
@@ -45,8 +45,11 @@ export default class ApiCache {
   _saveKeys(keys) {
     console.log("save keys", keys);
     if (keys) {
-      return AsyncStorage.setItem(this._addPrefix("cache_keys"), JSON.stringify(keys));
+      return this._getKeys().then((cachedKeys) =>
+        AsyncStorage.setItem(this._addPrefix("cache_keys"), JSON.stringify({ ...cachedKeys, ...keys }))
+      );
     }
+    return Promise.resolve(null);
   }
 
   get(key) {
