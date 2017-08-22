@@ -18,24 +18,22 @@ render() {
  return (
 
    <TabBar>
-   <View style={{ backgroundColor : "#3b5998",flex : 1 }}>
-   <View style={{ borderBottomWidth : 1, backgroundColor : "#3b5998",borderColor : "#3b5998" }}>
-   <Image source={{ uri : this.props.me.picture }} style={{  borderRadius : 25 , width : 150, height : 150, marginLeft : 100, marginRight : 50 ,marginTop : 35 }}/>
- <View>
-   <Text style={{ width : 200, height : 200,borderRadius : 25, alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 ,marginTop : 70 }}>
 
-    Events : {"\n"}
-    People:{"\n"}
-    Place: {"\n"}
 
-    </Text>
+     <View>
+     <Image source={{ uri : this.props.me.picture }} style={{  borderRadius : 25 , width : 150, height : 150, marginLeft : 100, marginRight : 50 ,marginTop : 35 }}/>
+   </View>
+
+<View>
+
+  <Text> "Number of events done"</Text>
+  <Text>0</Text>
+
+
 </View>
 
 
 
-
-    </View>
-    </View>
     </TabBar>
 
  );
@@ -45,3 +43,4 @@ render() {
 export default connect((state) => ({
   me : state.me,
 }), {})(Profile);
+//<Image source={{ uri : this.props.me.picture }} style={{  borderRadius : 25 , width : 150, height : 150, marginLeft : 100, marginRight : 50 ,marginTop : 35 }}/>

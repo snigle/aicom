@@ -45,16 +45,13 @@ class Settings extends Component {
       return <TabBar />;
     }
     return (
+
       <TabBar
         leftIcon="chevron-left"
         rightIcon=""
         title={<Text style={{ fontSize : 25 }}> Settings </Text>}
         onLeftPress={() => Actions.pop()}
       >
-        <View style={{ backgroundColor : "#3b5998",flex : 1 }}>
-        <View style={{ borderBottomWidth : 1, backgroundColor : "#3b5998",borderColor : "#3b5998" }}>
-
-
         <View>
         <Button
         backgroundColor="#e52d27"
@@ -78,7 +75,7 @@ class Settings extends Component {
         />
 
         </View>
-        </View></View>
+
       </TabBar>
     );
   }

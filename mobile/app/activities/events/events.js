@@ -120,19 +120,19 @@ class Events extends Component {
       </View>
 
 
-<View style= {{ flexDirection : "row", marginBottom : 200 }} >
+<View style= {{ flexDirection : "row", marginBottom : 75 }} >
 
     <Button
     backgroundColor="#55acee"
     fontFamily="Roboto"
-    buttonStyle={{ width : 50, height : 50, borderRadius : 50 , marginLeft : 15, marginRight : 50, marginBottom : 5 , marginTop : 20, justifyContent : "space-between", flex : 1 }}
+    buttonStyle={{ marginLeft : 50, marginRight : 15, marginBottom : 5 ,marginTop : 10, justifyContent : "space-between", flex : 1 }}
     title=" Not now"
     onPress={() => this.next()}/>
 
     <Button
     backgroundColor="#e52d27"
     fontFamily="Roboto"
-    buttonStyle={{ width : 50, height : 50, borderRadius : 20 , marginLeft : 50, marginRight : 15, marginBottom : 5 ,marginTop : 20, justifyContent : "space-between", flex : 1 }}
+    buttonStyle={{ marginLeft : 50, marginRight : 15, marginBottom : 5 ,marginTop : 10, justifyContent : "space-between", flex : 1  }}
     title=" Lets Go !"
     onPress={() => this.accept(card)}/>
 

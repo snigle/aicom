@@ -18,8 +18,28 @@ class Event extends Component {
     var event = this.props.event;
     console.log("event accepted", event);
     return (<TabBar>
-        <Text>{"Page de l'event"}</Text>
-        <Button onPress={() => Actions.message({ event : event })} title="Messages"/>
+
+        <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 }}  >In 12 minutes </Text>
+        <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16  }} >plan</Text>
+        <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 }}  >whisper</Text>
+
+
+
+            <Button
+            backgroundColor="#55acee"
+            fontFamily="Roboto"
+            buttonStyle={{ marginLeft : 50, marginRight : 15, marginBottom : 5 ,marginTop : 10, justifyContent : "space-between", flex : 1 }}
+            title="Cancel :(..."/>
+
+            <Button
+            backgroundColor="#e52d27"
+            fontFamily="Roboto"
+            buttonStyle={{ marginLeft : 50, marginRight : 15, marginBottom : 5 ,marginTop : 10, justifyContent : "space-between", flex : 1  }}
+            title="I'm on the spot ! :)"/>
+
+
+
+>>>>>>> modif UX
     </TabBar>)
 ;
   }
