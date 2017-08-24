@@ -10,6 +10,7 @@ export default (() => {
   // Vars
   this.token = null;
   this.locationHeader = null;
+  this.location = null;
 
   // Functions
   this.headers = () => {
@@ -26,7 +27,10 @@ export default (() => {
 
   this.setToken = (token) => (this.token = token);
 
-  this.setLocation = (locationHeader) => (this.locationHeader = `[${locationHeader.coords.longitude}, ${locationHeader.coords.latitude}]`);
+  this.setLocation = (locationHeader) => {
+    this.locationHeader = `[${locationHeader.coords.longitude}, ${locationHeader.coords.latitude}]`;
+    this.location = locationHeader.coords;
+  };
 
   this.auth = (params) => {
     if (!this.token) {

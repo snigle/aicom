@@ -84,7 +84,7 @@ class Events extends Component {
     console.log("card",card,this.state.cards, `${apiRouteBase}/place/picture/${card.place.picture[0]}?token=${Api.token}`);
     // var card = { activity : "toto", user : "toto" };
     return (
-      <TabBar>
+      <TabBar leftIcon="dashboard" rightIcon="settings" onRightPress={() => Actions.settings()}>
       <View  style={{
         flex : 3,
         flexDirection : "column",

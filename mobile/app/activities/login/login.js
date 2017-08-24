@@ -100,7 +100,7 @@ class Login extends Component {
       } else {
         Actions.settings({ type : "replace" });
       }
-    });
+    }).catch((err) => ToastAndroid.show("Fail to login, please contact administrator.", ToastAndroid.SHORT));
   }
 
   render() {

@@ -3,7 +3,7 @@ import ApiCache from "../../apiCache/apiCache";
 
 
 let cache = new ApiCache("events", 60 * 3);
-export { cache };
+export let EventCache = cache;
 let defaultParams = { cache : cache };
 
 export default {

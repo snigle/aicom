@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Text, View, Animated, TouchableWithoutFeedback, AsyncStorage } from "react-native";
-import { Tabs, Tab, Icon } from "react-native-elements";
+import { Tabs, Tab, Icon, Header } from "react-native-elements";
 import { Actions } from "react-native-router-flux";
 import { connect } from "react-redux";
 import Spinner from "react-native-loading-spinner-overlay";
@@ -179,30 +179,29 @@ _sendNotification({ title, body }) {
   }
 
   render(props) {
-    let selectedTab = this.props.selectedTab;
-    //  Animated.timing(this.state.x, {}).start();
-    return   <View style={{ flexDirection : "column", flex : 1 }}>
-    <View style={{ borderBottomWidth : 1, borderBottomColor : "#777", flex : 1, backgroundColor : "#eee", flexDirection : "row", justifyContent : "center", alignItems : "center" }}>
-    { tabs.map((t,i) => {
+    return (
+    <View style={{ flexDirection : "column", flex : 1 }}>
+      <View style={{ flexDirection : "row", position : "absolute", left : 0, right : 0, heigh : 50, padding : 10,  justifyContent : "space-between" }}>
+        <View style={{ width : 30 }}>
+          {
+            this.props.leftIcon ?
+              <Icon name={this.props.leftIcon} onPress={() => this.props.onLeftPress()} color="#fff" size={30} />
+            : null
+          }
+        </View>
+        {this.props.title || <Text style={{ fontSize : 25 }}> Sifer </Text> }
+        <View style={{ width : 30 }}>
+        {
+          this.props.rightIcon ?
+          <Icon name={this.props.rightIcon} onPress={() => this.props.onRightPress()} color="#fff" size={30} />
+          : null
+        }
+        </View>
+      </View>
+      <View style={{ position : "absolute", top : 50, bottom : 0, right : 0, left : 0 }}  backgroundColor="white">{this.props.children || <Spinner visible={true} textContent={"Loading..."} textStyle={{ color : "#FFF" }}  />}</View>
+    </View>);
 
-
-        let selectedColor = this._getColor(t);
-        return (
-          <TouchableWithoutFeedback key={i} onPress={() => {console.log("press view"); Actions[t.action]({ type : "replace" });}}>
-          <View style={{ flex : 1, flexDirection : "column", justifyContent : "center", alignItems : "center" }}
-          >
-            <AnimatedIcon containerStyle={{ flex : 2 }} size={30} color={selectedColor} name={t.icon} />
-            <Animated.Text style={{ flex : 1, textAlign : "center", fontSize : 11, color : selectedColor }}>{t.title}</Animated.Text>
-            </View>
-          </TouchableWithoutFeedback>
-        );
-      }
-    )}
-</View>
-<View style={{ flex : 9 }}  backgroundColor="white">{this.props.children || <Spinner visible={true} textContent={"Loading..."} textStyle={{ color : "#FFF" }}  />}</View>
-</View>;
-
-}
+  }
 }
 
 export default connect((state) => ({

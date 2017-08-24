@@ -1,7 +1,7 @@
 import api from "../api";
-import { cache } from "../events/events";
+import { EventCache } from "../events/events";
 
-let defaultParams = { cache : cache };
+let defaultParams = { cache : EventCache };
 
 export default {
   me : (params = defaultParams) => api.auth({ ...params, url : "/user/me" }),

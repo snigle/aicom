@@ -18,63 +18,52 @@ export default class ApiCache {
   reset() {
     let self = this;
     return self.mutex.then(() => {
-      let promise = self._getKeys().then((keys) => {
+      return self._getKeys().then((keys) => {
         console.log("reset cache", keys);
         return Promise.all(_.mapKeys(keys), key => {
           return AsyncStorage.removeItem(self._addPrefix(key));
         }).then(() => AsyncStorage.removeItem(self._addPrefix("cache_keys")));
       }).catch((err) => console.log("fail to reset cache", err));
-      self.mutex = promise;
-      return promise;
     });
   }
 
   set(key, data) {
     let self = this;
     return self.mutex.then(() => {
-      let promise = self._getKeys().then((keys) => {
+      return self._getKeys().then((keys) => {
         console.log("set cache", key, keys, keys[key]);
         keys[key] = moment();
         self._saveKeys(keys);
         return AsyncStorage.setItem(self._addPrefix(key), data);
       });
-      self.mutex = promise;
-      return promise;
     });
   }
 
   _getKeys() {
     let self = this;
-    return self.mutex.then(() => {
-      let promise = AsyncStorage.getItem(self._addPrefix("cache_keys")).then((keys) => {
+      return self.mutex.then(() => AsyncStorage.getItem(self._addPrefix("cache_keys")).then((keys) => {
         if (keys) {
           return _.mapValues(JSON.parse(keys), (value) => moment(value));
         }
         return {};
-      }, () => { return {}; });
-      self.mutex = promise;
-      return promise;
-    });
+      }, () => { return {}; }));
   }
 
   _saveKeys(keys) {
     console.log("save keys", keys);
     let self = this;
     return self.mutex.then(() => {
-      let promise = null;
       if (keys) {
-        promise = self._getKeys().then((cachedKeys) =>
+        return self._getKeys().then((cachedKeys) =>
         AsyncStorage.setItem(self._addPrefix("cache_keys"), JSON.stringify({ ...cachedKeys, ...keys })));
       }
-      self.mutex = promise;
-      return promise;
+      return null;
     });
   }
 
   get(key) {
     let self = this;
-    return self.mutex.then(() => {
-      let promise =  self._getKeys().then((keys) => {
+      return self._getKeys().then((keys) => {
         console.log("read cache", key, keys[key], self.delay, keys[key] && keys[key].clone().add(self.delay, "s").isBefore(moment()));
         if (!keys[key] || keys[key].clone().add(self.delay, "s").isBefore(moment())) {
           return Promise.resolve(null);
@@ -84,9 +73,6 @@ export default class ApiCache {
           return resp;
         });
       });
-      self.mutex = promise;
-      return promise;
-    });
   }
 
 }

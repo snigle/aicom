@@ -7,6 +7,8 @@ import { Tabs, Tab, Icon, Button, List, ListItem } from "react-native-elements";
 import { GoogleSignin, GoogleSigninButton } from "react-native-google-signin";
 import Api from "../../components/api/login/login";
 import UserApi from "../../components/api/users/users";
+import { EventCache } from "../../components/api/events/events";
+import { PlaceCache } from "../../components/api/places/places";
 import { Actions } from "react-native-router-flux";
 import { logout } from "../../reducers/login/login.actions";
 import { addActivity, removeActivity } from "../../reducers/me/me.actions";
@@ -43,7 +45,12 @@ class Settings extends Component {
       return <TabBar />;
     }
     return (
-      <TabBar>
+      <TabBar
+        leftIcon="chevron-left"
+        rightIcon=""
+        title={<Text style={{ fontSize : 25 }}> Settings </Text>}
+        onLeftPress={() => Actions.pop()}
+      >
         <View style={{ backgroundColor : "#3b5998",flex : 1 }}>
         <View style={{ borderBottomWidth : 1, backgroundColor : "#3b5998",borderColor : "#3b5998" }}>
 
@@ -60,12 +67,25 @@ class Settings extends Component {
         fontFamily="Roboto"
         buttonStyle={{ width : 200 , height : 70, borderRadius : 50, marginBottom : 60, marginTop : 5, alignSelf : "center" }}
         title="log out"
+        onPress={() => Actions.login()}
+        />
+        <Button
+        backgroundColor="#55acee"
+        fontFamily="Roboto"
+        buttonStyle={{ width : 200 , height : 70, borderRadius : 50, marginBottom : 60, marginTop : 5, alignSelf : "center" }}
+        title="Clear cache"
+        onPress={() => self.clearCache()}
         />
 
         </View>
         </View></View>
       </TabBar>
     );
+  }
+
+  clearCache () {
+    EventCache.reset();
+    PlaceCache.reset();
   }
 
   onValueChange(value,i){
