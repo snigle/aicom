@@ -16,19 +16,20 @@ const AnimatedIcon = Animated.createAnimatedComponent(Icon2);
 const tabs = [
   ,
   {
+    action : "profile",
+    title : "SLIFER",
+    icon : "",
+  },
+  {
     action : "events",
-    title : "Events",
+    title : "",
     icon : "whatshot",
   },
 
-  {
-    action : "profile",
-    title : "Profile",
-    icon : "account-box",
-  },
+  ,
   {
     action : "settings",
-    title : "Settings",
+    title : "",
     icon : "settings",
   },
 

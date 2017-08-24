@@ -100,7 +100,7 @@ class Events extends Component {
 
        <View style={{ backgroundColor : "#ffffff", alignItems : "center", justifyContent : "center", marginTop : 15 , marginTop : 15 }}  >
 
-          <Text> Activité : {card.activity}</Text>
+          <Text>{card.activity}</Text>
 
 
           <View style={{ marginTop : 13, marginBottom : 13 }}>
@@ -108,14 +108,14 @@ class Events extends Component {
           </View>
 
 
-         <Text> lieu : {card.place.name}, {card.place.description }</Text>
+         <Text>{card.place.name}, {card.place.description }</Text>
 
 
           <View style={{ marginTop : 13, marginBottom : 13 }}>
           <Image source={{ uri : card.user.picture }} style={{ width : 170, height : 155 }}/>
           </View>
 
-         <Text> Avec : {card.user.name} </Text>
+         <Text> {card.user.name} </Text>
 
       </View>
 

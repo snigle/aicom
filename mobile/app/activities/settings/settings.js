@@ -56,13 +56,13 @@ class Settings extends Component {
         <Button
         backgroundColor="#e52d27"
         fontFamily="Roboto"
-        buttonStyle={{ width : 200 , height : 70, borderRadius : 50, marginBottom : 60, marginTop : 150, alignSelf : "center" }}
+        buttonStyle={{ width : 200 , height : 70, marginBottom : 60, marginTop : 150, alignSelf : "center" }}
         title="Invite one close friend"
         />
         <Button
         backgroundColor="#55acee"
         fontFamily="Roboto"
-        buttonStyle={{ width : 200 , height : 70, borderRadius : 50, marginBottom : 60, marginTop : 5, alignSelf : "center" }}
+        buttonStyle={{ width : 200 , height : 70, marginBottom : 60, marginTop : 5, alignSelf : "center" }}
         title="log out"
         onPress={() => Actions.login()}
         />

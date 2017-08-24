@@ -19,9 +19,58 @@ class Event extends Component {
     console.log("event accepted", event);
     return (<TabBar>
 
-        <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 }}  >In 12 minutes </Text>
-        <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16  }} >plan</Text>
-        <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 }}  >whisper</Text>
+     <View>
+     <View View  style={{
+       flex : 3,
+       flexDirection : "column",
+       justifyContent : "space-between" ,
+       alignItems : "center" ,
+       backgroundColor : "#ffffff",
+     }}>
+           <Image source={{ uri : this.props.me.picture }} style={{ width : 150, height : 150, marginLeft : 100, marginRight : 200 ,marginTop : 35 }}/>
+           <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 }}> {this.props.me.name }</Text>
+         </View>
+
+      <View style = {{ flexDirection : "row", marginBottom : 75 }}>
+
+        <Text> "Number of events done"</Text>
+        <Text>0</Text>
+        <Text> "Number of people met"</Text>
+        <Text>0</Text>
+        <Text> "Number of place visited"</Text>
+        <Text>0</Text>
+
+     </View>
+</View>
+
+    <Text>meet</Text>
+
+
+    <View>
+         <Image source={{ uri : this.props.me.picture }} style={{ width : 150, height : 150, marginLeft : 100, marginRight : 50 ,marginTop : 35 }}/>
+         <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 }}> {this.props.me.name }</Text>
+       </View>
+
+       <View>
+
+         <Text> "Number of events done"</Text>
+         <Text>0</Text>
+         <Text> "Number of people met"</Text>
+         <Text>0</Text>
+         <Text> "Number of place visited"</Text>
+         <Text>0</Text>
+
+      </View>
+
+
+     <Text>meet</Text>
+
+  <Text>At  Bar/Cinéma</Text>
+
+
+        <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 }}  >In 12 minutes</Text>
+        <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16  }} >location </Text>
+        <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 }}  > whisper</Text>
 
 
 
@@ -39,7 +88,6 @@ class Event extends Component {
 
 
 
->>>>>>> modif UX
     </TabBar>)
 ;
   }
