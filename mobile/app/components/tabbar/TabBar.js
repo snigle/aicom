@@ -181,7 +181,7 @@ _sendNotification({ title, body }) {
   render(props) {
     return (
     <View style={{ flexDirection : "column", flex : 1 }}>
-      <View style={{ flexDirection : "row", position : "absolute", left : 0, right : 0, heigh : 50, padding : 10,  justifyContent : "space-between" }}>
+      <View style={{ flexDirection : "row", position : "absolute", left : 0, right : 0, height : 55, padding : 10,  justifyContent : "space-between" }}>
         <View style={{ width : 30 }}>
           {
             this.props.leftIcon ?
@@ -198,7 +198,7 @@ _sendNotification({ title, body }) {
         }
         </View>
       </View>
-      <View style={{ position : "absolute", top : 50, bottom : 0, right : 0, left : 0 }}  backgroundColor="white">{this.props.children || <Spinner visible={true} textContent={"Loading..."} textStyle={{ color : "#FFF" }}  />}</View>
+      <View style={{ position : "absolute", top : 55, bottom : 0, right : 0, left : 0 }}  backgroundColor="white">{this.props.children || <Spinner visible={true} textContent={"Loading..."} textStyle={{ color : "#FFF" }}  />}</View>
     </View>);
 
   }
