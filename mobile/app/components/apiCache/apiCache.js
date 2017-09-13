@@ -70,6 +70,7 @@ export default class ApiCache {
         }
         return AsyncStorage.getItem(self._addPrefix(key)).then((resp) => {
           console.log("read cache successful");
+          resp.fromCache = true;
           return resp;
         });
       });

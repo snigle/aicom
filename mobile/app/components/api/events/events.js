@@ -11,4 +11,6 @@ export default {
   create : (event, params = defaultParams) => api.auth({ ...params, url : "/event", data : event, method : "POST" }),
   accept : (id, params = defaultParams) => api.auth({ ...params, url : `/event/${id}` , method : "PUT" }),
   getPending : (params = defaultParams) => api.auth({ ...params, url : "/event/pending" }),
+  sendMessage : (id, message, params = {}) => api.auth({ ...params, url : `/event/${id}/message` , method : "POST", data : { message : message } }),
+  receivedMessage : (eventId, messageId, params = {}) => api.auth({ ...params, url : `/event/${eventId}/message/${messageId}` , method : "PUT" }),
 };

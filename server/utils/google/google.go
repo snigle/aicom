@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/NaySoftware/go-fcm"
+	"github.com/google/uuid"
 	"github.com/snigle/aicom/server/models"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -55,7 +56,13 @@ type notification struct {
 
 type notificationEvent struct {
 	*models.Event
-	Action string `json:"action"`
+	Action string      `json:"action"`
+	Data   interface{} `json:"data"`
+}
+
+type Message struct {
+	UUID uuid.UUID `json:"uuid"`
+	Body string    `json:"body,omitempty"`
 }
 
 func SendRequest(token string, event *models.Event) error {
@@ -69,6 +76,22 @@ func SendRequest(token string, event *models.Event) error {
 func SendAcceptedEvent(token string, event *models.Event) error {
 	notif.NewFcmMsgTo(token, &notification{Event: &notificationEvent{
 		Event: event, Action: "ACCEPTED_EVENT",
+	}})
+	_, err := notif.Send()
+	return err
+}
+
+func SendMessageEvent(token string, event *models.Event, message *Message) error {
+	notif.NewFcmMsgTo(token, &notification{Event: &notificationEvent{
+		Event: event, Action: "MESSAGE_EVENT", Data: message,
+	}})
+	_, err := notif.Send()
+	return err
+}
+
+func SendReceivedMessageEvent(token string, event *models.Event, messageID uuid.UUID) error {
+	notif.NewFcmMsgTo(token, &notification{Event: &notificationEvent{
+		Event: event, Action: "RECEIVED_MESSAGE_EVENT", Data: &Message{UUID: messageID},
 	}})
 	_, err := notif.Send()
 	return err

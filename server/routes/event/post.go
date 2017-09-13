@@ -8,6 +8,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"github.com/snigle/aicom/server/models"
 	"github.com/snigle/aicom/server/utils/google"
@@ -126,4 +127,89 @@ func AcceptEvent(c *gin.Context, in *AcceptEventInput) (*models.Event, error) {
 	user.Stats.EventAccepted++
 
 	return e, nil
+}
+
+type SendMessageParams struct {
+	UUID    string `path:"uuid,required"`
+	Message string `json:"message"`
+}
+
+type MessageID struct {
+	UUID uuid.UUID `json:"uuid"`
+}
+
+func SendMessage(c *gin.Context, in *SendMessageParams) (*MessageID, error) {
+	user := c.MustGet(models.ColUser).(*models.User)
+	logrus.Info("send message to event " + in.UUID)
+
+	e := &models.Event{}
+	err := mongo.Aicom.C(models.ColEvent).FindId(bson.ObjectIdHex(in.UUID)).One(&e)
+	if err != nil {
+		logrus.WithError(err).Error("fail to find event")
+		return nil, err
+	}
+
+	// Check that the user has the right to send a message
+	if participatePtr := e.Users[user.ID.Hex()]; participatePtr == nil || !*participatePtr {
+		return nil, errors.New("Forbidden")
+	}
+	messageID := uuid.New()
+	for userID, participate := range e.Users {
+		if participate != nil && *participate {
+			invitedUser := &models.User{}
+			err := mongo.Aicom.C(models.ColUser).Find(bson.M{"_id": userID}).One(&invitedUser)
+			if err != nil {
+				logrus.WithError(err).Error("fail to get user")
+				return nil, err
+			}
+
+			err = google.SendMessageEvent(invitedUser.FCMToken, e, &google.Message{UUID: messageID, Body: in.Message})
+			if err != nil {
+				logrus.WithError(err).Error("fail to send notification")
+				return nil, err
+			}
+		}
+	}
+
+	return &MessageID{UUID: messageID}, nil
+}
+
+type ReceivedMessageParams struct {
+	UUID      string    `path:"uuid,required"`
+	MessageID uuid.UUID `path:"messageId,required"`
+}
+
+func ReceivedMessage(c *gin.Context, in *ReceivedMessageParams) error {
+	user := c.MustGet(models.ColUser).(*models.User)
+	logrus.Info("send message to event " + in.UUID)
+
+	e := &models.Event{}
+	err := mongo.Aicom.C(models.ColEvent).FindId(bson.ObjectIdHex(in.UUID)).One(&e)
+	if err != nil {
+		logrus.WithError(err).Error("fail to find event")
+		return err
+	}
+
+	// Check that the user has the right to send a message
+	if participatePtr := e.Users[user.ID.Hex()]; participatePtr == nil || !*participatePtr {
+		return errors.New("Forbidden")
+	}
+	for userID, participate := range e.Users {
+		if participate != nil && *participate {
+			invitedUser := &models.User{}
+			err := mongo.Aicom.C(models.ColUser).Find(bson.M{"_id": userID}).One(&invitedUser)
+			if err != nil {
+				logrus.WithError(err).Error("fail to get user")
+				return err
+			}
+
+			err = google.SendReceivedMessageEvent(invitedUser.FCMToken, e, in.MessageID)
+			if err != nil {
+				logrus.WithError(err).Error("fail to send notification")
+				return err
+			}
+		}
+	}
+
+	return nil
 }

@@ -75,7 +75,7 @@ export default (() => {
       return response.text();
     });}).then((result) => {
       if (result) {
-        if (cache) {
+        if (cache && !result.fromCache) {
           cache.set(url, result);
         }
         return JSON.parse(result);
