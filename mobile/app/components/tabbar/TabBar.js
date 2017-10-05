@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, Animated, TouchableWithoutFeedback, AsyncStorage } from "react-native";
+import { Text, View, Animated, BackHandler } from "react-native";
 import { Tabs, Tab, Icon, Header } from "react-native-elements";
 import { Actions } from "react-native-router-flux";
 import { connect } from "react-redux";
@@ -34,6 +34,9 @@ const tabs = [
   },
 
 ];
+
+var backPress = () => Actions.pop() || true;
+
 class TabBar extends Component {
   constructor() {
     super();
@@ -47,6 +50,18 @@ class TabBar extends Component {
       toValue : 100,
       duration : 500,
     }).start();
+
+    // If back button
+    if (this.props.leftIcon === "chevron-left") {
+      console.log("register back press");
+      BackHandler.addEventListener("hardwareBackPress", backPress);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.props.leftIcon === "chevron-left") {
+      BackHandler.removeEventListener("hardwareBackPress", backPress);
+    }
   }
 
   _getColor(tab) {

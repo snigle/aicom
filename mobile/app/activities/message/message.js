@@ -26,7 +26,7 @@ class Event extends Component {
   componentDidMount() {
     let self = this;
     cache.get("state").then(res => {
-      let messages = _.uniqBy(JSON.parse(res),"uuid");
+      let messages = JSON.parse(res);
       _.forEach(messages, (message) => {
         self.props.addMessage(message);
       });

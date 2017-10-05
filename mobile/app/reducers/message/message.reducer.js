@@ -12,6 +12,7 @@ export default function(state = DEFAULT_STATE, action) {
     case ADD_MESSAGE:
       var stateCopy = _.clone(state);
       stateCopy.push(action.message);
+      stateCopy = _.uniqBy(stateCopy,"uuid");
       cache.set("state",stateCopy).catch(err => console.log("fail to save message cache", err));
       return stateCopy;
     default:

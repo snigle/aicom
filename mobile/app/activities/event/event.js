@@ -16,15 +16,15 @@ import moment from "moment";
 class Event extends Component {
 
   render () {
-    var event = this.props.event[0];
+    var event = this.props.event;
     console.log("event accepted", event);
 
     return (
 
       <TabBar>
 
-     <View  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16, marginTop : 15 }}>
-     <Text>JOIN YOUR FRIEND {moment(event.time).fromNow()}</Text>
+     <View  style={{ alignSelf : "center",backgroundColor : "#ffffff", marginTop : 15 }}>
+     <Text style={{ fontWeight : "bold" ,fontSize : 16 }}>JOIN YOUR FRIEND {moment(event.time).fromNow()}</Text>
      </View>
 
       <View View style={{
@@ -51,8 +51,8 @@ class Event extends Component {
 
    </View>
 
-   <View  style={{ backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16, alignSelf : "center" , marginTop : 17 , marginBottom : 25  }}>
-   <Text>  Meet </Text>
+   <View  style={{ backgroundColor : "#ffffff", alignSelf : "center" , marginTop : 17 , marginBottom : 25  }}>
+   <Text style={{ fontWeight : "bold",fontSize : 16 }}>  Meet </Text>
    </View>
 
 
@@ -104,7 +104,8 @@ class Event extends Component {
          backgroundColor="#e52d27"
          fontFamily="Roboto"
          buttonStyle={{ width : 100, marginLeft : 20, marginRight : 20, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" }}
-         title=" Whisper :)  "/>
+         title=" Whisper :)  "
+         onPress={() => Actions.message({ event : event })}/>
 
          </View>
 
