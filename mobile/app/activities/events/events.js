@@ -26,6 +26,7 @@ class Events extends Component {
       this.state = {};
       this.state.users = [];
       this.state.cards = [];
+      this.state.loaded = false;
       this.state.cardIndex = 0;
     }
 
@@ -36,7 +37,7 @@ class Events extends Component {
 
   componentDidMount () {
     var self = this;
-    EventApi.list().then((response) => response.length > 0 ? Actions.event({ event : response }) : null);
+    EventApi.list().then((response) => response.length > 0 ? Actions.event({ event : response[0] }) : null);
     Promise.all([
       UserApi.list(),
       Promise.resolve(self.props.me),
@@ -72,14 +73,18 @@ class Events extends Component {
       });
 
       state.cards = _.sortBy(state.cards, ["+score"]);
+      state.loaded = true;
       self.setState(state);
     });
   }
   render () {
     var self = this;
     var card = this.state.cards[this.state.cardIndex];
-    if (!card) {
+    if (!this.state.loaded) {
       return  <TabBar />;
+    }
+    if (!card) {
+      return <Text>No event available</Text>;
     }
     console.log("card",card,this.state.cards, `${apiRouteBase}/place/picture/${card.place.picture[0]}?token=${Api.token}`);
     // var card = { activity : "toto", user : "toto" };

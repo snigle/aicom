@@ -18,7 +18,7 @@ const enhancer = compose(
   applyMiddleware(thunk, promise, logger)
 );
 
-const store = createStore(reducer, {}, enhancer);
+export const store = createStore(reducer, {}, enhancer);
 
 export default class App extends Component {
 

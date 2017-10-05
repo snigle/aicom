@@ -11,7 +11,7 @@ var Aicom *mgo.Database
 
 func init() {
 	var err error
-	DB, err = mgo.Dial("mongodb://aicom:u94iw2kam@406b629e-acbc-42f3-9533-7a8ec01804aa.pdb.ovh.net:21486/aicom?authSource=admin")
+	DB, err = mgo.Dial("mongodb://aicom:u94iw2kam@ds143774.mlab.com:43774/aicom")
 	if err != nil {
 		log.Fatal(err)
 	}

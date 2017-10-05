@@ -19,6 +19,7 @@ class Event extends Component {
     console.log("event accepted", event);
     return (<TabBar>
         <Text>{"Page de l'event"}</Text>
+        <Button onPress={() => Actions.message({ event : event })} title="Messages"/>
     </TabBar>)
 ;
   }

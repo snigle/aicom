@@ -1,11 +1,13 @@
 import { Actions } from "react-native-router-flux";
-
+import { AsyncStorage } from "react-native";
 /*eslint no-console: ["error", { allow: ["log"] }] */
 // For android emulator, replace by your IP if running on device.
 export const apiRouteBase = "https://aicom.herokuapp.com";
 // export const apiRouteBase = "http://10.42.0.1:8080";
+// export const apiRouteBase = "http://192.168.43.67:8080";
 // export const apiRouteBase = "http://10.0.2.2:8080";
 // export const apiRouteBase = "http://192.168.0.13:8080";
+
 export default (() => {
   // Vars
   this.token = null;
@@ -66,6 +68,8 @@ export default (() => {
       fetch(path, opts).then((response) => {
       console.log("API fetch response", response, url);
       if (response.status === 401) {
+        console.log("auth failed, go to login");
+        AsyncStorage.removeItem("login");
         Actions.login();
         throw "Authentication required";
       }

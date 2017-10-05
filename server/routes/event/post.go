@@ -104,7 +104,7 @@ func AcceptEvent(c *gin.Context, in *AcceptEventInput) (*models.Event, error) {
 		go func(uuid string) {
 			// get user
 			invitedUser := &models.User{}
-			err := mongo.Aicom.C(models.ColUser).Find(bson.M{"_id": uuid}).One(&invitedUser)
+			err := mongo.Aicom.C(models.ColUser).FindId(bson.M{"_id": uuid}).One(&invitedUser)
 			if err != nil {
 				logrus.WithError(err).Error("fail to get user")
 				return
@@ -155,14 +155,14 @@ func SendMessage(c *gin.Context, in *SendMessageParams) (*MessageID, error) {
 	}
 	messageID := uuid.New()
 	for userID, participate := range e.Users {
-		if participate != nil && *participate {
+		if participate != nil && *participate && userID != user.ID.Hex() {
 			invitedUser := &models.User{}
-			err := mongo.Aicom.C(models.ColUser).Find(bson.M{"_id": userID}).One(&invitedUser)
+			err := mongo.Aicom.C(models.ColUser).FindId(bson.ObjectIdHex(userID)).One(&invitedUser)
 			if err != nil {
 				logrus.WithError(err).Error("fail to get user")
 				return nil, err
 			}
-
+			logrus.WithField("user_id", userID).WithField("username", invitedUser.Name).Info("send notif to user")
 			err = google.SendMessageEvent(invitedUser.FCMToken, e, &google.Message{UUID: messageID, Body: in.Message})
 			if err != nil {
 				logrus.WithError(err).Error("fail to send notification")

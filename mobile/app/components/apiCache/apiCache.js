@@ -12,7 +12,8 @@ export default class ApiCache {
   }
 
   _addPrefix(key) {
-    return `${self.key}$$${key}`;
+    let self = this;
+    return `${self.prefix}$$${key}`;
   }
 
   reset() {
@@ -34,6 +35,9 @@ export default class ApiCache {
         console.log("set cache", key, keys, keys[key]);
         keys[key] = moment();
         self._saveKeys(keys);
+        if (!_.isString(data)) {
+          data = JSON.stringify(data);
+        }
         return AsyncStorage.setItem(self._addPrefix(key), data);
       });
     });

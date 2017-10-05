@@ -58,6 +58,10 @@ func Login(c *gin.Context, in *LoginInput) (*models.Token, error) {
 		log.Print("create new user")
 		u.ID = bson.NewObjectId()
 	}
+	u.Activities = map[string]bool{
+		"cafe": true,
+		"bar":  true,
+	}
 	u.SetLocationFromHeader(c.Request.Header.Get("X-Location"))
 	// Insert or update user
 	_, err = mongo.Aicom.C(models.ColUser).UpsertId(u.ID, u)

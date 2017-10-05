@@ -11,6 +11,7 @@ import Api from "../../components/api/login/login";
 import ApiAuth from "../../components/api/api";
 import UserApi from "../../components/api/users/users";
 import styles from "./login.style";
+import { register } from "../../components/notificationHandler";
 
 class Login extends Component {
 
@@ -96,10 +97,14 @@ class Login extends Component {
       this.props.setMe(me);
       ToastAndroid.show("Login successful", ToastAndroid.SHORT);
       if (_.reduce(me.activities, (res, key, value) => res || value, false)) {
+        // Actions.event({}, { event : { test : "test" } });
+        // return;
+        register();
         Actions.events({ type : "replace" });
-      } else {
-        Actions.settings({ type : "replace" });
+        return;
       }
+        Actions.settings({ type : "replace" });
+
     }).catch((err) => ToastAndroid.show("Fail to login, please contact administrator.", ToastAndroid.SHORT));
   }
 
