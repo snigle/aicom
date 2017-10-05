@@ -98,7 +98,7 @@ class Events extends Component {
         backgroundColor : "#ffffff",
       }}>
 
-       <View style={{ backgroundColor : "#ffffff", alignItems : "center", justifyContent : "center", marginTop : 15 , marginTop : 15 }}  >
+       <View style={{ backgroundColor : "#ffffff", alignItems : "center", justifyContent : "center", marginTop : 15  }}  >
 
           <Text>{card.activity}</Text>
 
@@ -125,15 +125,15 @@ class Events extends Component {
     <Button
     backgroundColor="#55acee"
     fontFamily="Roboto"
-    buttonStyle={{ marginLeft : 50, marginRight : 15, marginBottom : 5 ,marginTop : 10, justifyContent : "space-between", flex : 1 }}
-    title=" Not now"
+    buttonStyle={{ width : 100, marginLeft : 25, marginRight : 20, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" }}
+    title=" Not now  :("
     onPress={() => this.next()}/>
 
     <Button
     backgroundColor="#e52d27"
     fontFamily="Roboto"
-    buttonStyle={{ marginLeft : 50, marginRight : 15, marginBottom : 5 ,marginTop : 10, justifyContent : "space-between", flex : 1  }}
-    title=" Lets Go !"
+    buttonStyle={{ width : 100, marginLeft : 20, marginRight : 25, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" }}
+    title=" Lets Go  :) "
     onPress={() => this.accept(card)}/>
 
     </View>

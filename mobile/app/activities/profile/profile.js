@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, AsyncStorage,Image } from "react-native";
+import { Text, View, AsyncStorage,Image,  Linking } from "react-native";
 import { connect } from "react-redux";
 import styles from "./profile.style";
 import { Tabs, Tab, Icon, Button, List, ListItem } from "react-native-elements";
@@ -10,6 +10,7 @@ import { Actions } from "react-native-router-flux";
 import { logout } from "../../reducers/login/login.actions";
 import { addActivity, removeActivity } from "../../reducers/me/me.actions";
 import TabBar from "../../components/tabbar/TabBar";
+import moment from "moment";
 
 class Profile extends Component {
 // voir commentaire bas de page.
@@ -20,7 +21,7 @@ render() {
    <TabBar>
 
   <View  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16, marginTop : 15 }}>
-  <Text> "BE READY IN 48 MINUTES"</Text>
+  <Text>yo</Text>
   </View>
 
    <View View style={{
@@ -45,11 +46,11 @@ render() {
 
    </View>
 
-</View>
+ </View>
 
-<View  style={{ backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16, alignSelf : "center" , marginTop : 17 , marginBottom : 25  }}>
-<Text>  Meet </Text>
-</View>
+ <View  style={{ backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16, alignSelf : "center" , marginTop : 17 , marginBottom : 25  }}>
+ <Text>  Meet </Text>
+ </View>
 
 
 
@@ -77,33 +78,35 @@ render() {
    </View>
   </View>
 
-  <View  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16,marginTop : 17 , marginBottom : 25  }}>
-  <Text> here </Text>
-  </View>
 
+  <Button
+  backgroundColor="white"
+  color="black"
+  fontFamily="Roboto"
+  buttonStyle={{ alignSelf : "center" , marginTop : 2, marginBottom : 2, justifyContent : "center" }}
+  title="  maps "/>
 
-
+ // https://www.google.com/maps/dir/?api=1&parameters
 
   <View style = {{ flexDirection : "row", marginBottom : 40 }} >
 
       <Button
       backgroundColor="#55acee"
       fontFamily="Roboto"
-      buttonStyle={{ marginLeft : 35, marginRight : 15, marginBottom : 5 ,marginTop : 10, justifyContent : "space-between", flex : 1 }}
-      title=" Cancel :("/>
+      buttonStyle={{  width : 100, marginLeft : 30, marginRight : 20, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" }}
+      title="  Cancel   :("/>
 
       <Button
       backgroundColor="#e52d27"
       fontFamily="Roboto"
-      buttonStyle={{ marginLeft : 50, marginRight : 15, marginBottom : 5 ,marginTop : 10, justifyContent : "space-between", flex : 1  }}
-      title="I'm in !  "/>
+      buttonStyle={{ width : 100, marginLeft : 20, marginRight : 20, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" }}
+      title="  I'm in   :)  "/>
 
       </View>
 
 
 
     </TabBar>
-
  );
 }
 }

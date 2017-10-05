@@ -56,7 +56,7 @@ class Settings extends Component {
         <Button
         backgroundColor="#e52d27"
         fontFamily="Roboto"
-        buttonStyle={{ width : 200 , height : 70, marginBottom : 60, marginTop : 150, alignSelf : "center" }}
+        buttonStyle={{ width : 200 , height : 70, marginBottom : 60, marginTop : 100 , alignSelf : "center" }}
         title="Invite one close friend"
         />
         <Button
@@ -67,9 +67,10 @@ class Settings extends Component {
         onPress={() => Actions.login()}
         />
         <Button
-        backgroundColor="#55acee"
+        backgroundColor="green"
         fontFamily="Roboto"
-        buttonStyle={{ width : 200 , height : 70, borderRadius : 50, marginBottom : 60, marginTop : 5, alignSelf : "center" }}
+        buttonStyle={{ width : 200 , height : 70,
+           marginBottom : 100, marginTop : 5, alignSelf : "center" }}
         title="Clear cache"
         onPress={() => self.clearCache()}
         />
