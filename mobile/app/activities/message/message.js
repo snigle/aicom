@@ -6,7 +6,6 @@ import _ from "lodash";
 import styles from "./message.style";
 import TabBar from "../../components/tabbar/TabBar";
 import { addMessage } from "../../reducers/message/message.actions";
-import { cache } from "../../reducers/message/message.reducer";
 import {
   Button,
 } from "react-native-elements";
@@ -21,17 +20,6 @@ class Event extends Component {
   constructor(props) {
     super(props);
     this.state = { message : "", loading : false };
-  }
-
-  componentDidMount() {
-    let self = this;
-    cache.get("state").then(res => {
-      let messages = JSON.parse(res);
-      _.forEach(messages, (message) => {
-        self.props.addMessage(message);
-      });
-      console.log("messages",messages);
-    }).catch(err => console.log("error reading message cache", err));
   }
 
   render () {

@@ -11,7 +11,7 @@ import Api from "../../components/api/login/login";
 import ApiAuth from "../../components/api/api";
 import UserApi from "../../components/api/users/users";
 import styles from "./login.style";
-import { register } from "../../components/notificationHandler";
+import { sendTokenToBackend } from "../../components/notificationHandler";
 
 class Login extends Component {
 
@@ -99,7 +99,9 @@ class Login extends Component {
       if (_.reduce(me.activities, (res, key, value) => res || value, false)) {
         // Actions.event({}, { event : { test : "test" } });
         // return;
-        register();
+        sendTokenToBackend();
+        // AppRegistry.registerHeadlessTask("NotificationService", () => register());
+
         Actions.events({ type : "replace" });
         return;
       }

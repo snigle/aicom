@@ -1,12 +1,24 @@
 import FCM, { FCMEvent } from "react-native-fcm";
 import { Platform } from "react-native";
+
+import _ from "lodash";
+
 import UserApi from "../api/users/users";
 import { AsyncStorage } from "react-native";
 import { store } from "../../app";
 import { addMessage } from "../../reducers/message/message.actions";
+import { cache } from "../../reducers/message/message.reducer";
 
-export const register = () => {
+export const register = async () => {
 FCM.requestPermissions();
+
+let initCache = cache.get("state").then(res => {
+  let messages = JSON.parse(res);
+  _.forEach(messages, (message) => {
+    store.dispatch(addMessage(message));
+  });
+  console.log("messages",messages);
+}).catch(err => console.log("error reading message cache", err));
 
 if(Platform.OS === "ios"){
   FCM.getAPNSToken().then(token => {
@@ -45,7 +57,7 @@ FCM.on(FCMEvent.Notification, notif => {
   }
   if (event.action === "MESSAGE_EVENT") {
     _sendNotification({ title : "Message received", body : event.data.body });
-    store.dispatch(addMessage(event.data));
+    initCache.then(() => store.dispatch(addMessage(event.data)));
   }
   let name = "Event requested";
   let description = `You have ${event.number} requests for event at ${event.time}`;
@@ -72,31 +84,7 @@ FCM.getFCMToken().then(token => {
   _sendToken(token).catch((e) => console.log("error fcm", e));
 });
 
-var _sendToken = (token) => {
-  return Promise.all([
-    UserApi.me(),
-    AsyncStorage.getItem("fcm_token").then((cacheToken) => {
-        console.log("NOTIFICATION get cache", cacheToken);
-        if (cacheToken !== token) {
-          return null;
-        }
-        return cacheToken;
-      }, () => {
-        return null;
-      }),
-  ]).then(res => {
-    let me = res[0];
-    let cacheToken = res[1];
-    console.log("NOTIFICATION call api ?", res, cacheToken, me);
-    if (!cacheToken || !me.fcm_token) {
-      return UserApi.setNotificationToken(token).then(() => token);
-    }
-    return cacheToken;
-  }).then((token) => {
-    console.log("NOTIFICATION set cache", token);
-    AsyncStorage.setItem("fcm_token2", token);
-  }).catch((err) => console.log("fail to send token", err));
-};
+var _sendToken = (token) => AsyncStorage.setItem("notification.token", token).finally(() => console.log("notification token saved"));
 
 var _sendNotification = ({ title, body }) => {
     console.log("Notification _sendNotification");
@@ -126,4 +114,32 @@ var _sendNotification = ({ title, body }) => {
 
     });
   };
+};
+
+export const sendTokenToBackend = () => {
+  AsyncStorage.getItem("notification.token").then((token) => {
+    return Promise.all([
+      UserApi.me(),
+      AsyncStorage.getItem("fcm_token").then((cacheToken) => {
+          console.log("NOTIFICATION get cache", cacheToken);
+          if (cacheToken !== token) {
+            return null;
+          }
+          return cacheToken;
+        }, () => {
+          return null;
+        }),
+    ]).then(res => {
+      let me = res[0];
+      let cacheToken = res[1];
+      console.log("NOTIFICATION call api ?", res, cacheToken, me);
+      if (!cacheToken || !me.fcm_token) {
+        return UserApi.setNotificationToken(token).then(() => token);
+      }
+      return cacheToken;
+    }).then((token) => {
+      console.log("NOTIFICATION set cache", token);
+      AsyncStorage.setItem("fcm_token2", token);
+    }).catch((err) => console.log("fail to send token", err));
+  });
 };

@@ -163,7 +163,7 @@ class Events extends Component {
     if (event.id) {
       EventApi.accept(event.id).then((response) => {
         console.log("event accepted", response);
-          Actions.event(response);
+          Actions.event({ event : response });
       }).catch(err => (console.log(err), ToastAndroid.show("fail to accept event", ToastAndroid.SHORT)));
     }else {
       EventApi.create({
