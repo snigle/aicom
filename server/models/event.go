@@ -14,6 +14,12 @@ type Event struct {
 	Place    *Place           `json:"place" bson:"place"`
 	Time     time.Time        `json:"time" bson:"time"`
 	Users    map[string]*bool `json:"users" bson:"users"`
+	Accepted bool             `json:"accepted" bson:"accepted"`
+}
+
+type EventWithUsers struct {
+	*Event
+	Users map[string]*User `json:"users"`
 }
 
 type Place struct {

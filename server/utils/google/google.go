@@ -8,7 +8,6 @@ import (
 
 	"github.com/NaySoftware/go-fcm"
 	"github.com/google/uuid"
-	"github.com/snigle/aicom/server/models"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	calendar "google.golang.org/api/calendar/v3"
@@ -50,49 +49,38 @@ func GetClient() (*maps.Client, error) {
 	return maps.NewClient(maps.WithAPIKey("AIzaSyBzw0TKHErNipMhGauIwMsem4CSGEMx-WI"))
 }
 
-type notification struct {
-	Event *notificationEvent `json:"event"`
-}
-
-type notificationEvent struct {
-	*models.Event
+type Notification struct {
+	Title  string      `json:"title"`
+	Body   string      `json:"body"`
 	Action string      `json:"action"`
+	Route  string      `json:"route"`
 	Data   interface{} `json:"data"`
 }
 
 type Message struct {
-	UUID uuid.UUID `json:"uuid"`
-	Body string    `json:"body,omitempty"`
+	UUID     uuid.UUID `json:"uuid"`
+	SenderID string    `json:"senderID"`
+	Body     string    `json:"body"`
 }
 
-func SendRequest(token string, event *models.Event) error {
-	notif.NewFcmMsgTo(token, &notification{Event: &notificationEvent{
-		Event: event, Action: "PENDING_EVENT",
-	}})
+func SendNotification(token string, notification *Notification) error {
+	notif.NewFcmMsgTo(token, struct {
+		Event *Notification `json:"event"`
+	}{notification})
 	_, err := notif.Send()
 	return err
 }
 
-func SendAcceptedEvent(token string, event *models.Event) error {
-	notif.NewFcmMsgTo(token, &notification{Event: &notificationEvent{
-		Event: event, Action: "ACCEPTED_EVENT",
-	}})
-	_, err := notif.Send()
-	return err
+func ResetCache(token string) error {
+	return SendNotification(token, &Notification{
+		Action: "RESET_CACHE",
+		Data: struct {
+			Type string `json:"type"`
+		}{"event"},
+	})
 }
 
-func SendMessageEvent(token string, event *models.Event, message *Message) error {
-	notif.NewFcmMsgTo(token, &notification{Event: &notificationEvent{
-		Event: event, Action: "MESSAGE_EVENT", Data: message,
-	}})
-	_, err := notif.Send()
-	return err
-}
-
-func SendReceivedMessageEvent(token string, event *models.Event, messageID uuid.UUID) error {
-	notif.NewFcmMsgTo(token, &notification{Event: &notificationEvent{
-		Event: event, Action: "RECEIVED_MESSAGE_EVENT", Data: &Message{UUID: messageID},
-	}})
-	_, err := notif.Send()
-	return err
-}
+const MESSAGE_EVENT = "MESSAGE_EVENT"
+const RECEIVED_MESSAGE_EVENT = "RECEIVED_MESSAGE_EVENT"
+const ACCEPTED_EVENT = "ACCEPTED_EVENT"
+const PENDING_EVENT = "PENDING_EVENT"

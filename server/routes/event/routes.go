@@ -34,6 +34,12 @@ func init() {
 			AuthRequired: true,
 		},
 		&routes.Route{
+			Function:     tonic.Handler(CancelEvent, 200),
+			Method:       http.MethodDelete,
+			Path:         "/event/:uuid",
+			AuthRequired: true,
+		},
+		&routes.Route{
 			Function:     tonic.Handler(SendMessage, 200),
 			Method:       http.MethodPost,
 			Path:         "/event/:uuid/message",

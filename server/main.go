@@ -9,12 +9,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/namsral/flag"
+	"github.com/sirupsen/logrus"
 	"github.com/snigle/aicom/server/models"
 	"github.com/snigle/aicom/server/routes"
 	_ "github.com/snigle/aicom/server/routes/event"
 	_ "github.com/snigle/aicom/server/routes/login"
 	_ "github.com/snigle/aicom/server/routes/place"
 	_ "github.com/snigle/aicom/server/routes/user"
+	"github.com/snigle/aicom/server/utils/google"
 	"github.com/snigle/aicom/server/utils/mongo"
 )
 
@@ -63,6 +65,13 @@ func main() {
 			}
 		}
 	}
+
+	err := google.ResetCache("cretM_jbZfw:APA91bHrKrLFAdiOID09ZZGM85jfEhDFUxOAEEpKFOVWjZwAurO_9a4os9md9j3t1AKYnG2T-bqTFeERowC-7kGTbtPiOMlfTt1wNkAZAk1nDJFQISneSIMDqij5xuK4aG1aMdvbADKF")
+	if err != nil {
+		logrus.WithError(err).Error("fail to send reset_cache notification")
+		panic(err)
+	}
+
 	r.Run(fmt.Sprintf(":%d", port))
 }
 
@@ -84,7 +93,7 @@ func AuthRequired() gin.HandlerFunc {
 		token.AccessToken = accessToken
 		oldToken := *token
 		user := &models.User{}
-		err = mongo.Aicom.C(models.ColUser).Find(bson.M{"_id": token.UserID}).One(&user)
+		err = mongo.Aicom.C(models.ColUser).FindId(token.UserID).One(&user)
 		if err != nil {
 			log.Printf("Fail to get user %v", err)
 			c.AbortWithError(401, err)
@@ -98,7 +107,7 @@ func AuthRequired() gin.HandlerFunc {
 			log.Printf("access_token : %s\n copy : %s\n", oldToken.AccessToken, token.AccessToken)
 			if oldToken.AccessToken != token.AccessToken {
 				log.Print("token updated")
-				err = mongo.Aicom.C(models.ColToken).Update(bson.M{"_id": token.ID}, token)
+				err = mongo.Aicom.C(models.ColToken).UpdateId(token.ID, token)
 				if err != nil {
 					log.Print("fail to save updated token")
 					return
@@ -112,7 +121,7 @@ func AuthRequired() gin.HandlerFunc {
 			}
 
 			log.Printf("update user, receive location : %s", c.Request.Header.Get("X-Location"))
-			err = mongo.Aicom.C(models.ColUser).Update(bson.M{"_id": user.ID}, user)
+			err = mongo.Aicom.C(models.ColUser).UpdateId(user.ID, bson.M{"$set": bson.M{"location": user.Location}})
 			if err != nil {
 				log.Print("fail to save updated location")
 				return

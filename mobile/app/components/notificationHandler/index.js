@@ -6,10 +6,18 @@ import _ from "lodash";
 import UserApi from "../api/users/users";
 import { AsyncStorage } from "react-native";
 import { store } from "../../app";
-import { addMessage } from "../../reducers/message/message.actions";
+import { addMessage, markAsReceived } from "../../reducers/message/message.actions";
 import { cache } from "../../reducers/message/message.reducer";
+import { Actions } from "react-native-router-flux";
+import EventApi, { EventCache } from "../api/events/events";
+import { PlaceCache } from "../api/places/places";
+
+function log() {
+  console.log("notificationHandler", arguments);
+}
 
 export const register = async () => {
+  log("register notification handler");
 FCM.requestPermissions();
 
 let initCache = cache.get("state").then(res => {
@@ -17,51 +25,65 @@ let initCache = cache.get("state").then(res => {
   _.forEach(messages, (message) => {
     store.dispatch(addMessage(message));
   });
-  console.log("messages",messages);
-}).catch(err => console.log("error reading message cache", err));
+  log("messages",messages);
+}).catch(err => log("error reading message cache", err));
 
 if(Platform.OS === "ios"){
   FCM.getAPNSToken().then(token => {
-    console.log("APNS TOKEN (getFCMToken)", token);
+    log("APNS TOKEN (getFCMToken)", token);
     _sendToken(token);
   });
 }
 
 FCM.getInitialNotification().then(notif => {
-  console.log("INITIAL NOTIFICATION", notif);
+  log("INITIAL NOTIFICATION", notif);
 });
 let toto = Math.random();
 FCM.on(FCMEvent.Notification, notif => {
-  console.log("Notification", toto, notif);
+  log("Notification", toto, notif);
   if(notif.local_notification){
-    console.log("Notification", "local");
+    log("Notification", "local", notif);
+    if (notif.event.route) {
+      Actions[notif.event.route](notif.event.routeParams);
+    }
     return;
   }
   if(notif.opened_from_tray){
-    console.log("Notification", "opened_from_tray");
+    log("Notification", "opened_from_tray", notif);
     return;
   }
 
   let event = JSON.parse(notif.event);
-  console.log("Notification event", event);
+  log("Notification event", event);
   if (!event.action) {
-    console.log("bad event received");
+    log("bad event received");
     return;
   }
-  if (event.action === "PENDING_EVENT") {
-    console.log("Notification send pending event");
-    _sendNotification({ title : "Event requested", body : `You have 1 requests for event at ${event.time}` });
-  }
-  if (event.action === "ACCEPTED_EVENT") {
-    _sendNotification({ title : "Event Accepted", body : `We found an event ! Let's go to ${event.place.name}` });
+
+  if (event.action === "RESET_CACHE") {
+    switch (event.data.type) {
+      case "event" : EventCache.reset(); break;
+      case "place" : PlaceCache.reset(); break;
+    }
   }
   if (event.action === "MESSAGE_EVENT") {
-    _sendNotification({ title : "Message received", body : event.data.body });
     initCache.then(() => store.dispatch(addMessage(event.data)));
+    EventApi.receivedMessage(event.data.uuid, event.data.senderID);
   }
-  let name = "Event requested";
-  let description = `You have ${event.number} requests for event at ${event.time}`;
+  if (event.action === "RECEIVED_MESSAGE_EVENT") {
+    initCache.then(() => store.dispatch(markAsReceived(event.data.uuid)));
+  }
 
+  if (event.title && event.body) {
+    _sendNotification(event);
+  }
+  // if (event.action === "PENDING_EVENT") {
+  //   log("Notification send pending event");
+  //   _sendNotification({ title : "Event requested", body : `You have 1 requests for event at ${event.time}` });
+  // }
+  // if (event.action === "ACCEPTED_EVENT") {
+  //   _sendNotification({ title : "Event Accepted", body : `We found an event ! Let's go to ${event.place.name}` });
+  // }
 
 });
 
@@ -73,25 +95,25 @@ FCM.on(FCMEvent.RefreshToken, token => {
 // directly channel is truned off in iOS by default, this method enables it
 FCM.enableDirectChannel();
 FCM.on(FCMEvent.DirectChannelConnectionChanged, (data) => {
-  console.log("direct channel connected" + data);
+  log("direct channel connected" + data);
 });
 setTimeout(function() {
-  FCM.isDirectChannelEstablished().then(d => console.log(d));
+  FCM.isDirectChannelEstablished().then(d => log(d));
 }, 1000);
 
 FCM.getFCMToken().then(token => {
-  console.log("TOKEN (getFCMToken)", token);
-  _sendToken(token).catch((e) => console.log("error fcm", e));
+  log("TOKEN (getFCMToken)", token);
+  _sendToken(token).catch((e) => log("error fcm", e));
 });
 
-var _sendToken = (token) => AsyncStorage.setItem("notification.token", token).finally(() => console.log("notification token saved"));
+var _sendToken = (token) => AsyncStorage.setItem("notification.token", token).finally(() => log("notification token saved"));
 
-var _sendNotification = ({ title, body }) => {
-    console.log("Notification _sendNotification");
+var _sendNotification = (event) => {
+    log("Notification _sendNotification");
     FCM.presentLocalNotification({
       // id: "UNIQ_ID_STRING",                               // (optional for instant notification)
-      title : title,                     // as FCM payload
-      body : body,                    // as FCM payload (required)
+      title : event.title,                     // as FCM payload
+      body : event.body,                    // as FCM payload (required)
       sound : "default",                                   // as FCM payload
       priority : "high",                                   // as FCM payload
       click_action : "ACTION",                             // as FCM payload
@@ -111,7 +133,7 @@ var _sendNotification = ({ title, body }) => {
       my_custom_data : "my_custom_field_value",             // extra data you want to throw
       lights : true,                                       // Android only, LED blinking (default false)
       show_in_foreground : true,                                  // notification when app is in foreground (local & remote)
-
+      event : event,
     });
   };
 };
@@ -121,7 +143,7 @@ export const sendTokenToBackend = () => {
     return Promise.all([
       UserApi.me(),
       AsyncStorage.getItem("fcm_token").then((cacheToken) => {
-          console.log("NOTIFICATION get cache", cacheToken);
+          log("NOTIFICATION get cache", cacheToken);
           if (cacheToken !== token) {
             return null;
           }
@@ -132,14 +154,14 @@ export const sendTokenToBackend = () => {
     ]).then(res => {
       let me = res[0];
       let cacheToken = res[1];
-      console.log("NOTIFICATION call api ?", res, cacheToken, me);
+      log("NOTIFICATION call api ?", res, cacheToken, me);
       if (!cacheToken || !me.fcm_token) {
         return UserApi.setNotificationToken(token).then(() => token);
       }
       return cacheToken;
     }).then((token) => {
-      console.log("NOTIFICATION set cache", token);
+      log("NOTIFICATION set cache", token);
       AsyncStorage.setItem("fcm_token2", token);
-    }).catch((err) => console.log("fail to send token", err));
+    }).catch((err) => log("fail to send token", err));
   });
 };

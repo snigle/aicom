@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"github.com/snigle/aicom/server/models"
 	"github.com/snigle/aicom/server/utils/mongo"
 	"gopkg.in/mgo.v2/bson"
@@ -14,7 +15,7 @@ import (
 
 func filterEvents(user *models.User, myValidation, otherValidation *bool) ([]*models.Event, error) {
 	events := []*models.Event{}
-	// { "$and" : [{"activity" :"bar"}, {"users.58bf2dc6fae14b6b022eb7d5" : true }, { "$or" : [{"time": { "$gte" : {"$date":"2017-04-19T23:00:00.000Z"} } }, {"time": { "$lte" : {"$date":"2017-04-19T23:00:00.000Z"} } }]} ] }
+
 	err := mongo.Aicom.C(models.ColEvent).Find(
 		bson.M{"$and": []bson.M{
 			{fmt.Sprintf("users.%s", user.ID.Hex()): myValidation},
@@ -55,10 +56,54 @@ func GetPendingEvent(c *gin.Context) ([]*models.Event, error) {
 
 }
 
-func GetEvents(c *gin.Context) ([]*models.Event, error) {
+func attachUsers(events []*models.Event) ([]*models.EventWithUsers, error) {
+	l := logrus.WithField("function", "attachUsers")
+
+	uuids := []bson.ObjectId{}
+	for _, e := range events {
+		for userID := range e.Users {
+			uuids = append(uuids, bson.ObjectIdHex(userID))
+		}
+	}
+
+	users := []*models.User{}
+	err := mongo.Aicom.C(models.ColUser).Find(
+		bson.M{"_id": bson.M{"$in": uuids}},
+	).All(&users)
+	if err != nil {
+		l.WithError(err).Info("fail to get users")
+		return nil, err
+	}
+
+	usersMap := make(map[string]*models.User)
+	for _, user := range users {
+		usersMap[user.ID.Hex()] = user
+	}
+
+	result := make([]*models.EventWithUsers, 0, len(events))
+	for _, event := range events {
+		eventRes := &models.EventWithUsers{
+			Event: event,
+			Users: make(map[string]*models.User),
+		}
+		for userID := range event.Users {
+			eventRes.Users[userID] = usersMap[userID]
+		}
+		result = append(result, eventRes)
+	}
+
+	return result, nil
+}
+
+func GetEvents(c *gin.Context) ([]*models.EventWithUsers, error) {
 	user := c.MustGet(models.ColUser).(*models.User)
+	l := logrus.WithField("function", "GetEvents")
 
 	b := true
-	return filterEvents(user, &b, &b)
-
+	events, err := filterEvents(user, &b, &b)
+	if err != nil {
+		l.WithError(err).Info("fail to get users")
+		return nil, err
+	}
+	return attachUsers(events)
 }

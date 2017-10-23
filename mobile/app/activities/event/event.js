@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View,Image, Linking } from "react-native";
+import { Text, View,Image, Linking, ToastAndroid } from "react-native";
 import { connect } from "react-redux";
 import { Actions } from "react-native-router-flux";
 import _ from "lodash";
@@ -9,6 +9,7 @@ import { Button } from "react-native-elements";
 
 import UserApi from "../../components/api/users/users";
 import PlaceApi from "../../components/api/places/places";
+import EventApi from "../../components/api/events/events";
 import moment from "moment";
 
 
@@ -21,66 +22,35 @@ class Event extends Component {
 
     return (
 
-      <TabBar>
+      <TabBar rightIcon="settings" onRightPress={() => Actions.settings()}>
 
      <View  style={{ alignSelf : "center",backgroundColor : "#ffffff", marginTop : 15 }}>
      <Text style={{ fontWeight : "bold" ,fontSize : 16 }}>JOIN YOUR FRIEND {moment(event.time).fromNow()}</Text>
      </View>
 
-      <View View style={{
-        flex : 1,
-        flexDirection : "row",
-        marginTop : 27,
-      }}>
+{    _.map(event.users, (user, id) =>
+        <View View style={{
+          flex : 1,
+          flexDirection : "row",
+          marginTop : 27,
+        }} key={id}>
 
-      <View>
-           <Image source={{ uri : this.props.me.picture }} style={{ width : 100, height : 100, marginTop : 20, marginLeft : 10 }}/>
-         </View>
+          <View>
+            <Image source={{ uri : user.picture }} style={{ width : 100, height : 100, marginTop : 20, marginLeft : 10 }}/>
+          </View>
 
-      <View>
-        <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 }}> {this.props.me.name }</Text>
-        <Text> Number of events done </Text>
-        <Text style = {{ alignSelf : "center" }}>0</Text>
-        <Text> Number of people met </Text>
-        <Text style = {{ alignSelf : "center" }}>0</Text>
-        <Text> Number of place visited </Text>
-        <Text style = {{ alignSelf : "center" }}>0</Text>
-
-
-      </View>
-
-   </View>
-
-   <View  style={{ backgroundColor : "#ffffff", alignSelf : "center" , marginTop : 17 , marginBottom : 25  }}>
-   <Text style={{ fontWeight : "bold",fontSize : 16 }}>  Meet </Text>
-   </View>
-
-
-
-      <View View style={{
-        flex : 1,
-        flexDirection : "row",
-      }}>
-
-
-      <View>
-         <Image source={{ uri : this.props.me.picture }} style={{ width : 100, height : 100, marginTop : 20, marginLeft : 10 }}/>
-       </View>
-
-       <View>
-
-         <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 }}> {this.props.me.name }</Text>
-
-         <Text> "Number of events done"</Text>
-         <Text   style = {{ alignSelf : "center" }}>0</Text>
-         <Text> "Number of people met"</Text>
-         <Text  style = {{ alignSelf : "center" }}>0</Text>
-         <Text> "Number of place visited"</Text>
-         <Text  style = {{ alignSelf : "center" }}>0</Text>
-
-      </View>
-     </View>
-
+          <View>
+            <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 }}> {user.name }</Text>
+            <Text> Number of events done </Text>
+            <Text style = {{ alignSelf : "center" }}>{user.stats.event_accepted}</Text>
+            <Text> Number of people met </Text>
+            <Text style = {{ alignSelf : "center" }}>{user.stats.users_met && _.values(user.stats.users_met).length || 0}</Text>
+            <Text> Number of place visited </Text>
+            <Text style = {{ alignSelf : "center" }}>{user.stats.places_visited && _.values(user.stats.places_visited).length || 0}</Text>
+          </View>
+        </View>
+      )
+}
 
      <Button
      backgroundColor="white"
@@ -98,7 +68,8 @@ class Event extends Component {
          backgroundColor="#55acee"
          fontFamily="Roboto"
          buttonStyle={{  width : 100, marginLeft : 30, marginRight : 20, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" }}
-         title="  Cancel   :("/>
+         title="  Cancel   :("
+         onPress={() => this.cancel(event)}/>
 
          <Button
          backgroundColor="#e52d27"
@@ -113,6 +84,9 @@ class Event extends Component {
 
        </TabBar>
     );
+   }
+   cancel(event) {
+     return EventApi.cancel(event.id).then(() => Actions.events()).catch(() => ToastAndroid.show("fail to cancel event, try later or contact administrator", ToastAndroid.LONG));
    }
  }
 

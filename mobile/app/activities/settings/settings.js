@@ -84,6 +84,7 @@ class Settings extends Component {
   clearCache () {
     EventCache.reset();
     PlaceCache.reset();
+    AsyncStorage.removeItem("login");
   }
 
   onValueChange(value,i){

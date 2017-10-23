@@ -15,6 +15,8 @@ import EventApi from "../../components/api/events/events";
 import { apiRouteBase } from "../../components/api/api";
 import Api from "../../components/api/api";
 
+import { register } from "../../components/notificationHandler";
+
 import moment from "moment";
 
 class Events extends Component {
@@ -37,13 +39,22 @@ class Events extends Component {
 
   componentDidMount () {
     var self = this;
-    EventApi.list().then((response) => response.length > 0 ? Actions.event({ event : response[0] }) : null);
+
     Promise.all([
-      UserApi.list(),
-      Promise.resolve(self.props.me),
-      PlaceApi.list(),
-      EventApi.getPending(),
-    ]).then(([users, me, places, pending]) => {
+      EventApi.list(),
+    ]).then(([events, users]) => {
+      if (events.length > 0) {
+        let event = events[0];
+        Actions.event({ event : event });
+        return [[],self.props.me, [], []];
+      }
+      return Promise.all([
+        UserApi.list(),
+        Promise.resolve(self.props.me),
+        PlaceApi.list(),
+        EventApi.getPending(),
+      ]);
+    }).then(([users, me, places, pending]) => {
       console.log("pending",pending);
       var state = self.state;
       state.cards = [];
