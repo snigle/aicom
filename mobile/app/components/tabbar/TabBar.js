@@ -78,7 +78,7 @@ class TabBar extends Component {
   render(props) {
     return (
     <View style={{ flexDirection : "column", flex : 1 }}>
-      <View style={{ flexDirection : "row", position : "absolute", left : 0, right : 0, height : 55, padding : 10,  justifyContent : "space-between" }}>
+      <View style={{ flexDirection : "row", position : "absolute", left : 0, right : 0, height : 55, padding : 10,  justifyContent : "space-between", backgroundColor : "white" }}>
         <View style={{ width : 30 }}>
           {
             this.props.leftIcon ?
