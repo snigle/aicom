@@ -182,9 +182,10 @@ func SendMessage(c *gin.Context, in *SendMessageParams) (*MessageID, error) {
 			}
 			logrus.WithField("user_id", userID).WithField("username", invitedUser.Name).Info("send notif to user")
 			err = google.SendNotification(invitedUser.FCMToken, &google.Notification{
-				Title: user.Name,
-				Body:  in.Message,
-				Data:  &google.Message{UUID: messageID, SenderID: user.ID.Hex(), Body: in.Message},
+				Title:  user.Name,
+				Body:   in.Message,
+				Action: google.MESSAGE_EVENT,
+				Data:   &google.Message{UUID: messageID, SenderID: user.ID.Hex(), Body: in.Message},
 			})
 			if err != nil {
 				logrus.WithError(err).Error("fail to send notification")

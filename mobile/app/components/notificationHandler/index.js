@@ -55,10 +55,6 @@ FCM.on(FCMEvent.Notification, notif => {
 
   let event = JSON.parse(notif.event);
   log("Notification event", event);
-  if (!event.action) {
-    log("bad event received");
-    return;
-  }
 
   if (event.action === "RESET_CACHE") {
     switch (event.data.type) {
