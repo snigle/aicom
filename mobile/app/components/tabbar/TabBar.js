@@ -86,8 +86,8 @@ class TabBar extends Component {
             : null
           }
         </View>
-        {this.props.title || <Text style={{ fontSize : 25 }}> Sifer </Text> }
-        <View style={{ width : 30 }}>
+        {this.props.title || <Text style={{ fontSize : 31, color : "#55acee" }}> SLIFE<Text style={{ color : "#e52d27" }}>R</Text> </Text> }
+        <View style={{ width : 34 }}>
         {
           this.props.rightIcon ?
           <Icon name={this.props.rightIcon} onPress={() => this.props.onRightPress()} color="#fff" size={30} />
