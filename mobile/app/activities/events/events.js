@@ -100,7 +100,7 @@ class Events extends Component {
 
        <View style={{ backgroundColor : "#ffffff", alignItems : "center", justifyContent : "center", marginTop : 15  }}  >
 
-          <Text>{card.activity}</Text>
+          <Text style = {{ fontSize : 15 }}>{card.activity.toUpperCase()}</Text>
 
 
           <View style={{ marginTop : 13, marginBottom : 13 }}>
@@ -108,14 +108,14 @@ class Events extends Component {
           </View>
 
 
-         <Text>{card.place.name}, {card.place.description }</Text>
+         <Text style = {{ fontSize : 15 }}>{card.place.name}, {card.place.description.toUpperCase() }</Text>
 
 
           <View style={{ marginTop : 13, marginBottom : 13 }}>
           <Image source={{ uri : card.user.picture }} style={{ width : 170, height : 155 }}/>
           </View>
 
-         <Text> {card.user.name} </Text>
+         <Text style = {{ fontSize : 15 }}>{card.user.name.toUpperCase()} </Text>
 
       </View>
 
