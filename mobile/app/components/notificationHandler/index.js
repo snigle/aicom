@@ -16,6 +16,37 @@ function log() {
   console.log("notificationHandler", arguments);
 }
 
+var _sendToken = (token) => AsyncStorage.setItem("notification.token", token).finally(() => log("notification token saved"));
+
+var _sendNotification = (event) => {
+    log("Notification _sendNotification");
+    FCM.presentLocalNotification({
+      // id: "UNIQ_ID_STRING",                               // (optional for instant notification)
+      title : event.title,                     // as FCM payload
+      body : event.body,                    // as FCM payload (required)
+      sound : "default",                                   // as FCM payload
+      priority : "high",                                   // as FCM payload
+      click_action : "ACTION",                             // as FCM payload
+      badge : 10,                                          // as FCM payload IOS only, set 0 to clear badges
+      number : 10,                                         // Android only
+      ticker : "My Notification Ticker",                   // Android only
+      auto_cancel : true,                                  // Android only (default true)
+      large_icon : "ic_launcher",                           // Android only
+      icon : "ic_launcher",                                // as FCM payload, you can relace this with custom icon you put in mipmap
+      // big_text : "Show when notification is expanded",     // Android only
+      // sub_text : "This is a subText",                      // Android only
+      color : "red",                                       // Android only
+      vibrate : 300,                                       // Android only default: 300, no vibration if you pass null
+      tag : "some_tag",                                    // Android only
+      group : "group",                                     // Android only
+      // picture : "https://google.png",                      // Android only bigPicture style
+      my_custom_data : "my_custom_field_value",             // extra data you want to throw
+      lights : true,                                       // Android only, LED blinking (default false)
+      show_in_foreground : true,                                  // notification when app is in foreground (local & remote)
+      event : event,
+    });
+  };
+
 export const register = async () => {
   log("register notification handler");
 FCM.requestPermissions();
@@ -56,11 +87,14 @@ FCM.on(FCMEvent.Notification, notif => {
   let event = JSON.parse(notif.event);
   log("Notification event", event);
 
-  if (event.action === "RESET_CACHE") {
-    switch (event.data.type) {
-      case "event" : EventCache.reset(); break;
-      case "place" : PlaceCache.reset(); break;
-    }
+  if (event.action === "RESET_CACHE" && event.data.types) {
+    _.forEach(event.data.types, (type) => {
+      switch (type) {
+        case "event" : EventCache.reset(); break;
+        case "place" : PlaceCache.reset(); break;
+        case "message" : cache.reset(); break;
+      }
+    });
   }
   if (event.action === "MESSAGE_EVENT") {
     initCache.then(() => store.dispatch(addMessage(event.data)));
@@ -70,16 +104,18 @@ FCM.on(FCMEvent.Notification, notif => {
     initCache.then(() => store.dispatch(markAsReceived(event.data.uuid)));
   }
 
+  if (event.route) {
+    log("redirect to action");
+    try {
+      Actions[event.route](event.routeParams);
+    } catch (e) {
+      log("error when trying actions route", e);
+    }
+  }
+
   if (event.title && event.body) {
     _sendNotification(event);
   }
-  // if (event.action === "PENDING_EVENT") {
-  //   log("Notification send pending event");
-  //   _sendNotification({ title : "Event requested", body : `You have 1 requests for event at ${event.time}` });
-  // }
-  // if (event.action === "ACCEPTED_EVENT") {
-  //   _sendNotification({ title : "Event Accepted", body : `We found an event ! Let's go to ${event.place.name}` });
-  // }
 
 });
 
@@ -101,37 +137,6 @@ FCM.getFCMToken().then(token => {
   log("TOKEN (getFCMToken)", token);
   _sendToken(token).catch((e) => log("error fcm", e));
 });
-
-var _sendToken = (token) => AsyncStorage.setItem("notification.token", token).finally(() => log("notification token saved"));
-
-var _sendNotification = (event) => {
-    log("Notification _sendNotification");
-    FCM.presentLocalNotification({
-      // id: "UNIQ_ID_STRING",                               // (optional for instant notification)
-      title : event.title,                     // as FCM payload
-      body : event.body,                    // as FCM payload (required)
-      sound : "default",                                   // as FCM payload
-      priority : "high",                                   // as FCM payload
-      click_action : "ACTION",                             // as FCM payload
-      badge : 10,                                          // as FCM payload IOS only, set 0 to clear badges
-      number : 10,                                         // Android only
-      ticker : "My Notification Ticker",                   // Android only
-      auto_cancel : true,                                  // Android only (default true)
-      large_icon : "ic_launcher",                           // Android only
-      icon : "ic_launcher",                                // as FCM payload, you can relace this with custom icon you put in mipmap
-      // big_text : "Show when notification is expanded",     // Android only
-      // sub_text : "This is a subText",                      // Android only
-      color : "red",                                       // Android only
-      vibrate : 300,                                       // Android only default: 300, no vibration if you pass null
-      tag : "some_tag",                                    // Android only
-      group : "group",                                     // Android only
-      // picture : "https://google.png",                      // Android only bigPicture style
-      my_custom_data : "my_custom_field_value",             // extra data you want to throw
-      lights : true,                                       // Android only, LED blinking (default false)
-      show_in_foreground : true,                                  // notification when app is in foreground (local & remote)
-      event : event,
-    });
-  };
 };
 
 export const sendTokenToBackend = () => {

@@ -10,7 +10,7 @@ import {
 } from "react-native-elements";
 
 import UserApi from "../../components/api/users/users";
-import PlaceApi from "../../components/api/places/places";
+import PlaceApi, { PlaceCache } from "../../components/api/places/places";
 import EventApi from "../../components/api/events/events";
 import { apiRouteBase } from "../../components/api/api";
 import Api from "../../components/api/api";
@@ -39,6 +39,18 @@ class Events extends Component {
 
   componentDidMount () {
     var self = this;
+
+    navigator.geolocation.getCurrentPosition(
+      (location) => {
+        let me = self.props.me;
+        console.log("find location", location);
+        if (self.getDistanceFromLatLonInKm(me.location[1], me.location[0], location.latitude, location.longitude) > 10) {
+          PlaceCache.reset();
+        }
+      },
+      (error) => ToastAndroid.show("Please activate GPS to use the application", ToastAndroid.LONG),
+      { timeout : 1000, maximumAge : 100000 }
+    );
 
     Promise.all([
       EventApi.list(),
@@ -193,6 +205,24 @@ class Events extends Component {
         }
       }).catch(err => (console.log(err), ToastAndroid.show("fail to create event", ToastAndroid.SHORT)));
     }
+  }
+
+  getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
+    var R = 6371; // Radius of the earth in km
+    var dLat = this.deg2rad(lat2 - lat1);  // deg2rad below
+    var dLon = this.deg2rad(lon2 - lon1);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2)
+      ;
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c; // Distance in km
+    return d;
+  }
+
+  deg2rad(deg) {
+    return deg * (Math.PI / 180);
   }
 }
 

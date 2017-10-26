@@ -19,7 +19,6 @@ class Login extends Component {
     super();
     this.state = {
       loading : true,
-      location : null,
     };
   }
 
@@ -28,16 +27,8 @@ class Login extends Component {
     var self = this;
     console.log("did mount");
     this._setupGoogleSignin();
-    console.log("loading location");
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        console.log("find location", position);
-        self.setState({ ...self.props.state, location : position });
-        ApiAuth.setLocation(position);
-      },
-      (error) => navigator.geolocation.watchPosition((position) => ApiAuth.setLocation(position), () => alert("Please activate GPS to use the application")),
-      { timeout : 1000, maximumAge : 100000 }
-    );
+    navigator.geolocation.watchPosition((position) => ApiAuth.setLocation(position), () =>
+      ToastAndroid.show("Please activate GPS to use the application", ToastAndroid.LONG));
   }
 
 
@@ -90,9 +81,6 @@ class Login extends Component {
       return UserApi.me().catch((e) => {console.log("error me", e); return AsyncStorage.removeItem("login");});
     })
     .then((me) => {
-      if (self.state.location && self.getDistanceFromLatLonInKm(me.location[1], me.location[0], self.state.location.latitude, self.state.location.longitude) > 10) {
-        AsyncStorage.removeItem("/place");
-      }
       console.log("set me", me);
       this.props.setMe(me);
       ToastAndroid.show("Login successful", ToastAndroid.SHORT);
@@ -130,23 +118,6 @@ class Login extends Component {
     return null;
   }
 
-    getDistanceFromLatLonInKm(lat1,lon1,lat2,lon2) {
-      var R = 6371; // Radius of the earth in km
-      var dLat = this.deg2rad(lat2 - lat1);  // deg2rad below
-      var dLon = this.deg2rad(lon2 - lon1);
-      var a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2)
-        ;
-      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      var d = R * c; // Distance in km
-      return d;
-    }
-
-  deg2rad(deg) {
-    return deg * (Math.PI / 180);
-  }
 }
 
 export default connect((state) => ({

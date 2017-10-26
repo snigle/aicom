@@ -17,9 +17,9 @@ type CancelEventInput struct {
 	UUID string `path:"uuid,required"`
 }
 
-func CancelEvent(c *gin.Context, in *CancelEventInput) error {
+func CancelEvent(c *gin.Context, in *AcceptEventInput) error {
 	user := c.MustGet(models.ColUser).(*models.User)
-	logrus.Info("cancel event " + in.UUID)
+	logrus.Info("accept event " + in.UUID)
 
 	e := &models.Event{}
 	err := mongo.Aicom.C(models.ColEvent).FindId(bson.ObjectIdHex(in.UUID)).One(&e)
@@ -33,7 +33,7 @@ func CancelEvent(c *gin.Context, in *CancelEventInput) error {
 	e.Accepted = false
 
 	// Insert or update event
-	_, err = mongo.Aicom.C(models.ColEvent).UpsertId(e.ID, e)
+	err = mongo.Aicom.C(models.ColEvent).UpdateId(e.ID, e)
 	if err != nil {
 		log.Printf("Unable to update event in db %v", err)
 		return err
@@ -55,6 +55,7 @@ func CancelEvent(c *gin.Context, in *CancelEventInput) error {
 		err = google.SendNotification(invitedUser.FCMToken, &google.Notification{
 			Title: fmt.Sprintf("%s has canceled the event :(", user.Name),
 			Body:  fmt.Sprintf("You can invite another person !"),
+			Route: "events",
 		})
 		if err != nil {
 			l.WithError(err).Error("fail to send notification")

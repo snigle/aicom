@@ -75,8 +75,8 @@ func ResetCache(token string) error {
 	return SendNotification(token, &Notification{
 		Action: "RESET_CACHE",
 		Data: struct {
-			Type string `json:"type"`
-		}{"event"},
+			Types []string `json:"types"`
+		}{[]string{"event", "message"}},
 	})
 }
 

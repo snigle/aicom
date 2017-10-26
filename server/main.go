@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"gopkg.in/mgo.v2/bson"
 
@@ -66,11 +67,22 @@ func main() {
 		}
 	}
 
-	err := google.ResetCache("cretM_jbZfw:APA91bHrKrLFAdiOID09ZZGM85jfEhDFUxOAEEpKFOVWjZwAurO_9a4os9md9j3t1AKYnG2T-bqTFeERowC-7kGTbtPiOMlfTt1wNkAZAk1nDJFQISneSIMDqij5xuK4aG1aMdvbADKF")
+	t := `cretM_jbZfw:APA91bHrKrLFAdiOID09ZZGM85jfEhDFUxOAEEpKFOVWjZwAurO_9a4os9md9j3t1AKYnG2T-bqTFeERowC-7kGTbtPiOMlfTt1wNkAZAk1nDJFQISneSIMDqij5xuK4aG1aMdvbADKF`
+	err := google.SendNotification(t, &google.Notification{
+		Title: "Event requested",
+		Body:  fmt.Sprintf("You have 1 requests for event at %s", time.Now()),
+		Route: "events",
+	})
+	if err != nil {
+		logrus.WithError(err).Error("fail to send notification")
+		return
+	}
+	err = google.ResetCache(t)
 	if err != nil {
 		logrus.WithError(err).Error("fail to send reset_cache notification")
-		panic(err)
+		return
 	}
+	logrus.Info("notification sent")
 
 	r.Run(fmt.Sprintf(":%d", port))
 }

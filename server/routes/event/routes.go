@@ -48,7 +48,7 @@ func init() {
 		&routes.Route{
 			Function:     tonic.Handler(ReceivedMessage, 200),
 			Method:       http.MethodPut,
-			Path:         "/event/:uuid/message/:messageId",
+			Path:         "/message/:messageId",
 			AuthRequired: true,
 		},
 	)

@@ -51,9 +51,6 @@ func NewEvent(c *gin.Context, in *EventInput) (*models.Event, error) {
 		log.Printf("Unable to get user in db %v", err)
 		return nil, err
 	}
-	user.Stats.EventRequested++
-	logrus.Info("test")
-	// TODO If all are OK, send notification ?
 	go func() {
 		// get user
 		invitedUser := &models.User{}
@@ -124,6 +121,7 @@ func AcceptEvent(c *gin.Context, in *AcceptEventInput) (*models.EventWithUsers, 
 		err = google.SendNotification(invitedUser.FCMToken, &google.Notification{
 			Title: "Event Accepted",
 			Body:  fmt.Sprintf(`We found an event ! Let's go to %s`, e.Place.Name),
+			Route: "events",
 		})
 		if err != nil {
 			l.WithError(err).Error("fail to send notification")
