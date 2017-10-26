@@ -25,7 +25,7 @@ class Event extends Component {
       <TabBar rightIcon="settings" onRightPress={() => Actions.settings()}>
 
      <View  style={{ alignSelf : "center",backgroundColor : "#ffffff", marginTop : 15 }}>
-     <Text style={{ fontWeight : "bold" ,fontSize : 16 }}>JOIN YOUR FRIEND {moment(event.time).fromNow()}</Text>
+     <Text style={{ fontWeight : "bold" ,fontSize : 16 }}>JOIN YOUR FRIEND {moment(event.time).fromNow }</Text>
      </View>
 
 {    _.map(event.users, (user, id) =>
@@ -39,8 +39,8 @@ class Event extends Component {
             <Image source={{ uri : user.picture }} style={{ width : 100, height : 100, marginTop : 20, marginLeft : 10 }}/>
           </View>
 
-          <View>
-            <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16 }}> {user.name }</Text>
+          <View style={{  marginLeft : 45 }}>
+            <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16, marginBottom : 7 }}> {user.name }</Text>
             <Text> Number of events done </Text>
             <Text style = {{ alignSelf : "center" }}>{user.stats.event_accepted}</Text>
             <Text> Number of people met </Text>
@@ -54,11 +54,12 @@ class Event extends Component {
 
      <Button
      backgroundColor="white"
-     color="black"
+     color="grey"
      fontFamily="Roboto"
-     buttonStyle={{ alignSelf : "center" , marginTop : 2, marginBottom : 2, justifyContent : "center" }}
+     buttonStyle={{ alignSelf : "center" , marginTop : 2, marginBottom : 2, justifyContent : "center",borderWidth : 1,
+    borderColor : "grey " }}
      onPress={() => Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${encodeURI(event.place.description)}`)}
-     title="  MAPS "/>
+     title=" M A P "/>
 
 
 

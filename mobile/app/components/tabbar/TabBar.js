@@ -82,7 +82,7 @@ class TabBar extends Component {
         <View style={{ width : 30 }}>
           {
             this.props.leftIcon ?
-              <Icon name={this.props.leftIcon} onPress={() => this.props.onLeftPress()} color="#fff" size={30} />
+              <Icon name={this.props.leftIcon} onPress={() => this.props.onLeftPress()} color="grey" size={30} />
             : null
           }
         </View>
@@ -90,7 +90,7 @@ class TabBar extends Component {
         <View style={{ width : 34 }}>
         {
           this.props.rightIcon ?
-          <Icon name={this.props.rightIcon} onPress={() => this.props.onRightPress()} color="#fff" size={30} />
+          <Icon name={this.props.rightIcon} onPress={() => this.props.onRightPress()} color="grey" size={30} />
           : null
         }
         </View>

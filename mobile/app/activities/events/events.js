@@ -155,8 +155,8 @@ class Events extends Component {
     <Button
     backgroundColor="#e52d27"
     fontFamily="Roboto"
-    buttonStyle={{ width : 100, marginLeft : 20, marginRight : 25, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" }}
-    title=" Lets Go  :) "
+    buttonStyle={{  width : 100, marginLeft : 20, marginRight : 25, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" }}
+    title=" Let's go  :) "
     onPress={() => this.accept(card)}/>
 
     </View>
