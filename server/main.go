@@ -4,17 +4,20 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"gopkg.in/mgo.v2/bson"
 
 	"github.com/gin-gonic/gin"
 	"github.com/namsral/flag"
+	"github.com/sirupsen/logrus"
 	"github.com/snigle/aicom/server/models"
 	"github.com/snigle/aicom/server/routes"
 	_ "github.com/snigle/aicom/server/routes/event"
 	_ "github.com/snigle/aicom/server/routes/login"
 	_ "github.com/snigle/aicom/server/routes/place"
 	_ "github.com/snigle/aicom/server/routes/user"
+	"github.com/snigle/aicom/server/utils/google"
 	"github.com/snigle/aicom/server/utils/mongo"
 )
 
@@ -63,6 +66,19 @@ func main() {
 			}
 		}
 	}
+
+	t := `cretM_jbZfw:APA91bHrKrLFAdiOID09ZZGM85jfEhDFUxOAEEpKFOVWjZwAurO_9a4os9md9j3t1AKYnG2T-bqTFeERowC-7kGTbtPiOMlfTt1wNkAZAk1nDJFQISneSIMDqij5xuK4aG1aMdvbADKF`
+	err := google.SendNotification(t, &google.Notification{
+		Title:      "Event requested",
+		Body:       fmt.Sprintf("You have 1 requests for event at %s", time.Now()),
+		Route:      "events",
+		ResetCache: []string{"event", "message"},
+	})
+	if err != nil {
+		logrus.WithError(err).Error("fail to send notification")
+		return
+	}
+	logrus.Info("notification sent")
 
 	r.Run(fmt.Sprintf(":%d", port))
 }

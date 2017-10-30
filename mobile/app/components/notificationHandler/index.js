@@ -43,7 +43,8 @@ var _sendNotification = (event) => {
       my_custom_data : "my_custom_field_value",             // extra data you want to throw
       lights : true,                                       // Android only, LED blinking (default false)
       show_in_foreground : true,                                  // notification when app is in foreground (local & remote)
-      event : event,
+      // We need only variables used for local notification (need filter because arrays are not supported)
+      event : { route : event.route, routeParams : event.routeParams },
     });
   };
 
@@ -87,35 +88,42 @@ FCM.on(FCMEvent.Notification, notif => {
   let event = JSON.parse(notif.event);
   log("Notification event", event);
 
-  if (event.action === "RESET_CACHE" && event.data.types) {
-    _.forEach(event.data.types, (type) => {
+  let resetCachePromise = Promise.resolve();
+
+  if (event.resetCache && event.resetCache.length) {
+    resetCachePromise = Promise.all(_.map(event.resetCache, (type) => {
       switch (type) {
-        case "event" : EventCache.reset(); break;
-        case "place" : PlaceCache.reset(); break;
-        case "message" : cache.reset(); break;
+        case "event" : return EventCache.reset();
+        case "place" : return PlaceCache.reset();
+        case "message" : return cache.reset();
+        default : return Promise.resolve();
       }
-    });
-  }
-  if (event.action === "MESSAGE_EVENT") {
-    initCache.then(() => store.dispatch(addMessage(event.data)));
-    EventApi.receivedMessage(event.data.uuid, event.data.senderID);
-  }
-  if (event.action === "RECEIVED_MESSAGE_EVENT") {
-    initCache.then(() => store.dispatch(markAsReceived(event.data.uuid)));
+    }));
   }
 
-  if (event.route) {
-    log("redirect to action");
-    try {
-      Actions[event.route](event.routeParams);
-    } catch (e) {
-      log("error when trying actions route", e);
+  resetCachePromise.then(() => {
+    if (event.action === "MESSAGE_EVENT") {
+      initCache.then(() => store.dispatch(addMessage(event.data)));
+      EventApi.receivedMessage(event.data.uuid, event.data.senderID);
     }
-  }
+    if (event.action === "RECEIVED_MESSAGE_EVENT") {
+      initCache.then(() => store.dispatch(markAsReceived(event.data.uuid)));
+    }
+    console.log("change route", event.route, event.routeParams);
 
-  if (event.title && event.body) {
-    _sendNotification(event);
-  }
+    if (event.route) {
+      log("redirect to action");
+      try {
+        Actions[event.route](event.routeParams);
+      } catch (e) {
+        log("error when trying actions route", e);
+      }
+    }
+    if (event.title && event.body) {
+      _sendNotification(event);
+    }
+  });
+
 
 });
 

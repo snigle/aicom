@@ -53,17 +53,13 @@ func CancelEvent(c *gin.Context, in *AcceptEventInput) error {
 			return err
 		}
 		err = google.SendNotification(invitedUser.FCMToken, &google.Notification{
-			Title: fmt.Sprintf("%s has canceled the event :(", user.Name),
-			Body:  fmt.Sprintf("You can invite another person !"),
-			Route: "events",
+			Title:      fmt.Sprintf("%s has canceled the event :(", user.Name),
+			Body:       fmt.Sprintf("You can invite another person !"),
+			Route:      "events",
+			ResetCache: []string{"event", "message"},
 		})
 		if err != nil {
 			l.WithError(err).Error("fail to send notification")
-			return err
-		}
-		err = google.ResetCache(invitedUser.FCMToken)
-		if err != nil {
-			l.WithError(err).Error("fail to send reset_cache notification")
 			return err
 		}
 		l.Info("notification sent")

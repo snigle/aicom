@@ -50,11 +50,12 @@ func GetClient() (*maps.Client, error) {
 }
 
 type Notification struct {
-	Title  string      `json:"title"`
-	Body   string      `json:"body"`
-	Action string      `json:"action"`
-	Route  string      `json:"route"`
-	Data   interface{} `json:"data"`
+	Title      string      `json:"title"`
+	Body       string      `json:"body"`
+	Action     string      `json:"action"`
+	Route      string      `json:"route"`
+	Data       interface{} `json:"data"`
+	ResetCache []string    `json:"resetCache"`
 }
 
 type Message struct {
@@ -69,15 +70,6 @@ func SendNotification(token string, notification *Notification) error {
 	}{notification})
 	_, err := notif.Send()
 	return err
-}
-
-func ResetCache(token string) error {
-	return SendNotification(token, &Notification{
-		Action: "RESET_CACHE",
-		Data: struct {
-			Types []string `json:"types"`
-		}{[]string{"event", "message"}},
-	})
 }
 
 const MESSAGE_EVENT = "MESSAGE_EVENT"

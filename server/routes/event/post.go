@@ -60,22 +60,17 @@ func NewEvent(c *gin.Context, in *EventInput) (*models.Event, error) {
 			return
 		}
 		err = google.SendNotification(invitedUser.FCMToken, &google.Notification{
-			Title: "Event requested",
-			Body:  fmt.Sprintf("You have 1 requests for event at %s", e.Time),
+			Title:      "Event requested",
+			Body:       fmt.Sprintf("You have 1 requests for event at %s", e.Time),
+			ResetCache: []string{"event", "message"},
 		})
 		if err != nil {
 			logrus.WithError(err).Error("fail to send notification")
 			return
 		}
-		err = google.ResetCache(invitedUser.FCMToken)
-		if err != nil {
-			logrus.WithError(err).Error("fail to send reset_cache notification")
-			return
-		}
 		logrus.Info("notification sent")
 	}()
 
-	// Generate token
 	return e, nil
 }
 
@@ -119,17 +114,13 @@ func AcceptEvent(c *gin.Context, in *AcceptEventInput) (*models.EventWithUsers, 
 			return nil, err
 		}
 		err = google.SendNotification(invitedUser.FCMToken, &google.Notification{
-			Title: "Event Accepted",
-			Body:  fmt.Sprintf(`We found an event ! Let's go to %s`, e.Place.Name),
-			Route: "events",
+			Title:      "Event Accepted",
+			Body:       fmt.Sprintf(`We found an event ! Let's go to %s`, e.Place.Name),
+			Route:      "events",
+			ResetCache: []string{"event", "message"},
 		})
 		if err != nil {
 			l.WithError(err).Error("fail to send notification")
-			return nil, err
-		}
-		err = google.ResetCache(invitedUser.FCMToken)
-		if err != nil {
-			l.WithError(err).Error("fail to send reset_cache notification")
 			return nil, err
 		}
 		l.Info("notification sent")

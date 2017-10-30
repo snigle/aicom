@@ -52,9 +52,8 @@ class Events extends Component {
       { timeout : 1000, maximumAge : 100000 }
     );
 
-    Promise.all([
-      EventApi.list(),
-    ]).then(([events, users]) => {
+    EventApi.list().then(events => {
+      console.log("result event api", events);
       if (events.length > 0) {
         let event = events[0];
         Actions.event({ event : event });
@@ -98,7 +97,7 @@ class Events extends Component {
       state.cards = _.sortBy(state.cards, ["+score"]);
       state.loaded = true;
       self.setState(state);
-    });
+    }).catch((e) => console.log(e) && Actions.login());
   }
   render () {
     var self = this;
