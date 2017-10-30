@@ -13,5 +13,5 @@ export default {
   cancel : (id, params = defaultParams) => api.auth({ ...params, url : `/event/${id}` , method : "DELETE" }),
   getPending : (params = defaultParams) => api.auth({ ...params, url : "/event/pending" }),
   sendMessage : (id, message, params = {}) => api.auth({ ...params, url : `/event/${id}/message` , method : "POST", data : { message : message } }),
-  receivedMessage : (messageId, senderId, params = {}) => api.auth({ ...params, url : `/message/${messageId}` , method : "PUT" }),
+  receivedMessage : (messageId, senderId, params = {}) => api.auth({ ...params, url : `/message/${messageId}` , method : "PUT", data : { uuid : senderId } }),
 };
