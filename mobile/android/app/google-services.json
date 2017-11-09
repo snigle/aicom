@@ -6,9 +6,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:896727015937:android:1fb0623114da33be",
+        "mobilesdk_app_id": "1:896727015937:android:3a5ac14cdbb2afd0",
         "android_client_info": {
-          "package_name": "com.mobile"
+          "package_name": "com.github.snigle.aicom"
         }
       },
       "oauth_client": [
@@ -16,7 +16,7 @@
           "client_id": "896727015937-qdkak1d57nog571qqq30f3rg3r7jciad.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.mobile",
+            "package_name": "com.github.snigle.aicom",
             "certificate_hash": "ACE14D3F4DBB98BCAD196C23AF6CBA308DA297FB"
           }
         },
@@ -24,7 +24,7 @@
           "client_id": "896727015937-lnkfvjecmpno6del9uouuf3ri5ktu5gk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.mobile",
+            "package_name": "com.github.snigle.aicom",
             "certificate_hash": "74f939eedd2a53a7ee9142bdbb76b4b4849f6c25"
           }
         },

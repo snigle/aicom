@@ -12,6 +12,7 @@ import ApiAuth from "../../components/api/api";
 import UserApi from "../../components/api/users/users";
 import styles from "./login.style";
 import { sendTokenToBackend } from "../../components/notificationHandler";
+import { PermissionsAndroid } from "react-native";
 
 class Login extends Component {
 
@@ -26,9 +27,24 @@ class Login extends Component {
   componentDidMount() {
     var self = this;
     console.log("did mount");
-    this._setupGoogleSignin();
-    navigator.geolocation.watchPosition((position) => ApiAuth.setLocation(position), () =>
+
+    PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        "title" : "Slifer need  your Position",
+        "message" : "We need your geolocation to display events close to your position",
+      }
+    ).then(granted => {
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("You can use the camera");
+      } else {
+        console.log("Camera permission denied");
+      }
+    }).then(() => {
+      this._setupGoogleSignin();
+      navigator.geolocation.watchPosition((position) => ApiAuth.setLocation(position), () =>
       ToastAndroid.show("Please activate GPS to use the application", ToastAndroid.LONG));
+    }).catch(() => ToastAndroid.show("You need to accept geolocation permission to use the application"));
   }
 
 

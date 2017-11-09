@@ -16,6 +16,7 @@ import { apiRouteBase } from "../../components/api/api";
 import Api from "../../components/api/api";
 
 import { register } from "../../components/notificationHandler";
+import ApiCache from "../../components/apiCache/apiCache";
 
 import moment from "moment";
 
@@ -30,11 +31,16 @@ class Events extends Component {
       this.state.cards = [];
       this.state.loaded = false;
       this.state.cardIndex = 0;
+      this.cache = new ApiCache("eventsRequested", 3600);
     }
 
 
   getUsers () {
     UserApi.list();
+  }
+
+  _getCacheKey(place, user) {
+    return `${place.id}#${user.id}`;
   }
 
   componentDidMount () {
@@ -68,6 +74,7 @@ class Events extends Component {
     }).then(([users, me, places, pending]) => {
       console.log("pending",pending);
       var state = self.state;
+      let promises = [];
       state.cards = [];
       _.forEach(_.filter(users, (user) => user.id !== me.id), (user) => {
         var score = 0;
@@ -89,14 +96,19 @@ class Events extends Component {
         });
         _.forEach(user.activities, (value, activity) => {
           if (me.activities[activity] === value && places[activity] && places[activity].length) {
-            state.cards.push({ user : user, activity : activity, score : score, place : places[activity][0], time : moment().add(3,"h").format("YYYY-MM-DD\\THH:MM:ssZ") });
+            let place = places[activity][0];
+            promises.push(self.cache.get(self._getCacheKey(place, user)).then((e) => e ||
+              state.cards.push({ user : user, activity : activity, score : score, place : place, time : moment().add(3,"h").format("YYYY-MM-DD\\THH:MM:ssZ") })
+            ));
           }
         });
       });
 
-      state.cards = _.sortBy(state.cards, ["+score"]);
-      state.loaded = true;
-      self.setState(state);
+      return Promise.all(promises).then(() => {
+        state.cards = _.sortBy(state.cards, ["+score"]);
+        state.loaded = true;
+        self.setState(state);
+      }).catch(e => console.log(e));
     }).catch((e) => console.log(e) && Actions.login());
   }
   render () {
@@ -106,7 +118,9 @@ class Events extends Component {
       return  <TabBar />;
     }
     if (!card) {
-      return <Text>No event available</Text>;
+      return <TabBar leftIcon="dashboard" rightIcon="settings" onRightPress={() => Actions.settings()}>
+        <Text>No more events available, retry in 1h.</Text>
+      </TabBar>;
     }
     console.log("card",card,this.state.cards, `${apiRouteBase}/place/picture/${card.place.picture[0]}?token=${Api.token}`);
     // var card = { activity : "toto", user : "toto" };
@@ -199,8 +213,10 @@ class Events extends Component {
           console.log("find event");
           Actions.event(response);
         } else {
-          // TODO Add in already accepted list
-          self.next();
+          // Add to cache to avoid this event at next reload
+          self.cache.set(self._getCacheKey(event.place, event.user),true).catch(e => console.log("error set cache", e));
+          // Remove from current state
+          this.setState({ ...this.state, cards : _.pullAt(this.state.cards, this.state.cardIndex), cardIndex : Math.min(this.state.cardIndex, this.state.cards.length - 1) });
         }
       }).catch(err => (console.log(err), ToastAndroid.show("fail to create event", ToastAndroid.SHORT)));
     }
@@ -225,55 +241,6 @@ class Events extends Component {
   }
 }
 
-//  plusieurs choses
-// 3 éléments le nom , le like ( éléments discriminant) et l'activité ( élements discriminant)
-// si un user a un élément en commun ajouté un ( I+ 1 avec I = 0 au départ)
-// utiliser console.log pour afficher le résultat suite au each
-// Utiliser un If ( équivalent) pour choisir l'user qui a le plus grand score ( donc si Jacky (I)>Ginette Sinon Ginette(I))
-// cas possible : patou rencontre Jacky ou patou rencontre Ginette. ()
-
-// constructor (props) {
-//     super(props);
-//     this.state = {};
-//     this.props.me = {
-//       likes : { "horror" : true, "sf" : false },
-//       name : "patou",
-//       activities : { "cinéma" : true, "café" : true },
-//     };
-//     this.props.users = [
-//       {
-//         name : "jacky",
-//         like : { "horror" : true, "sf" : true },
-//         activities : { "cinéma" : true, "café" : false },
-//       },
-//       {
-//         name : "ginette",
-//         like : { "horror" : false, "sf" : true },
-//         activities : { "cinéma" : false, "café" : true },
-//       },
-//     ];
-//
-//     // ce que je veux trouver
-//     this .state = [
-//       {
-//         user : "jacky",
-//         activity : "cinéma",
-//         score : 1,
-//       },
-//       {
-//         user : "ginette",
-//         activity : "café",
-//         score : 0,
-//       },
-//     ];
-//
-//   }
-//  plusieurs choses
-// 3 éléments le nom , le like ( éléments discriminant) et l'activité ( élements discriminant)
-// si un user a un élément en commun ajouté un ( I+ 1 avec I = 0 au départ)
-// utiliser console.log pour afficher le résultat suite au each
-// Utiliser un If ( équivalent) pour choisir l'user qui a le plus grand score ( donc si Jacky (I)>Ginette Sinon Ginette(I))
-// cas possible : patou rencontre Jacky ou patou rencontre Ginette. ()
 
 export default connect((state) => ({
   login : state.login,

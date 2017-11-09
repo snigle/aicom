@@ -1,13 +1,12 @@
-package com.mobile;
+package com.github.snigle.aicom;
 
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.github.snigle.aicom.BuildConfig;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
