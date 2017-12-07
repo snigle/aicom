@@ -7,8 +7,6 @@ import styles from "./event.style";
 import TabBar from "../../components/tabbar/TabBar";
 import { Button } from "react-native-elements";
 
-import UserApi from "../../components/api/users/users";
-import PlaceApi from "../../components/api/places/places";
 import EventApi from "../../components/api/events/events";
 import moment from "moment";
 

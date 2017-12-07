@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import {  Text,View,ToastAndroid,AsyncStorage,Image } from "react-native";
-import { Card } from "react-native-elements";
+import {  View,ToastAndroid,AsyncStorage,Image } from "react-native";
 import { Actions } from "react-native-router-flux";
 import { connect } from "react-redux";
 import _ from "lodash";
@@ -65,7 +64,8 @@ class Login extends Component {
       console.log("error",err);
       // Can't use finally because action already pending and state doesn't exist
       ToastAndroid.show("Fail to login, please contact administrator.", ToastAndroid.SHORT);
-    }).finally(() => self.setState({ loading : false }));
+      self.setState({ loading : false });
+    });
   }
 
   _googleSignIn() {
@@ -76,8 +76,9 @@ class Login extends Component {
     .catch((err) => {
       console.log("error",err);
       ToastAndroid.show("Fail to login, please contact administrator.", ToastAndroid.SHORT);
+      self.setState({ loading : false });
       // self._signOut();
-    }).finally(() => self.setState({ loading : false }));
+    });
   }
 
   _login(user) {
