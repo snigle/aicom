@@ -50,6 +50,7 @@ class Events extends Component {
     navigator.geolocation.getCurrentPosition(
       (location) => {
         let me = self.props.me;
+        this.state.me = me;
         console.log("find location", location);
         if (self.getDistanceFromLatLonInKm(me.location[1], me.location[0], location.latitude, location.longitude) > 10) {
           PlaceCache.reset();
@@ -78,7 +79,7 @@ class Events extends Component {
       let promises = [];
       state.cards = [];
       _.forEach(_.filter(users, (user) => user.id !== me.id), (user) => {
-        var score = 0;
+        var score = _.random(50,100); // TODO calculate a score
         // To add after when likes are here
         // _.forEach(user.likes, (value, like) => {
         //   if (self.state.me.likes[like] === value) {
@@ -89,7 +90,7 @@ class Events extends Component {
           state.cards.push({
             user : user,
             activity : e.activity,
-            score : score + 10,
+            score : score,
             place : e.place,
             time : e.time,
             id : e.id,
@@ -97,16 +98,21 @@ class Events extends Component {
         });
         _.forEach(user.activities, (value, activity) => {
           if (me.activities[activity] === value && places[activity] && places[activity].length) {
-            let place = places[activity][0];
-            promises.push(self.cache.get(self._getCacheKey(place, user)).then((e) => e ||
-              state.cards.push({ user : user, activity : activity, score : score, place : place, time : moment().add(3,"h").format("YYYY-MM-DD\\THH:MM:ssZ") })
-            ));
+            _.forEach(_.take(places[activity],3), place =>
+              promises.push(self.cache.get(self._getCacheKey(place, user)).then((e) => e ||
+                state.cards.push({ user : user, activity : activity, score : _.random(0,49), place : place, time : moment().add(3,"h").format("YYYY-MM-DD\\THH:MM:ssZ") })
+              ))
+            );
           }
         });
       });
 
       return Promise.all(promises).then(() => {
-        state.cards = _.sortBy(state.cards, ["+score"]);
+        _.forEach(state.cards, c => {
+          c.distance = _.round(this.getDistanceFromLatLonInKm(this.state.me.location[1], this.state.me.location[0], c.place.location.latitude, c.place.location.longitude));
+        });
+        state.cards = _.sortBy(state.cards, [ c => -c.score ]);
+        console.log("state.cards", state.cards);
         state.loaded = true;
         self.setState(state);
       }).catch(e => console.log(e));
@@ -145,7 +151,8 @@ class Events extends Component {
           </View>
 
 
-         <Text style = {{ fontSize : 15 }}>{card.place.name}, {card.place.description.toUpperCase() }</Text>
+          <Text style = {{ fontSize : 15 }}>{card.place.name} ({card.distance}km) {moment().to(moment(card.time))}</Text>
+          <Text style = {{ fontSize : 12 }}>{card.place.description.toUpperCase() }</Text>
 
 
           <View style={{ marginTop : 13, marginBottom : 13 }}>
