@@ -59,7 +59,12 @@ class Login extends Component {
       })
     )
     .then(() => GoogleSignin.currentUserAsync())
-    .then((user) => {console.log("user found ?",user); return user && self._login(user);})
+    .then((user) => {
+      if (user) {
+        return self._login(user);
+      }
+      self.setState({ loading : false });
+      )
     .catch((err) => {
       console.log("error",err);
       // Can't use finally because action already pending and state doesn't exist
