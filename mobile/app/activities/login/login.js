@@ -64,7 +64,7 @@ class Login extends Component {
         return self._login(user);
       }
       self.setState({ loading : false });
-      )
+    })
     .catch((err) => {
       console.log("error",err);
       // Can't use finally because action already pending and state doesn't exist
