@@ -16,7 +16,7 @@ func GetMe(c *gin.Context) (*models.User, error) {
 	return user, nil
 }
 
-func GetUsers(c *gin.Context) (res []*models.User, err error) {
+func GetUsers(c *gin.Context) (res []*models.SecureUser, err error) {
 	user := c.MustGet(models.ColUser).(*models.User)
 
 	// err = mongo.Aicom.C(models.ColUser).Find(nil).All(&res)
@@ -29,6 +29,7 @@ func GetUsers(c *gin.Context) (res []*models.User, err error) {
 		logrus.Error("fail to ensure index")
 		return
 	}
+	users := []*models.User{}
 	err = mongo.Aicom.C(models.ColUser).Find(
 		bson.M{
 			"location": bson.M{
@@ -40,10 +41,16 @@ func GetUsers(c *gin.Context) (res []*models.User, err error) {
 					"$maxDistance": 30000,
 				},
 			},
-		}).All(&res)
+		}).All(&users)
 
-	for _, u := range res {
-		u.Distance = Point(u.Location).GreatCircleDistance(Point(user.Location))
+	for _, u := range users {
+		if u.ID == user.ID {
+			continue
+		}
+		res = append(res, &models.SecureUser{
+			User:     *u,
+			Distance: Point(u.Location).GreatCircleDistance(Point(user.Location)),
+		})
 	}
 
 	return
