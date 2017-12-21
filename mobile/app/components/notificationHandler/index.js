@@ -52,6 +52,7 @@ let initialized = false;
 export const register = async () => {
   log("register notification handler");
   if (initialized) {
+    log("already initialized");
     return;
   }
   initialized = true;
