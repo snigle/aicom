@@ -19,13 +19,23 @@ class Event extends Component {
 
   constructor(props) {
     super(props);
-    this.state = { message : "", loading : false };
+    this.state = { message : "", loading : true };
+  }
+
+  log() {
+    console.log("messageClass", arguments);
+  }
+
+  componentDidMount() {
+    UserApi.me().then(me => {
+      this.setState({ ...this.state, loading : false, me });
+    }).catch(err => this.log(err) && ToastAndroid.show("fail get user", ToastAndroid.LONG));
   }
 
   render () {
     let self = this;
     var event = this.props.event;
-    console.log("event accepted", event, self.state);
+    this.log("event accepted", event, self.state, self.props.messages);
     return (<TabBar
       leftIcon="chevron-left"
       rightIcon=""
@@ -39,17 +49,21 @@ class Event extends Component {
          value={this.state.message}
        />
        {
-         this.state.loading ? <Spinner visible={true} textContent={"Sending message..."} textStyle={{ color : "#FFF" }}  /> :
-         <Button raised onPress={() => this.sendMessage()}
-         icon={{ name : "send" }}
-         title="Send Message"
-         />
-       }
-       {
-         self.props.messages.map((message) =>
-           <Text key={message.uuid}>{message.body}</Text>
-         )
-       }
+         this.state.loading ?
+           <Spinner visible={true} textContent={"Sending message..."} textStyle={{ color : "#FFF" }}  />
+         :
+           <View>
+             <Button raised onPress={() => this.sendMessage()}
+             icon={{ name : "send" }}
+             title="Send Message"
+             />
+             {
+               self.props.messages.map((message) =>
+                 <Text key={message.uuid} style={message.senderID === this.state.me.id ? styles.me : styles.other }>{message.body}</Text>
+               )
+             }
+          </View>
+        }
        </View>
     </TabBar>)
 ;
@@ -58,12 +72,12 @@ class Event extends Component {
   sendMessage() {
     let self = this;
     this.setState({ ...this.state, loading : true });
-    console.log("state", self.state);
+    this.log("state", self.state);
     EventsApi.sendMessage(this.props.event.id, this.state.message).then((response) => {
-      console.log("response", response, self.state.messages, { uuid : response.uuid, body : self.state.message });
-      self.props.addMessage({ uuid : response.uuid, body : self.state.message });
+      this.log("response", response, self.state.messages, { uuid : response.uuid, body : self.state.message });
+      self.props.addMessage({ uuid : response.uuid, body : self.state.message, senderID : this.state.me.id });
       self.setState({ ...self.state, message : "" });
-    }).catch((err) => {console.log(err); ToastAndroid.show("internal error, fail to send message",ToastAndroid.SHORT);})
+    }).catch((err) => {this.log(err); ToastAndroid.show("internal error, fail to send message",ToastAndroid.SHORT);})
     .finally(() => self.setState({ ...self.state, loading : false }));
   }
 

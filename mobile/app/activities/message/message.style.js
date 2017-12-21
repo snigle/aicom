@@ -7,4 +7,10 @@ export default StyleSheet.create({
     alignItems : "center",
     padding : 30,
   },
+  me : {
+    backgroundColor : "blue",
+  },
+  other : {
+    backgroundColor : "red",
+  },
 });
