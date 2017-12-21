@@ -12,6 +12,7 @@ import UserApi from "../../components/api/users/users";
 import styles from "./login.style";
 import { sendTokenToBackend } from "../../components/notificationHandler";
 import { PermissionsAndroid } from "react-native";
+import FCM, { FCMEvent } from "react-native-fcm";
 
 class Login extends Component {
 
@@ -26,14 +27,15 @@ class Login extends Component {
   componentDidMount() {
     var self = this;
     console.log("did mount");
-
+    FCM.requestPermissions().then(() =>
     PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       {
         "title" : "Slifer need  your Position",
         "message" : "We need your geolocation to display events close to your position",
       }
-    ).then(granted => {
+    ))
+    .then(granted => {
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log("You can use the camera");
       } else {
@@ -43,7 +45,7 @@ class Login extends Component {
       this._setupGoogleSignin();
       navigator.geolocation.watchPosition((position) => ApiAuth.setLocation(position), () =>
       ToastAndroid.show("Please activate GPS to use the application", ToastAndroid.LONG));
-    }).catch(() => ToastAndroid.show("You need to accept geolocation permission to use the application"));
+    }).catch((err) => console.log(err) && ToastAndroid.show("You need to accept geolocation permission to use the application :" + err, ToastAndroid.LONG));
   }
 
 
@@ -59,11 +61,12 @@ class Login extends Component {
       })
     )
     .then(() => GoogleSignin.currentUserAsync())
-    .then((user) => {
+    .then(user => {
       if (user) {
         return self._login(user);
       }
       self.setState({ loading : false });
+      return Promise.resolve();
     })
     .catch((err) => {
       console.log("error",err);
@@ -91,8 +94,8 @@ class Login extends Component {
     this.setState({ loading : true });
     console.log("try login",user,user.serverAuthCode);
     return AsyncStorage.getItem("login").then(
-      (u) => u && JSON.parse(u) || Api.login(user.serverAuthCode),
-      () => Api.login(user.serverAuthCode)
+      (u) => console.log("login",u) && u && JSON.parse(u) || Api.login(user.serverAuthCode),
+      () => console.log("login fail") && Api.login(user.serverAuthCode)
     )
     //return Api.login(user.serverAuthCode)
     .then((user) => {

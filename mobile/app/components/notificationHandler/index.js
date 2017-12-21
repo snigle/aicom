@@ -1,5 +1,5 @@
 import FCM, { FCMEvent } from "react-native-fcm";
-import { Platform } from "react-native";
+import { Platform, ToastAndroid } from "react-native";
 
 import _ from "lodash";
 
@@ -19,7 +19,7 @@ function log() {
 var _sendToken = (token) => AsyncStorage.setItem("notification.token", token).finally(() => log("notification token saved"));
 
 var _sendNotification = (event) => {
-    log("Notification _sendNotification");
+    log("Notification _sendNotification", FCM);
     FCM.presentLocalNotification({
       // id: "UNIQ_ID_STRING",                               // (optional for instant notification)
       title : event.title,                     // as FCM payload
@@ -48,103 +48,111 @@ var _sendNotification = (event) => {
     });
   };
 
+let initialized = false;
 export const register = async () => {
   log("register notification handler");
-FCM.requestPermissions();
-
-let initCache = cache.get("state").then(res => {
-  let messages = JSON.parse(res);
-  _.forEach(messages, (message) => {
-    store.dispatch(addMessage(message));
-  });
-  log("messages",messages);
-}).catch(err => log("error reading message cache", err));
-
-if(Platform.OS === "ios"){
-  FCM.getAPNSToken().then(token => {
-    log("APNS TOKEN (getFCMToken)", token);
-    _sendToken(token);
-  });
-}
-
-FCM.getInitialNotification().then(notif => {
-  log("INITIAL NOTIFICATION", notif);
-});
-let toto = Math.random();
-FCM.on(FCMEvent.Notification, notif => {
-  log("Notification", toto, notif);
-  if(notif.local_notification){
-    log("Notification", "local", notif);
-    if (notif.event.route) {
-      Actions[notif.event.route](notif.event.routeParams);
-    }
+  if (initialized) {
     return;
   }
-  if(notif.opened_from_tray){
-    log("Notification", "opened_from_tray", notif);
-    return;
-  }
+  initialized = true;
 
-  let event = JSON.parse(notif.event);
-  log("Notification event", event);
+  FCM.requestPermissions().then(() => {
+    let initCache = cache.get("state").then(res => {
+      let messages = JSON.parse(res);
+      _.forEach(messages, (message) => {
+        store.dispatch(addMessage(message));
+      });
+      log("messages",messages);
+    }).catch(err => log("error reading message cache", err));
 
-  let resetCachePromise = Promise.resolve();
+    if(Platform.OS === "ios"){
+      FCM.getAPNSToken().then(token => {
+        log("APNS TOKEN (getFCMToken)", token);
+        _sendToken(token);
+      });
+    }
 
-  if (event.resetCache && event.resetCache.length) {
-    resetCachePromise = Promise.all(_.map(event.resetCache, (type) => {
-      switch (type) {
-        case "event" : return EventCache.reset();
-        case "place" : return PlaceCache.reset();
-        case "message" : return cache.reset();
-        default : return Promise.resolve();
+    FCM.getInitialNotification().then(notif => {
+      log("INITIAL NOTIFICATION", notif);
+    });
+    let toto = Math.random();
+    FCM.on(FCMEvent.Notification, notif => {
+      log("Notification", toto, notif);
+      if(notif.local_notification){
+        log("Notification", "local", notif);
+        if (notif.event.route) {
+          Actions[notif.event.route](notif.event.routeParams);
+        }
+        return;
       }
-    }));
-  }
-
-  resetCachePromise.then(() => {
-    if (event.action === "MESSAGE_EVENT") {
-      initCache.then(() => store.dispatch(addMessage(event.data)));
-      EventApi.receivedMessage(event.data.uuid, event.data.senderID);
-    }
-    if (event.action === "RECEIVED_MESSAGE_EVENT") {
-      initCache.then(() => store.dispatch(markAsReceived(event.data.uuid)));
-    }
-    console.log("change route", event.route, event.routeParams);
-
-    if (event.route) {
-      log("redirect to action");
-      try {
-        Actions[event.route](event.routeParams);
-      } catch (e) {
-        log("error when trying actions route", e);
+      if(notif.opened_from_tray){
+        log("Notification", "opened_from_tray", notif);
+        return;
       }
-    }
-    if (event.title && event.body) {
-      _sendNotification(event);
-    }
-  });
+
+      let event = JSON.parse(notif.event);
+      log("Notification event", event);
+
+      let resetCachePromise = Promise.resolve();
+
+      if (event.resetCache && event.resetCache.length) {
+        resetCachePromise = Promise.all(_.map(event.resetCache, (type) => {
+          switch (type) {
+            case "event" : return EventCache.reset();
+            case "place" : return PlaceCache.reset();
+            case "message" : return cache.reset();
+            default : return Promise.resolve();
+          }
+        }));
+      }
+
+      resetCachePromise.then(() => {
+        if (event.action === "MESSAGE_EVENT") {
+          initCache.then(() => store.dispatch(addMessage(event.data)));
+          EventApi.receivedMessage(event.data.uuid, event.data.senderID);
+        }
+        if (event.action === "RECEIVED_MESSAGE_EVENT") {
+          initCache.then(() => store.dispatch(markAsReceived(event.data.uuid)));
+        }
+        console.log("change route", event.route, event.routeParams);
+
+        if (event.route) {
+          log("redirect to action");
+          try {
+            Actions[event.route](event.routeParams);
+          } catch (e) {
+            log("error when trying actions route", e);
+          }
+        }
+        if (event.title && event.body) {
+          _sendNotification(event);
+        }
+      });
 
 
-});
+    });
 
-FCM.on(FCMEvent.RefreshToken, token => {
-  _sendToken(token);
-});
+    FCM.on(FCMEvent.RefreshToken, token => {
+      _sendToken(token);
+    });
 
-// direct channel related methods are ios only
-// directly channel is truned off in iOS by default, this method enables it
-FCM.enableDirectChannel();
-FCM.on(FCMEvent.DirectChannelConnectionChanged, (data) => {
-  log("direct channel connected" + data);
-});
-setTimeout(function() {
-  FCM.isDirectChannelEstablished().then(d => log(d));
-}, 1000);
+    // direct channel related methods are ios only
+    // directly channel is truned off in iOS by default, this method enables it
+    FCM.enableDirectChannel();
+    FCM.on(FCMEvent.DirectChannelConnectionChanged, (data) => {
+      log("direct channel connected" + data);
+    });
+    setTimeout(function() {
+      FCM.isDirectChannelEstablished().then(d => log(d));
+    }, 1000);
 
-FCM.getFCMToken().then(token => {
-  log("TOKEN (getFCMToken)", token);
-  _sendToken(token).catch((e) => log("error fcm", e));
-});
+    FCM.getFCMToken().then(token => {
+      log("TOKEN (getFCMToken)", token);
+      _sendToken(token).catch((e) => log("error fcm", e));
+    }).catch(err => log("fail to get FCM token", err));
+
+  }).catch(() => log("test") || ToastAndroid.show("Please authorize notification to use Slifer", ToastAndroid.LONG));
+
 };
 
 export const sendTokenToBackend = () => {
@@ -170,7 +178,7 @@ export const sendTokenToBackend = () => {
       return cacheToken;
     }).then((token) => {
       log("NOTIFICATION set cache", token);
-      AsyncStorage.setItem("fcm_token2", token);
+      AsyncStorage.setItem("fcm_token", token);
     }).catch((err) => log("fail to send token", err));
   });
 };

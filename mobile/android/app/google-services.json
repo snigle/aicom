@@ -1,7 +1,9 @@
 {
   "project_info": {
     "project_number": "896727015937",
-    "project_id": "easymoney-148315"
+    "firebase_url": "https://easymoney-148315.firebaseio.com",
+    "project_id": "easymoney-148315",
+    "storage_bucket": "easymoney-148315.appspot.com"
   },
   "client": [
     {
@@ -13,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "896727015937-qdkak1d57nog571qqq30f3rg3r7jciad.apps.googleusercontent.com",
+          "client_id": "896727015937-a18111eb90psq7ggbl5e42ttf79kmhnm.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.github.snigle.aicom",
-            "certificate_hash": "ACE14D3F4DBB98BCAD196C23AF6CBA308DA297FB"
+            "certificate_hash": "7edba216497fd589fd0ed55d070c3bf05a0b4c59"
           }
         },
         {
@@ -26,6 +28,18 @@
           "android_info": {
             "package_name": "com.github.snigle.aicom",
             "certificate_hash": "74f939eedd2a53a7ee9142bdbb76b4b4849f6c25"
+          }
+        },
+        {
+          "client_id": "896727015937-mf899jo6nfh620i9dc8r08m319457jha.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "896727015937-qdkak1d57nog571qqq30f3rg3r7jciad.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.snigle.aicom",
+            "certificate_hash": "ace14d3f4dbb98bcad196c23af6cba308da297fb"
           }
         },
         {
@@ -43,11 +57,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "896727015937-mf899jo6nfh620i9dc8r08m319457jha.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

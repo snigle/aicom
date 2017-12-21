@@ -15,7 +15,7 @@ type User struct {
 	Email      string          `json:"email" bson:"email"`
 	Name       string          `json:"name" bson:"name"`
 	Picture    string          `json:"picture" bson:"picture"`
-	Location   [2]float64      `json:"location" bson:"location"`
+	Location   [2]float64      `json:"-" bson:"location"`
 	Activities map[string]bool `json:"activities" bson:"activities"`
 	Stats      struct {
 		EventRequested int             `json:"event_requested" bson:"event_requested"`
@@ -23,6 +23,7 @@ type User struct {
 		UsersMet       map[string]bool `json:"users_met" bson:"users_met"`
 		PlacesVisited  map[string]bool `json:"places_visited" bson:"places_visited"`
 	} `json:"stats" bson:"Stats"`
+	Distance float64 `json:"distance" bson:"-"`
 }
 
 func (user *User) AddActivity(name string) {
