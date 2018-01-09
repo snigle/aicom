@@ -15,22 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "896727015937-a18111eb90psq7ggbl5e42ttf79kmhnm.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.github.snigle.aicom",
-            "certificate_hash": "7edba216497fd589fd0ed55d070c3bf05a0b4c59"
-          }
-        },
-        {
-          "client_id": "896727015937-lnkfvjecmpno6del9uouuf3ri5ktu5gk.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.github.snigle.aicom",
-            "certificate_hash": "74f939eedd2a53a7ee9142bdbb76b4b4849f6c25"
-          }
-        },
-        {
           "client_id": "896727015937-mf899jo6nfh620i9dc8r08m319457jha.apps.googleusercontent.com",
           "client_type": 3
         },
@@ -45,11 +29,19 @@
         {
           "client_id": "896727015937-03jkctj1nc3tcac0s8435198tnls0bjp.apps.googleusercontent.com",
           "client_type": 3
+        },
+        {
+          "client_id": "896727015937-7ip86ns6543nm7ckijcc0tdl5jh8ekna.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.github.snigle.aicom",
+            "certificate_hash": "7edba216497fd589fd0ed55d070c3bf05a0b4c59"
+          }
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAHF6I3thc8N3bC8-8McRtLGFZ12-xb3ZE"
+          "current_key": "AIzaSyDxFvqbebVXuUpuD9IYMoksArC4ia05Y78"
         }
       ],
       "services": {
