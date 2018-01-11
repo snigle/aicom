@@ -15,10 +15,12 @@ I18n.translations = {
 };
 
 getLanguages().then(languages => {
-  console.log("moment language", languages);
+  var locales = {
+    fr : require("moment/locale/fr"),
+  };
   let lang = languages.length && languages[0].split("-")[0];
   if (lang) {
-    moment.locale(lang);
+    moment.locale(lang, locales[lang]);
   }
 });
 

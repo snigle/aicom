@@ -208,6 +208,7 @@ class Events extends Component {
     if (event.id) {
       EventApi.accept(event.id).then((response) => {
         console.log("event accepted", response);
+        this.setState({ ...this.state, loaded : true });
           Actions.event({ event : response });
       }).catch(err => {
         console.log(err);
