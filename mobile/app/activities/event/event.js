@@ -23,7 +23,7 @@ class Event extends Component {
       <TabBar rightIcon="settings" onRightPress={() => Actions.settings()}>
 
      <View  style={{ alignSelf : "center",backgroundColor : "#ffffff", marginTop : 15 }}>
-     <Text style={{ fontWeight : "bold" ,fontSize : 16 }}>JOIN YOUR FRIEND {moment(event.time).fromNow }</Text>
+     <Text style={{ fontWeight : "bold" ,fontSize : 16 }}>JOIN YOUR FRIEND IN {moment(event.time).fromNow }</Text>
      </View>
 
 {    _.map(event.users, (user, id) =>
@@ -34,11 +34,11 @@ class Event extends Component {
         }} key={id}>
 
           <View>
-            <Image source={{ uri : user.picture }} style={{ width : 100, height : 100, marginTop : 20, marginLeft : 10 }}/>
+            <Image source={{ uri : user.picture }} style={{ width : 130, height : 130, marginTop : 12, marginLeft : 5, borderRadius : 4 }}/>
           </View>
 
           <View style={{  marginLeft : 45 }}>
-            <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16, marginBottom : 7 }}> {user.name }</Text>
+            <Text  style={{ alignSelf : "center",backgroundColor : "#ffffff",fontWeight : "bold",fontSize : 16, marginBottom : 7, marginRight : 3 }}> {user.name }</Text>
             <Text> Number of events done </Text>
             <Text style = {{ alignSelf : "center" }}>{user.stats.event_accepted}</Text>
             <Text> Number of people met </Text>
@@ -54,27 +54,26 @@ class Event extends Component {
      backgroundColor="white"
      color="grey"
      fontFamily="Roboto"
-     buttonStyle={{ alignSelf : "center" , marginTop : 2, marginBottom : 2, justifyContent : "center",borderWidth : 1,
-    borderColor : "grey " }}
+     buttonStyle={{ alignSelf : "center" , marginTop : 10, marginBottom : 2, justifyContent : "center",borderWidth : 1, borderColor : "grey ", borderRadius : 4 }}
      onPress={() => Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${encodeURI(event.place.description)}`)}
      title=" M A P "/>
 
 
 
-     <View style = {{ flexDirection : "row", marginBottom : 40 }} >
+     <View style = {{ flexDirection : "row", marginBottom : 30 }} >
 
          <Button
          backgroundColor="#55acee"
          fontFamily="Roboto"
-         buttonStyle={{  width : 100, marginLeft : 30, marginRight : 20, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" }}
-         title="  Cancel   :("
+         buttonStyle={{  width : 100, marginLeft : 30, marginRight : 20, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" , borderRadius : 4 }}
+         title="    Cancel   "
          onPress={() => this.cancel(event)}/>
 
          <Button
          backgroundColor="#e52d27"
          fontFamily="Roboto"
-         buttonStyle={{ width : 100, marginLeft : 20, marginRight : 20, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" }}
-         title=" Whisper :)  "
+         buttonStyle={{ width : 100, marginLeft : 20, marginRight : 20, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" , borderRadius : 4 }}
+         title="      Chat "
          onPress={() => Actions.message({ event : event })}/>
 
          </View>

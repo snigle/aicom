@@ -126,7 +126,7 @@ class Events extends Component {
     }
     if (!card) {
       return <TabBar leftIcon="dashboard" rightIcon="settings" onRightPress={() => Actions.settings()}>
-        <Text>No more events available, retry in 1h.</Text>
+        <Text>No friends in your area, retry in 1h.</Text>
       </TabBar>;
     }
     console.log("card",card,this.state.cards, `${apiRouteBase}/place/picture/${card.place.picture[0]}?token=${Api.token}`);
@@ -147,16 +147,16 @@ class Events extends Component {
 
 
           <View style={{ marginTop : 13, marginBottom : 13 }}>
-          <Image source={{ uri : `${apiRouteBase}/place/picture/${card.place.picture[0]}?token=${Api.token}` }} style={{ width : 170, height : 155 }}/>
+          <Image source={{ uri : `${apiRouteBase}/place/picture/${card.place.picture[0]}?token=${Api.token}` }} style={{ width : 170, height : 155 , borderRadius : 4 }}/>
           </View>
 
 
-          <Text style = {{ fontSize : 15 }}>{card.place.name} ({card.distance}km) {moment().to(moment(card.time))}</Text>
+          <Text style = {{ fontSize : 13 }}>{card.place.name} ({card.distance}km) {moment().to(moment(card.time))}</Text>
           <Text style = {{ fontSize : 12 }}>{card.place.description.toUpperCase() }</Text>
 
 
           <View style={{ marginTop : 13, marginBottom : 13 }}>
-          <Image source={{ uri : card.user.picture }} style={{ width : 170, height : 155 }}/>
+          <Image source={{ uri : card.user.picture }} style={{ width : 170, height : 155 , borderRadius : 4 }}/>
           </View>
 
          <Text style = {{ fontSize : 15 }}>{card.user.name.toUpperCase()} </Text>
@@ -169,14 +169,14 @@ class Events extends Component {
     <Button
     backgroundColor="#55acee"
     fontFamily="Roboto"
-    buttonStyle={{ width : 100, marginLeft : 25, marginRight : 20, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" }}
+    buttonStyle={{ width : 100, marginLeft : 25, marginRight : 20, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" , borderRadius : 4 }}
     title={T.t("next_event")}
     onPress={() => this.next()}/>
 
     <Button
     backgroundColor="#e52d27"
     fontFamily="Roboto"
-    buttonStyle={{  width : 100, marginLeft : 20, marginRight : 25, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" }}
+    buttonStyle={{  width : 100, marginLeft : 20, marginRight : 25, marginBottom : 1 ,marginTop : 20, justifyContent : "space-between" , borderRadius : 4 }}
     title={T.t("accept_event")}
     onPress={() => this.accept(card)}/>
 

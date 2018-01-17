@@ -79,18 +79,12 @@ class TabBar extends Component {
     return (
     <View style={{ flexDirection : "column", flex : 1 }}>
       <View style={{ flexDirection : "row", position : "absolute", left : 0, right : 0, height : 55, padding : 10,  justifyContent : "space-between", backgroundColor : "white" }}>
-        <View style={{ width : 30 }}>
-          {
-            this.props.leftIcon ?
-              <Icon name={this.props.leftIcon} onPress={() => this.props.onLeftPress()} color="grey" size={30} />
-            : null
-          }
-        </View>
+
         {this.props.title || <Text style={{ fontSize : 31, color : "#55acee" }}> SLIFE<Text style={{ color : "#e52d27" }}>R</Text> </Text> }
         <View style={{ width : 34 }}>
         {
           this.props.rightIcon ?
-          <Icon name={this.props.rightIcon} onPress={() => this.props.onRightPress()} color="grey" size={30} />
+          <Icon name={this.props.rightIcon} onPress={() => this.props.onRightPress()} color="#55acee" size={30} />
           : null
         }
         </View>

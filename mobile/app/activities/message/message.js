@@ -50,6 +50,7 @@ class Event extends Component {
            <Text key={message.uuid}>{message.body}</Text>
          )
        }
+
        </View>
     </TabBar>)
 ;
