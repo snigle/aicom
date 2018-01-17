@@ -23,7 +23,7 @@ class Event extends Component {
       <TabBar rightIcon="settings" onRightPress={() => Actions.settings()}>
 
      <View  style={{ alignSelf : "center",backgroundColor : "#ffffff", marginTop : 15 }}>
-     <Text style={{ fontWeight : "bold" ,fontSize : 16 }}>JOIN YOUR FRIEND IN {moment(event.time).fromNow }</Text>
+     <Text style={{ fontWeight : "bold" ,fontSize : 16 }}>JOIN YOUR FRIEND {moment(event.time).fromNow() }</Text>
      </View>
 
 {    _.map(event.users, (user, id) =>

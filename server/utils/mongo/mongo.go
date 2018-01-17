@@ -13,6 +13,7 @@ func init() {
 	var err error
 	DB, err = mgo.Dial("mongodb://aicom:u94iw2kam@ds143774.mlab.com:43774/aicom")
 	if err != nil {
+		log.Print("mongo error")
 		log.Fatal(err)
 	}
 	Aicom = DB.DB("aicom")

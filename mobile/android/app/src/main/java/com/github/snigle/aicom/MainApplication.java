@@ -1,11 +1,15 @@
 package com.github.snigle.aicom;
 
 import android.app.Application;
+import android.content.Intent;
+import android.os.Bundle;
 
 import com.facebook.react.ReactApplication;
 import com.AlexanderZaytsev.RNI18n.RNI18nPackage;
 import com.evollu.react.fcm.FIRMessagingPackage;
 import co.apptailor.googlesignin.RNGoogleSigninPackage;
+
+import com.google.firebase.FirebaseApp;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -48,6 +52,12 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+    FirebaseApp.initializeApp(this);
+    Intent service = new Intent(getApplicationContext(), MainService.class);
+    Bundle bundle = new Bundle();
+    service.putExtras(bundle);
+
+    getApplicationContext().startService(service);
     SoLoader.init(this, /* native exopackage */ false);
   }
 }

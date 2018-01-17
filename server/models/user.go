@@ -24,6 +24,11 @@ type User struct {
 		PlacesVisited  map[string]bool `json:"places_visited" bson:"places_visited"`
 	} `json:"stats" bson:"Stats"`
 }
+type SecureUser struct {
+	User
+	Location interface{} `json:"location,omitempty"`
+	Distance float64     `json:"distance" bson:"-"`
+}
 
 func (user *User) AddActivity(name string) {
 	if user.Activities == nil {

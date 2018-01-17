@@ -1,6 +1,11 @@
 package com.github.snigle.aicom;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import com.facebook.react.ReactActivity;
+import com.facebook.soloader.SoLoader;
+import com.google.firebase.FirebaseApp;
 
 public class MainActivity extends ReactActivity {
 
@@ -12,4 +17,15 @@ public class MainActivity extends ReactActivity {
     protected String getMainComponentName() {
         return "Slifer";
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Intent service = new Intent(getApplicationContext(), MainService.class);
+        Bundle bundle = new Bundle();
+        service.putExtras(bundle);
+
+        getApplicationContext().startService(service);
+    }
+
 }
