@@ -128,7 +128,7 @@ class Login extends Component {
       return (
         <View style={styles.container}>
 
-          <Image source={require("../../../images/logo.png")} style={{ width : 300, height : 300 , marginLeft : 20  , marginBottom : 65 }}/>
+          <Image source={require("../../../images/logoo.png")} style={{ width : 108, height : 108 , marginBottom : 35 , borderRadius : 4  }}/>
 
 
 
