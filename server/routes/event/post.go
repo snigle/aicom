@@ -63,6 +63,7 @@ func NewEvent(c *gin.Context, in *EventInput) (*models.Event, error) {
 			Title:      "Event requested",
 			Body:       fmt.Sprintf("You have 1 requests for event at %s", e.Time),
 			ResetCache: []string{"event", "message"},
+			Route:      "events",
 		})
 		if err != nil {
 			logrus.WithError(err).Error("fail to send notification")

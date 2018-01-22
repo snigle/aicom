@@ -48,6 +48,18 @@ var _sendNotification = (event) => {
     });
   };
 
+const changeRoute = (route, params) => {
+  if (route && Actions[route]) {
+    log("redirect to action");
+    if (route === Actions.currentScene) {
+      Actions.refresh(params);
+    } else {
+      Actions[route](params);
+    }
+  }
+
+};
+
 let initialized = false;
 export const register = async () => {
   log("register notification handler");
@@ -81,9 +93,7 @@ export const register = async () => {
       log("Notification", toto, notif);
       if(notif.local_notification){
         log("Notification", "local", notif);
-        if (notif.event.route) {
-          Actions[notif.event.route](notif.event.routeParams);
-        }
+        changeRoute(notif.event.route, notif.event.routeParams);
         return;
       }
       if(notif.opened_from_tray){
@@ -117,17 +127,11 @@ export const register = async () => {
         }
         console.log("change route", event.route, event.routeParams);
 
-        if (event.route) {
-          log("redirect to action");
-          try {
-            Actions[event.route](event.routeParams);
-          } catch (e) {
-            log("error when trying actions route", e);
-          }
-        }
         if (event.title && event.body) {
           _sendNotification(event);
         }
+
+        changeRoute(event.route, event.routeParams);
       });
 
 

@@ -22,7 +22,7 @@ type User struct {
 		EventAccepted  int             `json:"event_accepted" bson:"event_accepted"`
 		UsersMet       map[string]bool `json:"users_met" bson:"users_met"`
 		PlacesVisited  map[string]bool `json:"places_visited" bson:"places_visited"`
-	} `json:"stats" bson:"Stats"`
+	} `json:"stats" bson:"stats"`
 }
 type SecureUser struct {
 	User
