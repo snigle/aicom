@@ -80,22 +80,25 @@ class Events extends Component {
       state.cards = [];
       _.forEach(_.filter(users, (user) => user.id !== me.id), (user) => {
         var score = _.random(50,100); // TODO calculate a score
+        _.forEach(pending, (e) => {
+          console.log("pending user",e.user);
+          if (e.users[user.id]) {
+            state.cards.push({
+              user : user,
+              activity : e.activity,
+              score : _.random(50,100) + 100,
+              place : e.place,
+              time : e.time,
+              id : e.id,
+            });
+          }
+        });
         // To add after when likes are here
         // _.forEach(user.likes, (value, like) => {
         //   if (self.state.me.likes[like] === value) {
         //     score++;
         //   }
         // });
-        _.forEach(pending, (e) => {
-          state.cards.push({
-            user : user,
-            activity : e.activity,
-            score : score,
-            place : e.place,
-            time : e.time,
-            id : e.id,
-          });
-        });
         _.forEach(user.activities, (value, activity) => {
           if (me.activities[activity] === value && places[activity] && places[activity].length) {
             _.forEach(_.take(places[activity],3), place =>
@@ -108,9 +111,9 @@ class Events extends Component {
       });
 
       return Promise.all(promises).then(() => {
-        _.forEach(state.cards, c => {
-          c.distance = _.round(this.getDistanceFromLatLonInKm(this.state.me.location[1], this.state.me.location[0], c.place.location.latitude, c.place.location.longitude));
-        });
+        // _.forEach(state.cards, c => {
+        //   c.distance = _.round(this.getDistanceFromLatLonInKm(this.state.me.location[1], this.state.me.location[0], c.place.location.latitude, c.place.location.longitude));
+        // });
         state.cards = _.sortBy(state.cards, [ c => -c.score ]);
         console.log("state.cards", state.cards);
         state.loaded = true;
