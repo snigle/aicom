@@ -51,7 +51,11 @@ var _sendNotification = (event) => {
 const changeRoute = (route, params) => {
   if (route && Actions[route]) {
     log("redirect to action", route === Actions.currentScene, Actions);
-    Actions.replace(route,params);
+    if (route === Actions.currentScene) {
+      Actions.replace(route,params);
+    } else {
+      Actions[route](params);
+    }
   }
 
 };
@@ -122,12 +126,11 @@ export const register = async () => {
           initCache.then(() => store.dispatch(markAsReceived(event.data.uuid)));
         }
         console.log("change route", event.route, event.routeParams);
+        changeRoute(event.route, event.routeParams);
 
         if (event.title && event.body) {
           _sendNotification(event);
         }
-
-        changeRoute(event.route, event.routeParams);
       });
 
 
