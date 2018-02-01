@@ -50,12 +50,8 @@ var _sendNotification = (event) => {
 
 const changeRoute = (route, params) => {
   if (route && Actions[route]) {
-    log("redirect to action");
-    if (route === Actions.currentScene) {
-      Actions.refresh(params);
-    } else {
-      Actions[route](params);
-    }
+    log("redirect to action", route === Actions.currentScene, Actions);
+    Actions.replace(route,params);
   }
 
 };
