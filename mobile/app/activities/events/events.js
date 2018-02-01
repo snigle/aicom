@@ -32,7 +32,7 @@ class Events extends Component {
       this.state.cards = [];
       this.state.loaded = false;
       this.state.cardIndex = 0;
-      this.cache = new ApiCache("eventsRequested1", 3600);
+      this.cache = new ApiCache("eventsRequested", 3600);
     }
 
 
