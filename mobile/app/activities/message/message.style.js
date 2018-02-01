@@ -8,9 +8,13 @@ export default StyleSheet.create({
     padding : 30,
   },
   me : {
-    backgroundColor : "blue",
+    backgroundColor : "#55acee",
+    borderRadius : 9,
+    opacity : 20,
   },
   other : {
-    backgroundColor : "red",
+    backgroundColor : "#e52d27",
+    borderRadius : 9,
+    opacity : 50,
   },
 });
