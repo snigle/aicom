@@ -41,7 +41,7 @@ func GetPlaces(c *gin.Context) (map[string][]*models.Place, error) {
 				r := &maps.NearbySearchRequest{
 					Location: &maps.LatLng{Lat: user.Location[1], Lng: user.Location[0]},
 					Name:     activity,
-					Radius:   20000,
+					Radius:   10000,
 				}
 				resp, err := client.NearbySearch(context.Background(), r)
 				if err != nil {
