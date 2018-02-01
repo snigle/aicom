@@ -52,7 +52,7 @@ const changeRoute = (route, params) => {
   if (route && Actions[route]) {
     log("redirect to action", route === Actions.currentScene, Actions);
     if (route === Actions.currentScene) {
-      Actions.replace(route,params);
+      Actions.reset(route,params);
     } else {
       Actions[route](params);
     }

@@ -111,9 +111,9 @@ class Events extends Component {
       });
 
       return Promise.all(promises).then(() => {
-        // _.forEach(state.cards, c => {
-        //   c.distance = _.round(this.getDistanceFromLatLonInKm(this.state.me.location[1], this.state.me.location[0], c.place.location.latitude, c.place.location.longitude));
-        // });
+        _.forEach(state.cards, c => {
+          c.distance = _.round(this.getDistanceFromLatLonInKm(this.state.me.location[1], this.state.me.location[0], c.place.location.latitude, c.place.location.longitude));
+        });
         state.cards = _.sortBy(state.cards, [ c => -c.score ]);
         console.log("state.cards", state.cards);
         state.loaded = true;
