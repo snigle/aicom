@@ -9,12 +9,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/namsral/flag"
+	"github.com/sirupsen/logrus"
 	"github.com/snigle/aicom/server/models"
 	"github.com/snigle/aicom/server/routes"
-	_ "github.com/snigle/aicom/server/routes/event"
 	_ "github.com/snigle/aicom/server/routes/login"
 	_ "github.com/snigle/aicom/server/routes/place"
 	_ "github.com/snigle/aicom/server/routes/user"
+	"github.com/snigle/aicom/server/utils/google"
 	"github.com/snigle/aicom/server/utils/mongo"
 )
 
@@ -64,6 +65,43 @@ func main() {
 		}
 	}
 
+	c := &gin.Context{}
+	userID := "59c352bdc7bcbb5c005e7fbc" // Ludo
+	// userID := "59c354dcb0c2bf0004e35f6a" // Patrick
+	// eventID := "5a5703c4997c81000477b742"
+
+	user := &models.User{}
+	err := mongo.Aicom.C(models.ColUser).FindId(bson.ObjectIdHex(userID)).One(&user)
+	if err != nil {
+		logrus.WithError(err).Error("fail to get user")
+		return
+	}
+	c.Set("users", user)
+	// Accept event
+	// _, err = event.AcceptEvent(c, &event.AcceptEventInput{UUID: eventID})
+	// if err != nil {
+	// 	logrus.WithError(err).Error("fail to accept event")
+	// 	return
+	// }
+
+	// Cancel event
+	// err = event.CancelEvent(c, &event.AcceptEventInput{UUID: eventID})
+	// if err != nil {
+	// 	logrus.WithError(err).Error("fail to accept event")
+	// 	return
+	// }
+
+	// Send notification
+	google.SendNotification(user.FCMToken, &google.Notification{
+		Title:      "Event Accepted",
+		Body:       fmt.Sprintf(`We found an event ! Let's go to %s`, "test"),
+		Route:      "events",
+		ResetCache: []string{"event", "message"},
+	})
+	if err != nil {
+		logrus.WithError(err).Error("fail to send notification")
+		return
+	}
 	r.Run(fmt.Sprintf(":%d", port))
 }
 

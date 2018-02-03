@@ -135,7 +135,7 @@ class Events extends Component {
     console.log("card",card,this.state.cards, `${apiRouteBase}/place/picture/${card.place.picture[0]}?token=${Api.token}`);
     // var card = { activity : "toto", user : "toto" };
     return (
-      <TabBar leftIcon="dashboard" rightIcon="settings" onRightPress={() => Actions.settings()}>
+      <TabBar leftIcon="dashboard" rightIcon="settings" onRightPress={() => Actions.settings()} style={{ flex : 1 }}>
       <View  style={{
         flex : 3,
         flexDirection : "column",
@@ -144,30 +144,30 @@ class Events extends Component {
         backgroundColor : "#ffffff",
       }}>
 
-       <View style={{ backgroundColor : "#ffffff", alignItems : "center", justifyContent : "center", marginTop : 15  }}  >
+       <View style={{ backgroundColor : "#ffffff", alignItems : "center", justifyContent : "center", marginTop : 15, flex : 12  }}  >
 
-          <Text style = {{ fontSize : 15 }}>{card.activity.toUpperCase()}</Text>
+          <Text style = {{ fontSize : 15, flex : 1 }}>{card.activity.toUpperCase()}</Text>
 
 
-          <View style={{ marginTop : 13, marginBottom : 13 }}>
-          <Image source={{ uri : `${apiRouteBase}/place/picture/${card.place.picture[0]}?token=${Api.token}` }} style={{ width : 170, height : 155 , borderRadius : 4 }}/>
+          <View style={{ marginTop : 13, marginBottom : 13 , marginLeft : 70, marginRight : 70, flex : 5, flexDirection : "row", justifyContent : "center" }}>
+          <Image source={{ uri : `${apiRouteBase}/place/picture/${card.place.picture[0]}?token=${Api.token}` }}  style={{ flex : 1, borderRadius : 4 }}/>
           </View>
 
 
-          <Text style = {{ fontSize : 13 }}>{card.place.name} ({card.distance}km) {moment().to(moment(card.time))}</Text>
-          <Text style = {{ fontSize : 12 }}>{card.place.description.toUpperCase() }</Text>
+          <Text style = {{ fontSize : 13, flex : 1 }}>{card.place.name} ({card.distance}km) {moment().to(moment(card.time))}</Text>
+          <Text style = {{ fontSize : 12, flex : 1 }}>{card.place.description.toUpperCase() }</Text>
 
 
-          <View style={{ marginTop : 13, marginBottom : 13 }}>
-          <Image source={{ uri : card.user.picture }} style={{ width : 170, height : 155 , borderRadius : 4 }}/>
+          <View style={{ marginTop : 13, marginBottom : 13, marginLeft : 70, marginRight : 70, flex : 5, flexDirection : "row", justifyContent : "center" }}>
+          <Image source={{ uri : card.user.picture }} resizeMode="cover" style={{ flex : 1  , borderRadius : 4 }}/>
           </View>
 
-         <Text style = {{ fontSize : 15 }}>{card.user.name.toUpperCase()} </Text>
+         <Text style = {{ fontSize : 15, flex : 1 }}>{card.user.name.toUpperCase()} </Text>
 
       </View>
 
 
-<View style= {{ flexDirection : "row", marginBottom : 75 }} >
+<View style= {{ flexDirection : "row", marginBottom : 75, flex : 1 }} >
 
     <Button
     backgroundColor="#55acee"
