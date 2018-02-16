@@ -113,6 +113,9 @@ class Events extends Component {
 
       return Promise.all(promises).then(() => {
         state.cards = _.sortBy(state.cards, [ c => -c.score ]);
+        _.forEach(state.cards, c => {
+          c.distance = _.round(this.getDistanceFromLatLonInKm(this.state.me.location[1], this.state.me.location[0], c.place.location.latitude, c.place.location.longitude));
+        });
         console.log("state.cards", state.cards);
         state.loaded = true;
         self.setState(state);
