@@ -115,12 +115,12 @@ class Login extends Component {
         sendTokenToBackend();
         // AppRegistry.registerHeadlessTask("NotificationService", () => register());
 
-        Actions.events({ type : "replace" });
+        Actions.events();
         return;
       }
         Actions.settings({ type : "replace" });
 
-    }).catch((err) => ToastAndroid.show("Fail to login, please contact administrator.", ToastAndroid.SHORT));
+    }).catch((err) => console.log(err, ToastAndroid.show("Fail to login, please contact administrator.", ToastAndroid.SHORT)));
   }
 
   render() {

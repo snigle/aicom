@@ -3,7 +3,7 @@ import { AsyncStorage } from "react-native";
 /*eslint no-console: ["error", { allow: ["log"] }] */
 // For android emulator, replace by your IP if running on device.
 export const apiRouteBase = "https://aicom.herokuapp.com";
-// export const apiRouteBase = "http://192.168.0.18:8080";
+// export const apiRouteBase = "http://192.168.0.41:8080";
 
 export default (() => {
   // Vars

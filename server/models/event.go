@@ -28,6 +28,7 @@ type Place struct {
 	Name        string    `json:"name" bson:"name"`
 	Description string    `json:"description" bson:"description"`
 	Location    *Location `json:"location" bson:"location"`
+	Distance    float64   `json:"distance"`
 	Pictures    []string  `json:"picture" bson:"pictures"`
 }
 

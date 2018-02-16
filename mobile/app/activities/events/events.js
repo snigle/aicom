@@ -74,6 +74,7 @@ class Events extends Component {
         EventApi.getPending(),
       ]);
     }).then(([users, me, places, pending]) => {
+      places = _.mapValues(places, p => _.sortBy(p, ["distance"]));
       console.log("pending",pending);
       var state = self.state;
       let promises = [];
@@ -101,7 +102,7 @@ class Events extends Component {
         // });
         _.forEach(user.activities, (value, activity) => {
           if (me.activities[activity] === value && places[activity] && places[activity].length) {
-            _.forEach(_.take(places[activity],3), place =>
+            _.forEach(_.take(places[activity],5), place =>
               promises.push(self.cache.get(self._getCacheKey(place, user)).then((e) => e ||
                 state.cards.push({ user : user, activity : activity, score : _.random(0,49), place : place, time : moment().add(3,"h").format("YYYY-MM-DD\\THH:MM:ssZ") })
               ))
@@ -111,9 +112,6 @@ class Events extends Component {
       });
 
       return Promise.all(promises).then(() => {
-        _.forEach(state.cards, c => {
-          c.distance = _.round(this.getDistanceFromLatLonInKm(this.state.me.location[1], this.state.me.location[0], c.place.location.latitude, c.place.location.longitude));
-        });
         state.cards = _.sortBy(state.cards, [ c => -c.score ]);
         console.log("state.cards", state.cards);
         state.loaded = true;
@@ -154,7 +152,7 @@ class Events extends Component {
           </View>
 
 
-          <Text style = {{ fontSize : 13, flex : 1 }}>{card.place.name} ({card.distance}km) {moment().to(moment(card.time))}</Text>
+          <Text style = {{ fontSize : 13, flex : 1 }}>{card.place.name} ({_.round(card.place.distance,2)}km) {moment().to(moment(card.time))}</Text>
           <Text style = {{ fontSize : 12, flex : 1 }}>{card.place.description.toUpperCase() }</Text>
 
 

@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/snigle/aicom/server/models"
+	userroute "github.com/snigle/aicom/server/routes/user"
 	"github.com/snigle/aicom/server/utils/google"
 )
 
@@ -41,12 +42,20 @@ func GetPlaces(c *gin.Context) (map[string][]*models.Place, error) {
 				r := &maps.NearbySearchRequest{
 					Location: &maps.LatLng{Lat: user.Location[1], Lng: user.Location[0]},
 					Name:     activity,
-					Radius:   10000,
+					Radius:   3000,
 				}
 				resp, err := client.NearbySearch(context.Background(), r)
 				if err != nil {
 					log.Printf("fatal error: %s", err)
 					return
+				}
+				if len(resp.Results) == 0 {
+					r.Radius = 5000
+					resp, err = client.NearbySearch(context.Background(), r)
+					if err != nil {
+						log.Printf("fatal error: %s", err)
+						return
+					}
 				}
 				list := make([]*models.Place, 0, len(resp.Results))
 				for _, p := range resp.Results {
@@ -58,9 +67,15 @@ func GetPlaces(c *gin.Context) (map[string][]*models.Place, error) {
 						pictures = append(pictures, p.PhotoReference)
 						// }
 					}
-					list = append(list, &models.Place{ID: p.PlaceID, Icon: p.Icon, Name: p.Name, Description: p.Vicinity, Location: &models.Location{
+					location := &models.Location{
 						Latitude: p.Geometry.Location.Lat, Longitude: p.Geometry.Location.Lng,
-					}, Pictures: pictures})
+					}
+					list = append(list, &models.Place{
+						ID: p.PlaceID, Icon: p.Icon, Name: p.Name, Description: p.Vicinity,
+						Location: location,
+						Pictures: pictures,
+						Distance: userroute.Point([2]float64{location.Longitude, location.Latitude}).GreatCircleDistance(userroute.Point(user.Location)),
+					})
 				}
 				outputChan <- &activityPlace{activity, list}
 			}
