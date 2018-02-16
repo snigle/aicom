@@ -102,7 +102,7 @@ android {
         applicationId "com.github.snigle.aicom"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 22
+        versionCode 23
         versionName "0.0.2"
         ndk {
             abiFilters "armeabi-v7a", "x86"

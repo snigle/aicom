@@ -28,8 +28,8 @@ func CancelEvent(c *gin.Context, in *AcceptEventInput) error {
 		return err
 	}
 
-	// b := false
-	e.Users[user.ID.Hex()] = nil
+	b := false
+	e.Users[user.ID.Hex()] = &b
 	e.Accepted = false
 
 	// Insert or update event
