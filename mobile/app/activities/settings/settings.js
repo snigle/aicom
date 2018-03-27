@@ -61,8 +61,8 @@ class Settings extends Component {
         title="Invite one close friend"
         onPress={ () => Share.share(
       {
-        title : "Ajouter un Slifeur/Slifeuse",
-        message : "Hey, tu vas bien ? je teste une toute nouvelle app qui s'appelle SLIFER, elle nous permet de faire rapidement et automatiquement des sorties cools entre nous, tu sais souvent on a la flemme de cherchez des endroits où bouger, où de voir qui est est motivé pour prendre l'air, mais avec SLIFER plus de prise de tête pour choisir ou décider et voir qui peut, il te suffit de voter pour ce qui te fais envie et on sera connecter pour une sortie cool entre nous. ça me ferait plaisir que on test ensemble :), je t'envoie ce lien car j'aimerai t'avoir dans mes relations pour sortir, clique sur ce lien et télécharge la sur le playstore, l'APP est encore en test donc elle va être bizarre mais on peut donner notre avis pour la modifier et l'améliorer ! donc voilà, fais vite car le lien de mon invitation va expirer rapidement, à de suite !Le lien(clique dessus ou copie-colle le dans ton navigateur)-----> https://play.google.com/store/apps/details?id=com.github.snigle.aicom&hl=fr  ",
+        title : "Je te partage Slifer",
+        message : "Hey, tu vas bien ? j'aimerai t'ajouté dans une app pour sortir ensemble plus simplement,télécharge ça sur google play >> https://play.google.com/store/apps/details?id=com.github.snigle.aicom&hl=fr  ",
 
       },
     )}
